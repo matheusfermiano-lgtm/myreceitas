@@ -103,3 +103,9 @@ CREATE TABLE restaurant_chefs (
     CONSTRAINT fk_rel_restaurant FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE,
     CONSTRAINT fk_rel_chef FOREIGN KEY (chef_id) REFERENCES chef(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+
+SELECT * FROM recipes;
+SELECT * FROM users;
+SELECT * FROM restaurants;
+SELECT * FROM chef;
