@@ -1,40 +1,97 @@
 <?php
+require_once "config/database.php";
 
-class User {
-    private $id;
-    private $name;
-    private $email;
-    private $password;
-    private $phone;
-    private $address;
+class userDAO {
+    private $conn; 
 
-    public function __construct($name, $email, $password, $phone = null, $address = null, $id = null) {
-        $this->setName($name);
-        $this->setEmail($email);
-        $this->setPassword($password);
-        $this->setPhone($phone);
-        $this->setAddress($address);
-        $this->setId($id);
+    public function __construct() {
+        $this->conn = database::getConexao();
     }
 
-    // Getters
-    public function getId() { return $this->id; }
-    public function getName() { return $this->name; }
-    public function getEmail() { return $this->email; }
-    public function getPassword() { return $this->password; }
-    public function getPhone() { return $this->phone; }
-    public function getAddress() { return $this->address; }
+    // CREATE - Insere um usuário no banco
+    public function create(User $u) {
+        $sql = "INSERT INTO users (name, email, password, phone, address) VALUES (?, ?, ?, ?, ?)";
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            $u->getName(),
+            $u->getEmail(),
+            $u->getPassword(),
+            $u->getPhone(),
+            $u->getAddress()
+        ]);
+        
+        $u->setId($this->conn->lastInsertId());
+        return $u; 
+    }
 
-    // Setters
-    public function setId($id) { $this->id = $id; }
-    public function setName($n) { $this->name = trim($n); }
-    public function setEmail($e) { $this->email = trim($e); }
-    public function setPassword($p) { $this->password = $p; }
-    public function setPhone($p) { $this->phone = trim($p); }
-    public function setAddress($a) { $this->address = trim($a); }
+    // READ — Busca usuário por ID
+    public function read($id) {
+        $sql = "SELECT * FROM users WHERE id = ?";
 
-    public function __toString() {
-        return "{$this->name} - {$this->email} - {$this->phone}";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$id]);
+        $dados = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$dados) return null;
+        
+        $u = new User(
+            $dados['name'], 
+            $dados['email'], 
+            $dados['password'], 
+            $dados['phone'], 
+            $dados['address'], 
+            $dados['id']
+        );
+        return $u;
+    }
+
+    // READ ALL — Retorna array de objetos User
+    public function readAll() {
+        $sql = "SELECT * FROM users ORDER BY name";
+        $stmt = $this->conn->query($sql);
+        $usuarios = [];
+
+        while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $u = new User(
+                $dados['name'],
+                $dados['email'],
+                $dados['password'],
+                $dados['phone'],
+                $dados['address'],
+                $dados['id']
+            );
+            $usuarios[] = $u;
+        }
+        
+        return $usuarios;
+    }
+
+    // UPDATE — Atualiza dados do usuário
+    public function update(User $u) {
+        $sql = "UPDATE users SET name = ?, email = ?, password = ?, phone = ?, address = ? WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            $u->getName(),
+            $u->getEmail(),
+            $u->getPassword(),
+            $u->getPhone(),
+            $u->getAddress(),
+            $u->getId()
+        ]);
+        return $u;
+    }
+
+    // DELETE — Remove um usuário do banco recebendo o objeto
+    public function delete(User $u) {
+        return $this->deleteById($u->getId());
+    }
+
+    // DELETE por ID
+    public function deleteById($id) {
+        $sql = "DELETE FROM users WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$id]);  
     }
 }
 ?>

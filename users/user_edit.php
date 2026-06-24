@@ -1,78 +1,91 @@
 <?php
-require_once dirname(dirname(__DIR__)) . '/base.php';
-require_once dirname(dirname(__DIR__)) . '/models/model/recipe.php'; 
-require_once dirname(dirname(__DIR__)) . '/models/dao/recipeDAO.php';
+require_once dirname(__DIR__) . '/base.php';
+require_once dirname(__DIR__) . '/models/model/user.php'; 
+require_once dirname(__DIR__) . '/models/dao/userDAO.php';
 
-$dao = new recipeDAO();
-$receita = null;
+$dao = new userDAO();
+$usuario = null;
 
-if (isset($_GET['id'])) {
-    $receita = $dao->read($_GET['id']);
-}
+// Simulação de utilizador ligado (ID 1). No futuro, substitua pelo ID vindo da $_SESSION['user_id']
+$id_logado = 1; 
+$usuario = $dao->read($id_logado);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $receitaAtualizada = new Recipe($_POST['name'], $_POST['ingredients'], $_POST['description'], $_POST['preparation_time'], $_POST['category'], 0.00);
-    $receitaAtualizada->setId($_POST['id']);
-    $dao->update($receitaAtualizada);
-    echo "<div class='container'><p style='color: green; font-weight: bold;'>Receita atualizada com sucesso!</p></div>";
-    $receita = $dao->read($_POST['id']); 
+    $id = $_POST['id'];
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $phone = $_POST['phone'];
+    $address = $_POST['address'];
+
+    $usuarioAtualizado = new User($name, $email, $password, $phone, $address);
+    $usuarioAtualizado->setId($id);
+    
+    $dao->update($usuarioAtualizado);
+    echo "<div class='container'><p style='color: green; font-weight: bold;'>Perfil atualizado com sucesso!</p></div>";
+    
+    // Recarrega os dados atualizados no ecrã
+    $usuario = $dao->read($id); 
 }
 ?>
 <style>
-    /* Reutilizando as classes de estilo do formulário de criação */
-    .form-wrapper { background-color: #fbeceb; padding: 40px; border-radius: 12px; max-width: 800px; margin: 40px auto; }
-    .form-group { display: flex; flex-direction: column; margin-bottom: 20px; }
-    .form-group label { color: #d37e42; font-weight: 600; margin-bottom: 8px; font-size: 16px; }
-    .form-group input, .form-group textarea, .form-group select { 
-        background-color: #fefce5; border: 1px solid #e0d9b5; border-radius: 8px; padding: 12px; font-size: 15px; outline: none; color: #444; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-    }
-    .btn-submit { 
-        background: linear-gradient(to bottom, #ff9e22, #e57300); color: white; font-size: 20px; font-weight: bold; padding: 15px 40px; border: none; border-radius: 8px; cursor: pointer; display: block; margin: 40px auto 0;
-    }
+    .profile-container { display: flex; gap: 30px; max-width: 900px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .profile-sidebar { flex: 1; text-align: center; border-right: 1px solid #eee; padding-right: 30px; }
+    .profile-form { flex: 2; background-color: #fbeceb; padding: 30px; border-radius: 12px; }
+    
+    .avatar-placeholder { width: 120px; height: 120px; background-color: #ff6a28; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 48px; margin: 0 auto 20px; }
+    
+    .form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
+    .form-group label { color: #d37e42; font-weight: 600; margin-bottom: 5px; }
+    .form-group input, .form-group textarea { background-color: #fefce5; border: 1px solid #e0d9b5; border-radius: 8px; padding: 10px; font-size: 14px; outline: none; }
+    
+    .btn-update { background: linear-gradient(to bottom, #ff9e22, #e57300); color: white; font-size: 16px; font-weight: bold; padding: 12px 30px; border: none; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 20px; }
 </style>
 
 <div class="container">
-    <?php if ($receita): ?>
-    <div class="form-wrapper">
-        <h2 style="color: #8b2538; text-align: center; margin-top: 0;">Editar Receita</h2>
-        <form method="POST" action="recipe_edit.php">
-            <input type="hidden" name="id" value="<?= $receita->getId() ?>">
-
-            <div class="form-group">
-                <label>Nome da receita:</label>
-                <input type="text" name="name" value="<?= htmlspecialchars($receita->getName()) ?>" required>
+    <?php if ($usuario): ?>
+    <div class="profile-container">
+        <div class="profile-sidebar">
+            <div class="avatar-placeholder">
+                <i class="fa-regular fa-user"></i>
             </div>
-            
-            <div class="form-group">
-                <label>Tempo de Preparo (minutos):</label>
-                <input type="text" name="preparation_time" value="<?= htmlspecialchars($receita->getPreparationTime()) ?>">
-            </div>
+            <h3><?= htmlspecialchars($usuario->getName()) ?></h3>
+            <p style="color: #666;"><?= htmlspecialchars($usuario->getEmail()) ?></p>
+            <p style="font-size: 13px; color: #999;">Membro da rede MyReceitas</p>
+        </div>
 
-            <div class="form-group">
-                <label>Ingredientes:</label>
-                <textarea name="ingredients" rows="4" required><?= htmlspecialchars($receita->getIngredients()) ?></textarea>
-            </div>
+        <div class="profile-form">
+            <h3 style="color: #8b2538; margin-top: 0; margin-bottom: 20px;">Minhas Informações</h3>
+            <form method="POST" action="user_edit.php">
+                <input type="hidden" name="id" value="<?= $usuario->getId() ?>">
+                <input type="hidden" name="password" value="<?= htmlspecialchars($usuario->getPassword()) ?>">
 
-            <div class="form-group">
-                <label>Descrição de preparo da receita:</label>
-                <textarea name="description" rows="5"><?= htmlspecialchars($receita->getDescription()) ?></textarea>
-            </div>
+                <div class="form-group">
+                    <label>Nome:</label>
+                    <input type="text" name="name" value="<?= htmlspecialchars($usuario->getName()) ?>" required>
+                </div>
 
-            <div class="form-group">
-                <label>Categoria:</label>
-                <select name="category">
-                    <option value="">Selecione...</option>
-                    <option value="Doces e Sobremesas" <?= $receita->getCategory() == 'Doces e Sobremesas' ? 'selected' : '' ?>>Doces e Sobremesas</option>
-                    <option value="Carnes" <?= $receita->getCategory() == 'Carnes' ? 'selected' : '' ?>>Carnes</option>
-                    <option value="Massas" <?= $receita->getCategory() == 'Massas' ? 'selected' : '' ?>>Massas</option>
-                </select>
-            </div>
+                <div class="form-group">
+                    <label>E-mail:</label>
+                    <input type="email" name="email" value="<?= htmlspecialchars($usuario->getEmail()) ?>" required>
+                </div>
 
-            <button type="submit" class="btn-submit">Salvar Alterações</button>
-        </form>
+                <div class="form-group">
+                    <label>Telefone:</label>
+                    <input type="text" name="phone" value="<?= htmlspecialchars($usuario->getPhone()) ?>">
+                </div>
+
+                <div class="form-group">
+                    <label>Endereço:</label>
+                    <textarea name="address" rows="3"><?= htmlspecialchars($usuario->getAddress()) ?></textarea>
+                </div>
+
+                <button type="submit" class="btn-update">Salvar Alterações</button>
+            </form>
+        </div>
     </div>
     <?php else: ?>
-        <p>Receita não encontrada.</p>
+        <p style="text-align: center; color: red;">Utilizador não encontrado. Certifique-se de que o banco de dados contém registros.</p>
     <?php endif; ?>
 </div>
 </body>
