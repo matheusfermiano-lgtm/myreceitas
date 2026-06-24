@@ -1,5 +1,6 @@
-<?php 
-require_once 'base.php'; 
+<?php
+require_once __DIR__ . '/base.php';
+?>
 ?>
 <style>
     .hero {

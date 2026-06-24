@@ -1,5 +1,6 @@
 <?php
-require_once "config/database.php";
+// Correção definitiva: Volta 2 níveis para sair de 'dao' e 'models', chegando na raiz do projeto
+require_once dirname(dirname(__DIR__)) . '/config/database.php';
 
 class userDAO {
     private $conn; 

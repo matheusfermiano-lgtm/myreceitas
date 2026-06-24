@@ -1,5 +1,5 @@
 <?php
-// Altere a linha de importação do banco para:
+// Faz a mesma correção no DAO de receitas para evitar o erro lá
 require_once dirname(dirname(__DIR__)) . '/config/database.php';
 
 class recipeDAO {
