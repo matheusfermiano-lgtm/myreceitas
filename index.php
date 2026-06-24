@@ -6,7 +6,7 @@ $pdo = require_once "config/database.php";
 require_once "models/model/recipe.php";
 require_once "models/dao/recipeDAO.php";
 
-require_once "models/model/usermodel.php";
+require_once "models/model/user.php";
 require_once "models/dao/userDAO.php";
 
 $mensagem = "";
