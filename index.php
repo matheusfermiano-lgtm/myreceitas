@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/base.php';
 ?>
-?>
 <style>
     .hero {
         /* ATENÇÃO: Substitua 'caminho/para/sua/imagem.jpg' pela sua imagem da colher de pau e caderno */
