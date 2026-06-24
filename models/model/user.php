@@ -1,43 +1,40 @@
 <?php
 
 class User {
-  private $nome;
-  private $cpf;
-  private $email;
-  private $telefone;
-  private $endereco;
-  private $imagem;
-  private $id;
+    private $id;
+    private $name;
+    private $email;
+    private $password;
+    private $phone;
+    private $address;
 
-  public function __construct($nome, $cpf, $email, $telefone, $endereco, $imagem, $id = null) {
-    $this->setNome($nome);
-    $this->setCpf($cpf);
-    $this->setEmail($email);
-    $this->setTelefone($telefone);
-    $this->setEndereco($endereco);
-    $this->setImagem($imagem);
-    $this->setId($id);
-    
-  }
+    public function __construct($name, $email, $password, $phone = null, $address = null, $id = null) {
+        $this->setName($name);
+        $this->setEmail($email);
+        $this->setPassword($password);
+        $this->setPhone($phone);
+        $this->setAddress($address);
+        $this->setId($id);
+    }
 
-  public function getNome()  { return $this->nome; }
-  public function getCpf() { return $this->cpf; }
-  public function getEmail() { return $this->email; }
-  public function getTelefone() { return $this->telefone; }
-  public function getEndereco() { return $this->endereco; }
-  public function getImagem() { return $this->imagem; }
-  public function getId() { return $this->id; }
+    // Getters
+    public function getId() { return $this->id; }
+    public function getName() { return $this->name; }
+    public function getEmail() { return $this->email; }
+    public function getPassword() { return $this->password; }
+    public function getPhone() { return $this->phone; }
+    public function getAddress() { return $this->address; }
 
-  public function setNome($n)  { $this->nome = trim($n); }
-  public function setCpf($c) { $this->cpf = trim($c); }
-  public function setEmail($e) { $this->email = trim($e); }
-  public function setTelefone($t) { $this->telefone = trim($t); }
-  public function setEndereco($end) { $this->endereco = trim($end); }
-  public function setImagem($img) { $this->imagem = $img; }
-  public function setId($id)  { $this->id = $id; }
+    // Setters
+    public function setId($id) { $this->id = $id; }
+    public function setName($n) { $this->name = trim($n); }
+    public function setEmail($e) { $this->email = trim($e); }
+    public function setPassword($p) { $this->password = $p; }
+    public function setPhone($p) { $this->phone = trim($p); }
+    public function setAddress($a) { $this->address = trim($a); }
 
-  public function __toString() {
-    return "{$this->nome} - {$this->cpf} - {$this->email} - {$this->telefone} - {$this->endereco}";
-  }
-
-}?>
+    public function __toString() {
+        return "{$this->name} - {$this->email} - {$this->phone}";
+    }
+}
+?>

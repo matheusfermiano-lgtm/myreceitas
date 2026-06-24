@@ -1,100 +1,59 @@
 <?php
-require_once "config/database.php";
+class Recipe {
+    private $id;
+    private $name;
+    private $ingredients;
+    private $description;
+    private $preparation_time;
+    private $category;
+    private $price;
+    private $is_public;
+    private $user_id;
+    private $chef_id;
+    private $restaurant_id;
 
-class recipeDAO {
-    private $conn; 
-
-    // Construtor: obtém a conexão
-    public function __construct() {
-        $this->conn = database::getConexao();
+    public function __construct($name, $ingredients, $description = null, $preparation_time = null, $category = null, $price = 0.00, $is_public = 1, $user_id = null, $chef_id = null, $restaurant_id = null, $id = null) {
+        $this->setName($name);
+        $this->setIngredients($ingredients);
+        $this->setDescription($description);
+        $this->setPreparationTime($preparation_time);
+        $this->setCategory($category);
+        $this->setPrice($price);
+        $this->setIsPublic($is_public);
+        $this->setUserId($user_id);
+        $this->setChefId($chef_id);
+        $this->setRestaurantId($restaurant_id);
+        $this->setId($id);
     }
 
-    //CREATE - insere uma Receita no banco
-    public function create(recipe $r) {
-        $sql = "INSERT INTO receitas (nome, descricao, instrucoes, tempo_preparo, dificuldade, imagem) VALUES (?, ?, ?, ?, ?, ?)";
-        
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([
-            $r->getNome(),
-            $r->getDescricao(),
-            $r->getInstrucoes(),
-            $r->getTempoPreparo(),
-            $r->getDificuldade(),
-            $r->getImagem()
-        ]);
-        
-        $r->setId($this->conn->lastInsertId());
-        return $r; 
+    // Getters
+    public function getId() { return $this->id; }
+    public function getName() { return $this->name; }
+    public function getIngredients() { return $this->ingredients; }
+    public function getDescription() { return $this->description; }
+    public function getPreparationTime() { return $this->preparation_time; }
+    public function getCategory() { return $this->category; }
+    public function getPrice() { return $this->price; }
+    public function getIsPublic() { return $this->is_public; }
+    public function getUserId() { return $this->user_id; }
+    public function getChefId() { return $this->chef_id; }
+    public function getRestaurantId() { return $this->restaurant_id; }
+
+    // Setters
+    public function setId($id) { $this->id = $id; }
+    public function setName($n) { $this->name = trim($n); }
+    public function setIngredients($i) { $this->ingredients = trim($i); }
+    public function setDescription($d) { $this->description = trim($d); }
+    public function setPreparationTime($pt) { $this->preparation_time = $pt; }
+    public function setCategory($c) { $this->category = trim($c); }
+    public function setPrice($p) { $this->price = (float)$p; }
+    public function setIsPublic($ip) { $this->is_public = (int)$ip; }
+    public function setUserId($uid) { $this->user_id = $uid; }
+    public function setChefId($cid) { $this->chef_id = $cid; }
+    public function setRestaurantId($rid) { $this->restaurant_id = $rid; }
+
+    public function __toString() {
+        return "{$this->name} - Categoria: {$this->category} - Preço: R$ " . number_format($this->price, 2, ',', '.');
     }
-
-    // READ — Busca Receita por ID
-    public function read($id) {
-        $sql = "SELECT * FROM receitas WHERE id = ?";
-
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$id]);
-        $dados = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$dados) return null;
-            $r = new recipe($dados['nome'], $dados['descricao'], $dados['instrucoes'], $dados['tempo_preparo'], $dados['dificuldade'], $dados['imagem']);
-            $r->setId($dados['id']);
-            return $r;
-    }
-
-    // READ ALL — Retorna array de objetos Receita
-    public function readAll() {
-        $sql = "SELECT * FROM receitas ORDER BY nome";
-        $stmt = $this->conn->query($sql);
-        $receitas = [];
-
-        while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $r = new recipe(
-                $dados['nome'],
-                $dados['descricao'],
-                $dados['instrucoes'],
-                $dados['tempo_preparo'],
-                $dados['dificuldade'],
-                $dados['imagem']
-            );
-
-            $r->setId($dados['id']);
-            $receitas[] = $r;
-        }
-        
-        return $receitas;
-    }
-
-    // UPDATE — Atualiza dados de uma Receita
-    public function update(recipe $r) {
-        $sql = "UPDATE receitas SET nome = ?, descricao = ?, instrucoes = ?, tempo_preparo = ?, dificuldade = ?, imagem = ? WHERE id = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([
-            $r->getNome(),
-            $r->getDescricao(),
-            $r->getInstrucoes(),
-            $r->getTempoPreparo(),
-            $r->getDificuldade(),
-            $r->getImagem(),
-            $r->getId()
-        ]);
-        return $r;
-    }
-
-    // DELETE — Remove uma Receita do banco
-    
-    public function delete(recipe $r) {
-        $sql = "DELETE FROM receitas WHERE id = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$r->getId()]);
-        return $r;
-    }
-
-    //  NOVO: DELETE por ID (sem precisar criar um objeto Pessoa)
-    public function deleteById($id) {
-        $sql = "DELETE FROM receitas WHERE id = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$id]);
-    }
-
 }
 ?>

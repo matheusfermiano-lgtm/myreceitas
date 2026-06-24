@@ -1,769 +1,102 @@
 <?php
-$tema_salvo = $_COOKIE['tema'] ?? 'light';
-$classe_dark = ($tema_salvo === 'dark') ? 'dark-mode' : '';
-?>
+// Linha mágica da navbar: detecta automaticamente a pasta do projeto no XAMPP
+$base_path = str_replace(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '', str_replace('\\', '/', __DIR__));
+$base_path = '/' . trim($base_path, '/') . '/';
+if ($base_path === '//') { $base_path = '/'; }
 
+// CORREÇÃO DA LINHA 3 (Busca o banco direto na raiz do projeto):
+require_once __DIR__ . '/config/database.php'; 
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyReceitas</title>
-    <!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Receitas - Unificado</title>
-
-    <!-- Fontes (Style 1) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @font-face {
-            font-family: 'Instrument Sans';
-            font-style: normal;
-            font-weight: 400;
-            src: url(https://design.penpot.app/internal/gfonts/font/instrumentsans/v4/pximypc9vsFDm051Uf6KVwgkfoSxQ0GsQv8ToedPibnr-yp2JGEJOH9npSTF-Tfykyw.woff2) format('woff2');
+        /* Estilos Globais */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #fcfcfc; 
         }
-        @font-face {
-            font-family: 'Island Moments';
-            font-style: normal;
-            font-weight: 400;
-            src: url(https://design.penpot.app/internal/gfonts/font/islandmoments/v8/NaPBcZfVGvBdxIt7Ar0qzkXJF9TBKIk.woff2) format('woff2');
+        
+        /* Navbar inspirada no v0.app */
+        .navbar { 
+            background-color: #8b2538; /* Vermelho/Bordô da imagem */
+            padding: 12px 30px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            color: white; 
         }
-        @font-face {
-            font-family: 'sourcesanspro';
-            src: url(https://design.penpot.app/fonts/sourcesanspro-regular.woff) format('woff');
-        }
-
-        /* ============================================================
-               VARIÁVEIS CSS (Tema Claro / Escuro)
-               ============================================================ */
-        :root {
-            /* Cores principais (claro) */
-            --bg-body: rgb(255, 233, 227);
-            --bg-gradient-body: linear-gradient(to bottom, rgb(255, 233, 227) 100%, rgb(255, 243, 232) 0%, rgb(255, 233, 227) 100%);
-
-            --nav-bg: linear-gradient(to right, #FF1D00 0%, #F45D00 51%, #FF7F00 100%);
-            --nav-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            --nav-text: white;
-
-            --sidebar-bg: linear-gradient(to bottom, #FF7F00 0%, #FF1D00 100%);
-            --sidebar-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-            --sidebar-text: white;
-            --sidebar-btn-bg: linear-gradient(to bottom, #FF9500 0%, #F29500 100%);
-            --sidebar-btn-hover: linear-gradient(to bottom, #FFAC00 0%, #FF9500 100%);
-
-            --card-bg: linear-gradient(to bottom, #FF7F00 0%, #F29500 100%);
-            --card-text: white;
-            --card-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
-            --card-hover-shadow: 6px 6px 15px rgba(0, 0, 0, 0.3);
-
-            --footer-bg: linear-gradient(to bottom, #FFAC00 0%, #F95F00 100%);
-            --footer-text: white;
-
-            --text-primary: #000;
-            --text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.5);
-
-            --input-bg: #FDFDC2;
-            --input-border: #000;
-            --input-text: #000;
-
-            --select-bg: linear-gradient(to bottom, #FF7F00 0%, #F29500 100%);
-            --select-text: white;
-
-            --btn-search-bg: linear-gradient(to bottom, #FF7F00 0%, #F29500 100%);
-            --btn-search-text: white;
-
-            --btn-orange-bg: linear-gradient(to bottom, #FF7F00 0%, #F29500 100%);
-            --btn-orange-text: white;
-
-            --avatar-bg: linear-gradient(to bottom, #FFDC8D 0%, #F0C89A 100%);
-            --avatar-text: #555;
-
-            --alert-bg: #d4edda;
-            --alert-border: #c3e6cb;
-            --alert-text: #155724;
-
-            --toggle-border: white;
-            --toggle-text: white;
-            --toggle-hover: rgba(255, 255, 255, 0.2);
-
-            /* Variáveis do Style 2 (mantidas para botão toggle) */
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-        }
-
-        /* Tema Escuro */
-        body.dark-mode {
-            --bg-body: #1a1a2e;
-            --bg-gradient-body: linear-gradient(to bottom, #1a1a2e 100%, #16213e 0%, #1a1a2e 100%);
-
-            --nav-bg: linear-gradient(to right, #3a0d00 0%, #7a2e00 51%, #a34a00 100%);
-            --nav-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
-
-            --sidebar-bg: linear-gradient(to bottom, #7a2e00 0%, #3a0d00 100%);
-            --sidebar-shadow: -5px 0 15px rgba(0, 0, 0, 0.6);
-            --sidebar-text: #f0e6d3;
-            --sidebar-btn-bg: linear-gradient(to bottom, #b35f00 0%, #a34a00 100%);
-            --sidebar-btn-hover: linear-gradient(to bottom, #cc7a00 0%, #b35f00 100%);
-
-            --card-bg: linear-gradient(to bottom, #4a2a10 0%, #6b3f1a 100%);
-            --card-text: #f5e6d3;
-            --card-shadow: 4px 4px 10px rgba(0, 0, 0, 0.8);
-            --card-hover-shadow: 6px 6px 15px rgba(0, 0, 0, 0.9);
-
-            --footer-bg: linear-gradient(to bottom, #7a3f00 0%, #4a1f00 100%);
-            --footer-text: #f0e6d3;
-
-            --text-primary: #f5e6d3;
-            --text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.8);
-
-            --input-bg: #2d2d44;
-            --input-border: #6b4f3a;
-            --input-text: #f0e6d3;
-
-            --select-bg: linear-gradient(to bottom, #b35f00 0%, #8a4500 100%);
-            --select-text: #f0e6d3;
-
-            --btn-search-bg: linear-gradient(to bottom, #b35f00 0%, #8a4500 100%);
-            --btn-search-text: #f0e6d3;
-
-            --btn-orange-bg: linear-gradient(to bottom, #b35f00 0%, #8a4500 100%);
-            --btn-orange-text: #f0e6d3;
-
-            --avatar-bg: linear-gradient(to bottom, #4a3a2a 0%, #3a2a1a 100%);
-            --avatar-text: #d4c4b0;
-
-            --alert-bg: #2d4a3a;
-            --alert-border: #1a3a2a;
-            --alert-text: #c4e6d3;
-
-            --toggle-border: #f0e6d3;
-            --toggle-text: #f0e6d3;
-            --toggle-hover: rgba(255, 255, 255, 0.15);
-
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.8);
-        }
-
-        /* ============================================================
-               RESET & GLOBAL (Style 1 adaptado)
-               ============================================================ */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            height: 100%;
-        }
-
-        body {
-            font-family: 'Instrument Sans', sans-serif;
-            background: var(--bg-gradient-body);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            color: var(--text-primary);
-            transition: background 0.5s, color 0.5s;
-        }
-
-        /* --- CLASSE PRINCIPAL DA FOTO --- */
-        .profile-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-            display: block;
-        }
-
-        /* ============================================================
-               CABEÇALHO (NAVBAR) - Style 1 com botão toggle
-               ============================================================ */
-        header {
-            width: 100%;
-            height: 94px;
-            background: var(--nav-bg);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
-            box-shadow: var(--nav-shadow);
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 100;
-            transition: background 0.5s, box-shadow 0.5s;
-        }
-
-        .logo {
-            font-family: 'Island Moments', cursive;
-            font-size: 50px;
-            color: var(--nav-text);
-            white-space: nowrap;
-            text-decoration: none;
-            transition: color 0.5s;
-        }
-
-        .logo-imagem {
-            width: 100%;
-            max-width: 500px;
-            height: 90px;
-            background-image: url('uploads/logomy.png');
-            background-repeat: no-repeat;
-            background-size: contain;
-            background-position: left center;
-            margin-bottom: 10px;
-            display: block;
-            /* não usamos filter para manter a imagem original */
-        }
-
-        /* Área de Busca */
-        form.search-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-grow: 1;
-            max-width: 900px;
-            margin: 0 40px;
-        }
-
-        select.search-select {
-            height: 50px;
-            border-radius: 15px;
-            border: none;
-            padding: 0 15px;
-            background: var(--select-bg);
-            color: var(--select-text);
-            font-family: 'Instrument Sans', sans-serif;
-            font-size: 16px;
-            cursor: pointer;
-            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            outline: none;
-            transition: background 0.5s, color 0.5s;
-        }
-        select.search-select option {
-            background-color: #F29500;
-            color: white;
-        }
-        body.dark-mode select.search-select option {
-            background-color: #8a4500;
-            color: #f0e6d3;
-        }
-
-        input.search-bar {
-            width: 100%;
-            height: 50px;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 20px;
-            padding: 0 20px;
-            font-size: 18px;
-            outline: none;
-            color: var(--input-text);
-            transition: background 0.5s, border-color 0.5s, color 0.5s;
-        }
-
-        button.btn-search {
-            height: 50px;
-            border-radius: 15px;
-            border: none;
-            padding: 0 15px;
-            background: var(--btn-search-bg);
-            color: var(--btn-search-text);
-            font-family: 'Instrument Sans', sans-serif;
-            font-size: 16px;
-            cursor: pointer;
-            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            outline: none;
-            transition: background 0.5s, color 0.5s;
-        }
-
-        .logoutbox {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* --- BOTÃO TOGGLE (Style 2) --- */
-        .btn-toggle-theme {
-            background: transparent;
-            color: var(--toggle-text);
-            border: 2px solid var(--toggle-border);
-            border-radius: 30px;
-            padding: 8px 16px;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-            box-shadow: var(--shadow);
-            transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.2s;
-            font-family: 'Instrument Sans', sans-serif;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-        .btn-toggle-theme:hover {
-            background: var(--toggle-hover);
-            transform: scale(1.02);
-        }
-
-        /* --- CORREÇÃO DO AVATAR NO HEADER --- */
-        header .user-avatar {
-            width: 50px !important;
-            height: 50px !important;
-            font-size: 25px !important;
-            margin-bottom: 0 !important;
-            border: 2px solid rgba(255, 255, 255, 0.7);
-        }
-
-        .btn-orange {
-            background: var(--btn-orange-bg);
-            border: none;
-            border-radius: 15px;
-            color: var(--btn-orange-text);
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
-            box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
-            font-family: 'Instrument Sans', sans-serif;
-            text-decoration: none;
-            white-space: nowrap;
-            transition: background 0.5s, color 0.5s;
-        }
-
-        /* ============================================================
-               LAYOUT PRINCIPAL
-               ============================================================ */
-        .main-container {
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            margin-top: 94px;
-            flex: 1;
-        }
-
-        /* ============================================================
-               CONTEÚDO CENTRAL
-               ============================================================ */
-        .content {
-            flex: 1;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-
-        /* Mensagens Flash */
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            font-family: 'sourcesanspro', sans-serif;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .alert.success {
-            background-color: var(--alert-bg);
-            color: var(--alert-text);
-            border: 1px solid var(--alert-border);
-        }
-        .alert.error,
-        .alert.danger {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        body.dark-mode .alert.error,
-        body.dark-mode .alert.danger {
-            background-color: #4a1a1a;
-            color: #f5c6cb;
-            border-color: #7a2a2a;
-        }
-        .alert.warning {
-            background-color: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeeba;
-        }
-        body.dark-mode .alert.warning {
-            background-color: #4a3a1a;
-            color: #ffeeba;
-            border-color: #7a5a2a;
-        }
-        .alert.info {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-        body.dark-mode .alert.info {
-            background-color: #1a3a4a;
-            color: #bee5eb;
-            border-color: #2a5a6a;
-        }
-
-        h1.welcome-text {
-            font-size: 60px;
-            color: var(--text-primary);
-            text-shadow: var(--text-shadow);
-            margin-bottom: 40px;
-            line-height: 1.1;
-            transition: color 0.5s, text-shadow 0.5s;
-        }
-
-        /* --- GRID DE RECEITAS --- */
-        .recipe-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            width: 100%;
-        }
-
-        /* --- CARD DE RECEITA --- */
-        .recipe-card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            height: 200px;
-            position: relative;
-            box-shadow: var(--card-shadow);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s, background 0.5s;
-            padding: 15px;
-        }
-
-        .recipe-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--card-hover-shadow);
-        }
-
-        .recipe-info {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            color: var(--card-text);
-            transition: color 0.5s;
-        }
-
-        .recipe-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
-        }
-
-        .recipe-title {
+        .logo-container { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            background-color: #dcb382; /* Cor de fundo da logo */
+            border-radius: 50%; 
+            width: 45px; 
+            height: 45px; 
+            text-decoration: none; 
+            color: #8b2538; 
             font-size: 22px;
-            font-weight: bold;
-            line-height: 1.2;
-            max-width: 80%;
         }
-
-        .fav-heart {
-            font-size: 20px;
-            text-decoration: none;
-            color: var(--card-text);
-            transition: transform 0.2s, color 0.2s;
+        .search-bar { 
+            flex: 1; 
+            max-width: 800px; 
+            margin: 0 30px; 
+            position: relative; 
         }
-        .fav-heart:hover {
-            transform: scale(1.2);
-            color: #ffcccc;
+        .search-bar input { 
+            width: 100%; 
+            padding: 12px 20px 12px 45px; 
+            border-radius: 25px; 
+            border: none; 
+            outline: none; 
+            font-size: 15px;
+            box-sizing: border-box;
         }
-        body.dark-mode .fav-heart:hover {
-            color: #ff9999;
-        }
-
-        .recipe-details {
+        .search-bar i { 
+            position: absolute; 
+            left: 18px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            color: #a0a0a0; 
             font-size: 16px;
-            opacity: 0.9;
-            margin-bottom: auto;
         }
-
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-            font-size: 14px;
+        .nav-icons { 
+            display: flex; 
+            gap: 20px; 
+            align-items: center; 
         }
-
-        .btn-view a {
-            color: var(--card-text);
-            text-decoration: underline;
-            font-weight: bold;
-            font-size: 16px;
-            transition: color 0.3s;
+        .nav-icons a { 
+            color: white; 
+            text-decoration: none; 
+            font-size: 22px;
+            transition: 0.3s;
         }
-        .btn-view a:hover {
-            color: #fff5e6;
-        }
+        .nav-icons a:hover { color: #dcb382; }
 
-        /* ============================================================
-               BARRA LATERAL (SIDEBAR) - Style 1 com hover expand
-               ============================================================ */
-        aside.sidebar {
-            width: 80px;
-            background: var(--sidebar-bg);
-            padding: 20px 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--sidebar-text);
-            transition: width 0.3s, padding 0.3s, background 0.5s, color 0.5s;
-            overflow: hidden;
-            flex-shrink: 0;
-            box-shadow: var(--sidebar-shadow);
-        }
-
-        aside.sidebar:hover {
-            width: 300px;
-            padding: 40px 20px;
-        }
-
-        .user-avatar {
-            width: 120px;
-            height: 120px;
-            background: var(--avatar-bg);
-            border-radius: 50%;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 50px;
-            color: var(--avatar-text);
-            overflow: hidden;
-            transition: all 0.3s, background 0.5s, color 0.5s;
-        }
-
-        aside.sidebar:not(:hover) .user-avatar {
-            width: 50px;
-            height: 50px;
-            font-size: 20px;
-        }
-
-        .user-name {
-            font-family: 'sourcesanspro';
-            font-size: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-            font-weight: bold;
-            white-space: nowrap;
-            transition: opacity 0.3s;
-        }
-
-        aside.sidebar:not(:hover) .user-name {
-            display: none;
-        }
-
-        .menu-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-        }
-
-        .sidebar-btn {
-            background: var(--sidebar-btn-bg);
-            border-radius: 15px;
-            padding: 12px;
-            text-align: center;
-            color: var(--sidebar-text);
-            font-family: 'sourcesanspro';
-            font-size: 16px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            text-decoration: none;
-            display: block;
-            transition: background 0.3s, transform 0.2s, color 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            white-space: nowrap;
-        }
-
-        aside.sidebar:not(:hover) .sidebar-btn {
-            font-size: 12px;
-            padding: 10px 5px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .sidebar-btn:hover {
-            background: var(--sidebar-btn-hover);
-            transform: scale(1.02);
-        }
-
-        /* ============================================================
-               RODAPÉ
-               ============================================================ */
-        footer {
-            height: 80px;
-            background: var(--footer-bg);
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--footer-text);
-            font-family: 'sourcesanspro';
-            flex-shrink: 0;
-            z-index: 10;
-            transition: background 0.5s, color 0.5s;
-        }
-
-        /* ============================================================
-               RESPONSIVIDADE (Style 1 + melhorias)
-               ============================================================ */
-        @media (max-width: 1024px) {
-            h1.welcome-text {
-                font-size: 50px;
-            }
-            form.search-area {
-                max-width: 400px;
-            }
-            .recipe-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
-        }
-
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                height: auto;
-                padding: 20px;
-                gap: 15px;
-            }
-            form.search-area {
-                width: 100%;
-                margin: 0;
-                max-width: 100%;
-            }
-            .logo {
-                order: 1;
-                font-size: 40px;
-            }
-            .logoutbox {
-                order: 3;
-                align-self: flex-end;
-                flex-wrap: wrap;
-                justify-content: flex-end;
-            }
-
-            .main-container {
-                flex-direction: column;
-                margin-top: 200px;
-            }
-            .content {
-                width: 100%;
-                padding: 20px;
-            }
-
-            aside.sidebar,
-            aside.sidebar:hover {
-                width: 100%;
-                padding: 20px;
-                flex-direction: row;
-                justify-content: center;
-                gap: 20px;
-                flex-wrap: wrap;
-                order: 2;
-            }
-            aside.sidebar:not(:hover) .user-name {
-                display: flex;
-                align-items: center;
-            }
-            .user-avatar {
-                width: 60px !important;
-                height: 60px !important;
-                margin-bottom: 0;
-                font-size: 30px;
-            }
-            .user-name {
-                display: flex !important;
-                align-items: center;
-                margin-bottom: 0;
-            }
-            .menu-buttons {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            .sidebar-btn {
-                width: auto;
-                padding: 10px 20px;
-                font-size: 16px !important;
-            }
-            aside.sidebar:not(:hover) .sidebar-btn {
-                font-size: 16px !important;
-                padding: 10px 20px;
-                overflow: visible;
-                text-overflow: clip;
-            }
-        }
-
-        @media (max-width: 480px) {
-            header {
-                padding: 15px;
-            }
-            .logo {
-                font-size: 30px;
-            }
-            .btn-toggle-theme {
-                font-size: 14px;
-                padding: 6px 12px;
-            }
-            .btn-orange {
-                font-size: 14px;
-                padding: 8px 15px;
-            }
-            h1.welcome-text {
-                font-size: 36px;
-            }
-            .recipe-grid {
-                grid-template-columns: 1fr;
-            }
-            .content {
-                padding: 15px;
-            }
-            aside.sidebar {
-                flex-direction: column;
-                align-items: center;
-            }
-            .menu-buttons {
-                flex-direction: column;
-                align-items: stretch;
-            }
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
     </style>
 </head>
-<body class="<?= $classe_dark ?>">
-
-    <a href="{{ url_for('index') }}" class="logo-imagem"></a>
-
-    <nav>
-        <h1 style="color: var(--my); margin-right: auto;">MyReceitas</h1>
-        <a href="index.php?pagina=recipes" class="btn btn-toggle-theme">Receitas</a>
-        <a href="index.php?pagina=users" class="btn btn-toggle-theme">Usuarios</a>
-        <button id="toggle-theme" class="btn btn-toggle-theme">
-            <i class="fas <?= ($tema_salvo === 'dark') ? 'fa-sun' : 'fa-moon' ?>"></i> 
-            <?= ($tema_salvo === 'dark') ? 'Modo Claro' : 'Modo Escuro' ?>
-        </button>
-    </nav>
-
-
-    <script>
-        const btnTheme = document.getElementById('toggle-theme');
-        const body = document.body;
-
-        btnTheme.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            
-            const isDark = body.classList.contains('dark-mode');
-            
-            const icon = isDark ? 'fa-sun' : 'fa-moon';
-            const texto = isDark ? 'Modo Claro' : 'Modo Escuro';
-            btnTheme.innerHTML = `<i class="fas ${icon}"></i> ${texto}`;
-            
-
-            const valorTema = isDark ? 'dark' : 'light';
-            document.cookie = `tema=${valorTema}; max-age=${30 * 24 * 60 * 60}; path=/`;
-        });
-    </script>
+<body>
+    <header class="navbar">
+        <a href="<?php echo $base_path; ?>index.php" class="logo-container">
+            <i class="fa-solid fa-utensils"></i>
+        </a>
+        
+        <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Pesquisar receitas, ingredientes...">
+        </div>
+        
+        <div class="nav-icons">
+            <a href="<?php echo $base_path; ?>views/recipes/recipes_list.php" title="Todas as Receitas"><i class="fa-solid fa-book-open"></i></a>
+            <a href="<?php echo $base_path; ?>users/users_list.php" title="Lista de Usuários"><i class="fa-solid fa-users"></i></a>
+            <a href="<?php echo $base_path; ?>users/user_edit.php" title="Meu Perfil / Informações"><i class="fa-regular fa-user"></i></a>
+        </div>
+    </header>

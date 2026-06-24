@@ -1,89 +1,40 @@
 <?php
-require_once "config/database.php";
 
-class userDAO {
-    private $conn; 
+class User {
+    private $id;
+    private $name;
+    private $email;
+    private $password;
+    private $phone;
+    private $address;
 
-    // Construtor: obtém a conexão
-    public function __construct() {
-        $this->conn = database::getConexao();
+    public function __construct($name, $email, $password, $phone = null, $address = null, $id = null) {
+        $this->setName($name);
+        $this->setEmail($email);
+        $this->setPassword($password);
+        $this->setPhone($phone);
+        $this->setAddress($address);
+        $this->setId($id);
     }
 
-    //CREATE - insere uma Receita no banco
-    public function create(user $u) {
-        $sql = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
-        
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([
-            $u->getNome(),
-            $u->getEmail(),
-            $u->getSenha()
-        ]);
-        
-        $u->setId($this->conn->lastInsertId());
-        return $u; 
-    }
+    // Getters
+    public function getId() { return $this->id; }
+    public function getName() { return $this->name; }
+    public function getEmail() { return $this->email; }
+    public function getPassword() { return $this->password; }
+    public function getPhone() { return $this->phone; }
+    public function getAddress() { return $this->address; }
 
-    // READ — Busca Receita por ID
-    public function read($id) {
-        $sql = "SELECT * FROM usuarios WHERE id = ?";
+    // Setters
+    public function setId($id) { $this->id = $id; }
+    public function setName($n) { $this->name = trim($n); }
+    public function setEmail($e) { $this->email = trim($e); }
+    public function setPassword($p) { $this->password = $p; }
+    public function setPhone($p) { $this->phone = trim($p); }
+    public function setAddress($a) { $this->address = trim($a); }
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$id]);
-        $dados = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$dados) return null;
-            $u = new user($dados['nome'], $dados['email'], $dados['senha']);
-            $u->setId($dados['id']);
-            return $u;
-    }
-
-    // READ ALL — Retorna array de objetos Receita
-    public function readAll() {
-        $sql = "SELECT * FROM usuarios ORDER BY nome";
-        $stmt = $this->conn->query($sql);
-        $usuarios = [];
-
-        while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $u = new user(
-                $dados['nome'],
-                $dados['email'],
-                $dados['senha']
-            );
-
-            $u->setId($dados['id']);
-            $usuarios[] = $u;
-        }
-        
-        return $usuarios;
-    }
-
-    // UPDATE — Atualiza dados de uma Receita
-    public function update(user $u) {
-        $sql = "UPDATE usuarios SET nome = ?, email = ?, senha = ? WHERE id = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([
-            $u->getNome(),
-            $u->getEmail(),
-            $u->getSenha(),
-            $u->getId()
-        ]);
-        return $u;
-    }
-
-    // DELETE — Remove uma Receita do banco
-    
-    public function delete(user $u) {
-        $sql = "DELETE FROM usuarios WHERE id = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$u->getId()]);
-        return $u;
-    }
-
-    //  NOVO: DELETE por ID (sem precisar criar um objeto Pessoa)
-    public function deleteById($id) {
-        $sql = "DELETE FROM usuarios WHERE id = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$id]);  
+    public function __toString() {
+        return "{$this->name} - {$this->email} - {$this->phone}";
     }
 }
+?>
