@@ -4,6 +4,11 @@
 DROP DATABASE myreceitas_db;
 Somente em casos estremamente necessarios, nunca rodar quando estiver com raiva
 */
+SET SQL_SAFE_UPDATES = 0;
+
+DELETE FROM restaurants;
+
+SET SQL_SAFE_UPDATES = 1;
 
 CREATE DATABASE IF NOT EXISTS myreceitas_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE myreceitas_db;
