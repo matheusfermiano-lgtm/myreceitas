@@ -1,89 +1,98 @@
 <?php
-require_once "config/database.php";
+// Correção definitiva: Volta 2 níveis para sair de 'dao' e 'models', chegando na raiz do projeto
+require_once dirname(dirname(__DIR__)) . '/config/database.php';
 
 class userDAO {
     private $conn; 
 
-    // Construtor: obtém a conexão
     public function __construct() {
         $this->conn = database::getConexao();
     }
 
-    //CREATE - insere uma Receita no banco
-    public function create(user $u) {
-        $sql = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
+    // CREATE - Insere um usuário no banco
+    public function create(User $u) {
+        $sql = "INSERT INTO users (name, email, password, phone, address) VALUES (?, ?, ?, ?, ?)";
         
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
-            $u->getNome(),
+            $u->getName(),
             $u->getEmail(),
-            $u->getSenha()
+            $u->getPassword(),
+            $u->getPhone(),
+            $u->getAddress()
         ]);
         
         $u->setId($this->conn->lastInsertId());
         return $u; 
     }
 
-    // READ — Busca Receita por ID
+    // READ — Busca usuário por ID
     public function read($id) {
-        $sql = "SELECT * FROM usuarios WHERE id = ?";
+        $sql = "SELECT * FROM users WHERE id = ?";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$id]);
         $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$dados) return null;
-            $u = new user($dados['nome'], $dados['email'], $dados['senha']);
-            $u->setId($dados['id']);
-            return $u;
+        
+        $u = new User(
+            $dados['name'], 
+            $dados['email'], 
+            $dados['password'], 
+            $dados['phone'], 
+            $dados['address'], 
+            $dados['id']
+        );
+        return $u;
     }
 
-    // READ ALL — Retorna array de objetos Receita
+    // READ ALL — Retorna array de objetos User
     public function readAll() {
-        $sql = "SELECT * FROM usuarios ORDER BY nome";
+        $sql = "SELECT * FROM users ORDER BY name";
         $stmt = $this->conn->query($sql);
         $usuarios = [];
 
         while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $u = new user(
-                $dados['nome'],
+            $u = new User(
+                $dados['name'],
                 $dados['email'],
-                $dados['senha']
+                $dados['password'],
+                $dados['phone'],
+                $dados['address'],
+                $dados['id']
             );
-
-            $u->setId($dados['id']);
             $usuarios[] = $u;
         }
         
         return $usuarios;
     }
 
-    // UPDATE — Atualiza dados de uma Receita
-    public function update(user $u) {
-        $sql = "UPDATE usuarios SET nome = ?, email = ?, senha = ? WHERE id = ?";
+    // UPDATE — Atualiza dados do usuário
+    public function update(User $u) {
+        $sql = "UPDATE users SET name = ?, email = ?, password = ?, phone = ?, address = ? WHERE id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
-            $u->getNome(),
+            $u->getName(),
             $u->getEmail(),
-            $u->getSenha(),
+            $u->getPassword(),
+            $u->getPhone(),
+            $u->getAddress(),
             $u->getId()
         ]);
         return $u;
     }
 
-    // DELETE — Remove uma Receita do banco
-    
-    public function delete(user $u) {
-        $sql = "DELETE FROM usuarios WHERE id = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$u->getId()]);
-        return $u;
+    // DELETE — Remove um usuário do banco recebendo o objeto
+    public function delete(User $u) {
+        return $this->deleteById($u->getId());
     }
 
-    //  NOVO: DELETE por ID (sem precisar criar um objeto Pessoa)
+    // DELETE por ID
     public function deleteById($id) {
-        $sql = "DELETE FROM usuarios WHERE id = ?";
+        $sql = "DELETE FROM users WHERE id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$id]);  
     }
 }
+?>

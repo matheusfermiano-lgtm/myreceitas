@@ -1,39 +1,59 @@
 <?php
 class Recipe {
-  private $nome;
-  private $descricao;
-  private $preco;
-  private $estoque;
-  private $imagem;
-  private $id;
+    private $id;
+    private $name;
+    private $ingredients;
+    private $description;
+    private $preparation_time;
+    private $category;
+    private $price;
+    private $is_public;
+    private $user_id;
+    private $chef_id;
+    private $restaurant_id;
 
-  public function __construct($nome, $descricao, $preco, $estoque, $imagem, $id = null) {
-    $this->setNome($nome);
-    $this->setDescricao($descricao);
-    $this->setPreco($preco);
-    $this->setEstoque($estoque);
-    $this->setImagem($imagem);
-    $this->setId($id);
-    
-  }
+    public function __construct($name, $ingredients, $description = null, $preparation_time = null, $category = null, $price = 0.00, $is_public = 1, $user_id = null, $chef_id = null, $restaurant_id = null, $id = null) {
+        $this->setName($name);
+        $this->setIngredients($ingredients);
+        $this->setDescription($description);
+        $this->setPreparationTime($preparation_time);
+        $this->setCategory($category);
+        $this->setPrice($price);
+        $this->setIsPublic($is_public);
+        $this->setUserId($user_id);
+        $this->setChefId($chef_id);
+        $this->setRestaurantId($restaurant_id);
+        $this->setId($id);
+    }
 
-  public function getNome()  { return $this->nome; }
-  public function getDescricao() { return $this->descricao; }
-  public function getPreco() { return $this->preco; }
-  public function getEstoque() { return $this->estoque; }
-  public function getImagem() { return $this->imagem; }
-  public function getId() { return $this->id; }
+    // Getters
+    public function getId() { return $this->id; }
+    public function getName() { return $this->name; }
+    public function getIngredients() { return $this->ingredients; }
+    public function getDescription() { return $this->description; }
+    public function getPreparationTime() { return $this->preparation_time; }
+    public function getCategory() { return $this->category; }
+    public function getPrice() { return $this->price; }
+    public function getIsPublic() { return $this->is_public; }
+    public function getUserId() { return $this->user_id; }
+    public function getChefId() { return $this->chef_id; }
+    public function getRestaurantId() { return $this->restaurant_id; }
 
-  public function setNome($n)  { $this->nome = trim($n); }
-  public function setDescricao($d) { $this->descricao = trim($d); }
-  public function setPreco($p) { $this->preco = (float)$p; }
-  public function setEstoque($e) { $this->estoque = (int)$e; }
-  public function setImagem($i) { $this->imagem = $i; }
-  public function setId($id)  { $this->id = $id; }
+    // Setters
+    public function setId($id) { $this->id = $id; }
+    public function setName($n) { $this->name = trim($n); }
+    public function setIngredients($i) { $this->ingredients = trim($i); }
+    public function setDescription($d) { $this->description = trim($d); }
+    public function setPreparationTime($pt) { $this->preparation_time = $pt; }
+    public function setCategory($c) { $this->category = trim($c); }
+    public function setPrice($p) { $this->price = (float)$p; }
+    public function setIsPublic($ip) { $this->is_public = (int)$ip; }
+    public function setUserId($uid) { $this->user_id = $uid; }
+    public function setChefId($cid) { $this->chef_id = $cid; }
+    public function setRestaurantId($rid) { $this->restaurant_id = $rid; }
 
-  public function __toString() {
-    return "{$this->nome} - {$this->descricao} - R$ {$this->preco} (Estoque: {$this->estoque})";
-  }
+    public function __toString() {
+        return "{$this->name} - Categoria: {$this->category} - Preço: R$ " . number_format($this->price, 2, ',', '.');
+    }
 }
-
 ?>
