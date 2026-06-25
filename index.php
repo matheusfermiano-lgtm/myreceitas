@@ -52,10 +52,10 @@ require_once __DIR__ . '/base.php';
 <div class="container">
     <div class="section-title">
         <h2>Receitas em destaque</h2>
-        <a href="recipes/recipes_list.php">Ver todas</a>
+        <a href="views/recipes/recipes_list.php">Ver todas</a>
     </div>
     
-    <p style="margin-top: 20px; color: #666;">Nenhuma receita em destaque no momento.</p>
+    <p style="margin-top: 20px; color: #667;">Nenhuma receita em destaque no momento.</p>
 </div>
 
 </body>

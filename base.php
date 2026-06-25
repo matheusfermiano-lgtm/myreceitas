@@ -96,7 +96,7 @@ require_once __DIR__ . '/config/database.php';
         
         <div class="nav-icons">
             <a href="<?php echo $base_path; ?>views/recipes/recipes_list.php" title="Todas as Receitas"><i class="fa-solid fa-book-open"></i></a>
-            <a href="<?php echo $base_path; ?>users/users_list.php" title="Lista de Usuários"><i class="fa-solid fa-users"></i></a>
-            <a href="<?php echo $base_path; ?>users/user_edit.php" title="Meu Perfil / Informações"><i class="fa-regular fa-user"></i></a>
+            <a href="<?php echo $base_path; ?>views/users/users_list.php" title="Lista de Usuários"><i class="fa-solid fa-users"></i></a>
+            <a href="<?php echo $base_path; ?>views/users/user_edit.php" title="Meu Perfil / Informações"><i class="fa-regular fa-user"></i></a>
         </div>
     </header>
