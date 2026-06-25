@@ -1,7 +1,7 @@
 <?php
-require_once dirname(__DIR__) . '/base.php';
-require_once dirname(__DIR__) . '/models/model/user.php'; 
-require_once dirname(__DIR__) . '/models/dao/userDAO.php';
+require_once '../../base.php';
+require_once dirname(__DIR__, 2) . '/models/model/user.php'; 
+require_once dirname(__DIR__, 2) . '/models/dao/userDAO.php';
 
 $dao = new userDAO();
 
@@ -32,7 +32,7 @@ $usuarios = $dao->readAll();
 <div class="container">
     <div class="header-list">
         <h2>Usuários Registados</h2>
-        <a href="user_form.php" class="btn-add">+ Novo Usuário</a>
+        <a href="views/users/user_form.php" class="btn-add">+ Novo Usuário</a>
     </div>
 
     <div class="user-grid">
@@ -47,8 +47,8 @@ $usuarios = $dao->readAll();
                     <p><i class="fa-solid fa-phone"></i> <?= htmlspecialchars($u->getPhone() ?: 'Não informado') ?></p>
                     
                     <div class="card-actions">
-                        <a href="user_edit.php?id=<?= $u->getId() ?>" class="btn-edit"><i class="fa-solid fa-user-pen"></i> Gerir</a>
-                        <a href="users_list.php?delete_id=<?= $u->getId() ?>" class="btn-delete" onclick="return confirm('Tem certeza que deseja remover este utilizador?');"><i class="fa-solid fa-user-xmark"></i> Excluir</a>
+                        <a href="views/users/user_edit.php?id=<?= $u->getId() ?>" class="btn-edit"><i class="fa-solid fa-user-pen"></i> Gerir</a>
+                        <a href="views/users/users_list.php?delete_id=<?= $u->getId() ?>" class="btn-delete" onclick="return confirm('Tem certeza que deseja remover este utilizador?');"><i class="fa-solid fa-user-xmark"></i> Excluir</a>
                     </div>
                 </div>
             <?php endforeach; ?>
