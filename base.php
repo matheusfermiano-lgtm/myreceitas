@@ -1,5 +1,11 @@
 <?php
 // Linha mágica da navbar: detecta automaticamente a pasta do projeto no XAMPP
+// No início do base.php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+// Detecta se o usuário está logado
+$isLoggedIn = isset($_SESSION['user_id']);
 $base_path = str_replace(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '', str_replace('\\', '/', __DIR__));
 $base_path = '/' . trim($base_path, '/') . '/';
 if ($base_path === '//') { $base_path = '/'; }
@@ -220,16 +226,25 @@ require_once __DIR__ . '/config/database.php';
             <button id="fecharSidebar" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
         </div>
         
-        <div class="sidebar-content">
-            <a href="<?php echo $base_path; ?>user/profile.php" class="sidebar-item highlight">
-                <i class="fa-solid fa-user"></i>
-                <span>Perfil</span>
-            </a>
+<div class="sidebar-content">
+            
+            <?php if ($isLoggedIn): ?>
+                <a href="<?php echo $base_path; ?>users/user_profile.php" class="sidebar-item highlight">
+                    <i class="fa-solid fa-user-check"></i>
+                    <span>Meu Perfil</span>
+                </a>
+                <a href="<?php echo $base_path; ?>users/logout.php" class="sidebar-item" style="color: #8b2538;">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sair da Conta</span>
+                </a>
+            <?php else: ?>
+                <a href="<?php echo $base_path; ?>users/login.php" class="sidebar-item highlight">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>Entrar / Cadastrar</span>
+                </a>
+            <?php endif; ?>
 
-            <a href="<?php echo $base_path; ?>views/user/login.php" class="sidebar-item highlight">
-                <i class="fa-solid fa-right-to-bracket"></i>
-                <span>Entrar / Cadastrar</span>
-            </a>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 20px;">
 
             <a href="<?php echo $base_path; ?>views/restaurant/restaurant_list.php" class="sidebar-item">
                 <i class="fa-solid fa-store"></i>
@@ -241,7 +256,7 @@ require_once __DIR__ . '/config/database.php';
                 <span>Todas as Receitas</span>
             </a>
             
-            <a href="<?php echo $base_path; ?>views/users/users_list.php" class="sidebar-item">
+            <a href="<?php echo $base_path; ?>users/users_list.php" class="sidebar-item">
                 <i class="fa-solid fa-users"></i>
                 <span>Lista de Usuários</span>
             </a>
