@@ -221,6 +221,11 @@ require_once __DIR__ . '/config/database.php';
         </div>
         
         <div class="sidebar-content">
+            <a href="<?php echo $base_path; ?>user/profile.php" class="sidebar-item highlight">
+                <i class="fa-solid fa-user"></i>
+                <span>Perfil</span>
+            </a>
+
             <a href="<?php echo $base_path; ?>views/user/login.php" class="sidebar-item highlight">
                 <i class="fa-solid fa-right-to-bracket"></i>
                 <span>Entrar / Cadastrar</span>
