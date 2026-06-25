@@ -1,7 +1,7 @@
 <?php
-require_once dirname(dirname(__DIR__)) . '/base.php';
-require_once dirname(dirname(__DIR__)) . '/models/model/recipe.php'; 
-require_once dirname(dirname(__DIR__)) . '/models/dao/recipeDAO.php';
+require_once dirname(__DIR__, 2) . '/base.php';
+require_once dirname(__DIR__, 2) . '/models/model/recipe.php'; 
+require_once dirname(__DIR__, 2) . '/models/dao/recipeDAO.php';
 
 $dao = new recipeDAO();
 

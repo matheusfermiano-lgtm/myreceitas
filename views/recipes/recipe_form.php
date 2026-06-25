@@ -1,10 +1,29 @@
 <?php
-require_once dirname(dirname(__DIR__)) . '/base.php';
-require_once dirname(dirname(__DIR__)) . '/models/model/recipe.php'; 
-require_once dirname(dirname(__DIR__)) . '/models/dao/recipeDAO.php';
+require_once dirname(__DIR__, 2) . '/base.php';
+require_once dirname(__DIR__, 2) . '/models/model/recipe.php'; 
+require_once dirname(__DIR__, 2) . '/models/dao/recipeDAO.php';
+
+// Simulação de usuário logado (Em um sistema real, isso vem do login)
+if(!isset($_SESSION)) session_start();
+$_SESSION['user_id'] = 1; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $novaReceita = new Recipe($_POST['name'], $_POST['ingredients'], $_POST['description'], $_POST['preparation_time'], $_POST['category'], 0.00);
+    $userId = $_SESSION['user_id'];
+    
+    // Criando o objeto receita com os novos campos (incluindo is_public e user_id)
+    $novaReceita = new Recipe(
+        $_POST['name'], 
+        $_POST['ingredients'], 
+        $_POST['description'], 
+        $_POST['preparation_time'], 
+        $_POST['category'], 
+        0.00, // Preço (pode ser 0 para usuários comuns)
+        $_POST['is_public'], 
+        $userId, // Aqui ligamos ao usuário!
+        null,    // chef_id
+        null     // restaurant_id
+    );
+
     $dao = new recipeDAO();
     $dao->create($novaReceita);
     echo "<div class='container'><p style='color: green; font-weight: bold;'>Receita cadastrada com sucesso!</p></div>";
@@ -81,11 +100,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Tipo da receita:</label>
-                    <select name="recipe_type">
-                        <option value="">Selecione...</option>
-                        <option value="Comum">Comum</option>
-                        <option value="Especial">Especial</option>
+                    <label for="is_public">Visibilidade:</label>
+                    <select name="is_public" id="is_public">
+                        <option value="1">Pública (Todos podem ver)</option>
+                        <option value="0">Privada (Só eu posso ver)</option>
                     </select>
                 </div>
             </div>

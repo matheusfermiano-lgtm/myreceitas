@@ -169,6 +169,14 @@ CREATE TABLE bookings (
     CONSTRAINT fk_book_chef FOREIGN KEY (chef_id) REFERENCES chef(id)
 ) ENGINE=InnoDB;
 
+CREATE TABLE recipe_likes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    recipe_id INT NOT NULL,
+    CONSTRAINT fk_like_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_like_recipe FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
+    UNIQUE(user_id, recipe_id) -- Impede curtir a mesma receita duas vezes
+);
 
 /*
 SELECT * FROM recipes;

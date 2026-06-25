@@ -1,6 +1,5 @@
 <?php
-// Faz a mesma correção no DAO de receitas para evitar o erro lá
-require_once dirname(dirname(__DIR__)) . '/config/database.php';
+require_once dirname(__DIR__, 2) . '/config/database.php';
 
 class recipeDAO {
     private $conn; 
@@ -35,14 +34,13 @@ class recipeDAO {
     // READ — Busca Receita por ID
     public function read($id) {
         $sql = "SELECT * FROM recipes WHERE id = ?";
-
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$id]);
         $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$dados) return null;
         
-        $r = new Recipe(
+        return new Recipe(
             $dados['name'], 
             $dados['ingredients'], 
             $dados['description'], 
@@ -55,7 +53,6 @@ class recipeDAO {
             $dados['restaurant_id'],
             $dados['id']
         );
-        return $r;
     }
 
     // READ ALL — Retorna array de objetos Receita
@@ -79,40 +76,48 @@ class recipeDAO {
                 $dados['id']
             );
         }
-        
         return $receitas;
     }
 
-    // UPDATE — Atualiza dados de uma Receita
+    // UPDATE
     public function update(Recipe $r) {
         $sql = "UPDATE recipes SET name = ?, ingredients = ?, description = ?, preparation_time = ?, category = ?, price = ?, is_public = ?, user_id = ?, chef_id = ?, restaurant_id = ? WHERE id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
-            $r->getName(),
-            $r->getIngredients(),
-            $r->getDescription(),
-            $r->getPreparationTime(),
-            $r->getCategory(),
-            $r->getPrice(),
-            $r->getIsPublic(),
-            $r->getUserId(),
-            $r->getChefId(),
-            $r->getRestaurantId(),
+            $r->getName(), $r->getIngredients(), $r->getDescription(),
+            $r->getPreparationTime(), $r->getCategory(), $r->getPrice(),
+            $r->getIsPublic(), $r->getUserId(), $r->getChefId(), $r->getRestaurantId(),
             $r->getId()
         ]);
         return $r;
     }
 
-    // DELETE — Remove uma Receita do banco
-    public function delete(Recipe $r) {
-        return $this->deleteById($r->getId());
-    }
-
-    // DELETE por ID 
+    // DELETE
     public function deleteById($id) {
         $sql = "DELETE FROM recipes WHERE id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$id]);
     }
+
+    // Busca receitas criadas pelo usuário (Públicas e Privadas)
+    public function getRecipesByUser($userId) {
+        $sql = "SELECT * FROM recipes WHERE user_id = :user_id ORDER BY created_at DESC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':user_id', $userId);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Busca receitas que o usuário favoritou (Com nome do autor)
+    public function getFavoriteRecipes($userId) {
+        $sql = "SELECT r.*, u.name as author_name 
+                FROM recipes r
+                JOIN user_favorites uf ON r.id = uf.recipe_id
+                LEFT JOIN users u ON r.user_id = u.id
+                WHERE uf.user_id = :user_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':user_id', $userId);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
-?>
