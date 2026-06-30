@@ -31,7 +31,7 @@ require_once __DIR__ . '/config/database.php';
         
         /* Navbar inspirada no v0.app */
         .navbar { 
-            background-color: #8b2538; /* Vermelho/Bordô da imagem */
+            background-color: #8b2538;
             padding: 12px 30px; 
             display: flex; 
             align-items: center; 
@@ -42,7 +42,7 @@ require_once __DIR__ . '/config/database.php';
             display: flex; 
             align-items: center; 
             justify-content: center;
-            background-color: #dcb382; /* Cor de fundo da logo */
+            background-color: #dcb382;
             border-radius: 50%; 
             width: 45px; 
             height: 45px; 
@@ -94,7 +94,7 @@ require_once __DIR__ . '/config/database.php';
         .user-sidebar {
             position: fixed;
             top: 0;
-            right: -320px; /* Começa escondida fora da tela */
+            right: -320px;
             width: 300px;
             height: 100vh;
             background-color: #ffffff;
@@ -106,11 +106,11 @@ require_once __DIR__ . '/config/database.php';
         }
 
         .user-sidebar.ativa {
-            right: 0; /* Desliza para dentro da tela */
+            right: 0;
         }
 
         .sidebar-header {
-            background-color: #8b2538; /* Acompanha a cor da navbar */
+            background-color: #8b2538;
             color: white;
             padding: 20px;
             display: flex;
@@ -229,16 +229,16 @@ require_once __DIR__ . '/config/database.php';
 <div class="sidebar-content">
             
             <?php if ($isLoggedIn): ?>
-                <a href="<?php echo $base_path; ?>users/user_profile.php" class="sidebar-item highlight">
+                <a href="<?php echo $base_path; ?>views/user_profile.php" class="sidebar-item highlight">
                     <i class="fa-solid fa-user-check"></i>
                     <span>Meu Perfil</span>
                 </a>
-                <a href="<?php echo $base_path; ?>users/logout.php" class="sidebar-item" style="color: #8b2538;">
+                <a href="<?php echo $base_path; ?>views/logout.php" class="sidebar-item" style="color: #8b2538;">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span>Sair da Conta</span>
                 </a>
             <?php else: ?>
-                <a href="<?php echo $base_path; ?>users/login.php" class="sidebar-item highlight">
+                <a href="<?php echo $base_path; ?>views/login.php" class="sidebar-item highlight">
                     <i class="fa-solid fa-right-to-bracket"></i>
                     <span>Entrar / Cadastrar</span>
                 </a>
