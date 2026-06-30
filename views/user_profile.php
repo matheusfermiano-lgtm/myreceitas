@@ -15,12 +15,13 @@ $e_o_dono = ($id_perfil == $id_logado && $tipo_perfil == $_SESSION['user_type'])
 
 $uDAO = new userDAO();
 $rDAO = new recipeDAO();
+$chefDAO = new chefDAO();
+$restDAO = new RestaurantDAO();
 
-// Busca dados baseado no tipo
 if($tipo_perfil == 'chef') {
-    // $profile = $chefDAO->read($id_perfil);
+    $profile = $chefDAO->read($id_perfil);
 } else if ($tipo_perfil == 'restaurant') {
-    // $profile = $restaurantDAO->read($id_perfil);
+    $profile = $restDAO->getById($id_perfil);
 } else {
     $profile = $uDAO->read($id_perfil);
 }
