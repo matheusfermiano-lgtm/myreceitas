@@ -1,5 +1,4 @@
 <?php
-
 class User {
     private $id;
     private $name;
@@ -7,14 +6,16 @@ class User {
     private $password;
     private $phone;
     private $address;
+    private $created_at;
 
-    public function __construct($name, $email, $password, $phone = null, $address = null, $id = null) {
-        $this->setName($name);
-        $this->setEmail($email);
-        $this->setPassword($password);
-        $this->setPhone($phone);
-        $this->setAddress($address);
-        $this->setId($id);
+    public function __construct($name, $email, $password, $phone = null, $address = null, $id = null, $created_at = null) {
+        $this->name = $name;
+        $this->email = $email;
+        $this->password = $password;
+        $this->phone = $phone;
+        $this->address = $address;
+        $this->id = $id;
+        $this->created_at = $created_at;
     }
 
     // Getters
@@ -24,17 +25,9 @@ class User {
     public function getPassword() { return $this->password; }
     public function getPhone() { return $this->phone; }
     public function getAddress() { return $this->address; }
+    public function getCreatedAt() { return $this->created_at; }
 
     // Setters
     public function setId($id) { $this->id = $id; }
-    public function setName($n) { $this->name = trim($n); }
-    public function setEmail($e) { $this->email = trim($e); }
     public function setPassword($p) { $this->password = $p; }
-    public function setPhone($p) { $this->phone = trim($p); }
-    public function setAddress($a) { $this->address = trim($a); }
-
-    public function __toString() {
-        return "{$this->name} - {$this->email} - {$this->phone}";
-    }
 }
-?>

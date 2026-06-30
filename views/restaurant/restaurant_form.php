@@ -1,44 +1,44 @@
 <?php
-// views/restaurant/restaurant_form.php
-require_once dirname(dirname(__DIR__)) . '/base.php';
-require_once dirname(dirname(__DIR__)) . '/models/dao/restaurantDAO.php';
+require_once dirname(__DIR__, 2) . '/base.php';
+require_once dirname(__DIR__, 2) . '/models/model/restaurant.php';
+require_once dirname(__DIR__, 2) . '/models/dao/restaurantDAO.php';
 
 $message = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $restaurantDAO = new RestaurantDAO();
     
+    // Tratamento de Foto
     $photoName = "default_restaurant.png";
     if (isset($_FILES['photo']) && $_FILES['photo']['error'] === 0) {
-        $targetDir = dirname(dirname(__DIR__)) . "/uploads/";
+        $targetDir = "../../uploads/";
         $photoName = time() . "_" . basename($_FILES["photo"]["name"]);
         move_uploaded_file($_FILES["photo"]["tmp_name"], $targetDir . $photoName);
     }
 
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
     $newRestaurant = new Restaurant(
-        null,
         $_POST['name'],
-        $_POST['email'],       // Capturando o e-mail do form
-        $_POST['password'],    // Capturando a senha do form
-        $_POST['address'],
-        $_POST['phone'],
-        $_POST['description'],
-        $photoName,
-        $_POST['menu_description']
+        $_POST['email'],
+        $password
     );
+    
+    // Setando os novos campos profissionais
+    $newRestaurant->setAddress($_POST['address']);
+    $newRestaurant->setPhone($_POST['phone']);
+    $newRestaurant->setDescription($_POST['description']);
+    $newRestaurant->setPhoto($photoName);
+    $newRestaurant->setOpeningHours($_POST['opening_hours']); // Novo
+    $newRestaurant->setServicesOffered($_POST['services_offered']); // Novo
+    $newRestaurant->setLocationMapLink($_POST['location_map_link']); // Novo
 
     try {
         if ($restaurantDAO->create($newRestaurant)) {
             $message = "<div class='alert success'>Restaurante cadastrado com sucesso!</div>";
-        } else {
-            $message = "<div class='alert error'>Erro ao cadastrar restaurante.</div>";
         }
-    } catch (PDOException $e) {
-        if ($e->getCode() == 23000) {
-            $message = "<div class='alert error'>Este e-mail já está sendo utilizado por outro restaurante!</div>";
-        } else {
-            $message = "<div class='alert error'>Erro no banco de dados: " . $e->getMessage() . "</div>";
-        }
+    } catch (Exception $e) {
+        $message = "<div class='alert error'>Erro: " . $e->getMessage() . "</div>";
     }
 }
 ?>
@@ -94,8 +94,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="form-group">
-                <label for="menu_description">Cardápio (Pratos Principais):</label>
-                <textarea id="menu_description" name="menu_description" rows="4" placeholder="Ex: Lasanha de Costela, Risoto de Alho Poró..."></textarea>
+                <label for="phone">Horario de Funcionamento:</label>
+                <input type="text" name="opening_hours" placeholder="Ex: Seg a Sex das 10h as 22h">
+            </div>
+
+             <div class="form-group">
+                <label for="phone">Link de localização:</label>
+                <input type="text" name="location_map_link" placeholder="Link do Google Maps">
+            </div>
+            
+             <div class="form-group">
+                <label for="phone">Serviços:</label>
+                <textarea name="services_offered" placeholder="Ex: Marmitas, Eventos..."></textarea>
             </div>
 
             <div class="form-group">

@@ -8,7 +8,6 @@ class userDAO {
         $this->conn = database::getConexao();
     }
 
-    // CREATE
     public function create(User $u) {
         $sql = "INSERT INTO users (name, email, password, phone, address) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
@@ -20,15 +19,16 @@ class userDAO {
         return $u; 
     }
 
-    // READ
     public function read($id) {
-        $sql = "SELECT * FROM users WHERE id = ?";
+        $sql = "SELECT *, created_at FROM users WHERE id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$id]);
         $dados = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$dados) return null;
         
-        return new User($dados['name'], $dados['email'], $dados['password'], $dados['phone'], $dados['address'], $dados['id']);
+        $u = new User($dados['name'], $dados['email'], $dados['password'], $dados['phone'], $dados['address'], $dados['id']);
+        $u->setCreatedAt($dados['created_at']); // Certifique-se de ter esse método no Model User
+        return $u;
     }
 
     // READ ALL
@@ -53,16 +53,8 @@ class userDAO {
         return $u;
     }
 
-    // DELETE
-    public function deleteById($id) {
-        $sql = "DELETE FROM users WHERE id = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$id]);  
-    }
-
-    // Busca dados consolidados do perfil
     public function getProfileData($userId) {
-        $sql = "SELECT u.name, u.email, 
+        $sql = "SELECT u.name, u.email, u.address, u.phone, u.created_at,
                 (SELECT COUNT(*) FROM recipe_likes rl 
                  JOIN recipes r ON rl.recipe_id = r.id 
                  WHERE r.user_id = u.id) as total_likes
@@ -72,5 +64,11 @@ class userDAO {
         $stmt->bindValue(':id', $userId);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteById($id) {
+        $sql = "DELETE FROM users WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$id]);  
     }
 }

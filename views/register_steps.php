@@ -1,5 +1,4 @@
 <?php
-require_once dirname(__DIR__) . '/base.php';
 require_once dirname(__DIR__) . '/config/database.php';
 
 if (session_status() === PHP_SESSION_NONE) session_start();
@@ -7,13 +6,13 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 $type = $_GET['type'] ?? 'user';
 $step = $_GET['step'] ?? 1;
 
-// Lógica para processar as etapas
+// 2. Lógica de processamento (Mantenha aqui em cima!)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($step == 1) {
         $_SESSION['reg_data'] = $_POST;
         header("Location: register_steps.php?type=$type&step=2");
-        exit;
-    } 
+        exit; // Sempre use exit após um header
+    }
     
     if ($step == 2) {
         $_SESSION['reg_data'] = array_merge($_SESSION['reg_data'], $_POST);
@@ -30,11 +29,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Aqui você chama o DAO específico baseado no $type e salva
             // Após salvar:
             unset($_SESSION['reg_data']);
-            header("Location: login.php?msg=sucesso");
+            header("Location:login.php?msg=sucesso");
             exit;
         }
     }
 }
+
+require_once dirname(__DIR__) . '/base.php';
+
 ?>
 
 <div class="container">

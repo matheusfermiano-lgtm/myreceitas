@@ -1,24 +1,28 @@
 <?php
-require_once dirname(__DIR__) . '/base.php';
-require_once dirname(__DIR__) . '/models/model/user.php'; 
-require_once dirname(__DIR__) . '/models/dao/userDAO.php';
+// Subindo 2 níveis: de 'users' para 'views' e de 'views' para a raiz
+require_once dirname(__DIR__, 2) . '/base.php';
+require_once dirname(__DIR__, 2) . '/models/model/user.php'; 
+require_once dirname(__DIR__, 2) . '/models/dao/userDAO.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    // Em produção, lembre-se de usar password_hash($password, PASSWORD_DEFAULT) para segurança
-    $password = $_POST['password']; 
-    $phone = $_POST['phone'] ?: null;
-    $address = $_POST['address'] ?: null;
-
-    $novoUsuario = new User($name, $email, $password, $phone, $address);
+    // Criptografando a senha antes de salvar
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    
+    $novoUsuario = new User(
+        $_POST['name'], 
+        $_POST['email'], 
+        $password, 
+        $_POST['phone'] ?? null, 
+        $_POST['address'] ?? null
+    );
     
     $dao = new userDAO();
-    $dao->create($novoUsuario);
-
-    echo "<div class='container'><p style='color: green; font-weight: bold;'>Usuário cadastrado com sucesso!</p></div>";
+    if ($dao->create($novoUsuario)) {
+        echo "<div class='container'><p style='color: green; font-weight: bold;'>Usuário cadastrado com sucesso!</p></div>";
+    }
 }
 ?>
+
 <style>
     .form-wrapper { background-color: #fbeceb; padding: 40px; border-radius: 12px; max-width: 600px; margin: 40px auto; }
     .form-group { display: flex; flex-direction: column; margin-bottom: 20px; }
