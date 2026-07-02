@@ -13,7 +13,7 @@ class Chef {
     private $photo;
     private $created_at;
 
-    public function __construct($name, $email, $password, $id = null) {
+    public function __construct($name = null, $email= null, $password = null , $id = null) {
         $this->name = $name;
         $this->email = $email;
         $this->password = $password;

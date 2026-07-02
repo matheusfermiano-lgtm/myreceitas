@@ -9,6 +9,39 @@ class RestaurantDAO {
         $this->conn = database::getConexao();
     }
 
+    // --- MÉTODOS DE GALERIA ---
+    public function addGalleryImage($restaurantId, $imagePath) {
+        $sql = "INSERT INTO restaurant_gallery (restaurant_id, image_path) VALUES (?, ?)";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([$restaurantId, $imagePath]);
+    }
+
+    public function getGalleryImages($restaurantId) {
+        $sql = "SELECT image_path FROM restaurant_gallery WHERE restaurant_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$restaurantId]);
+        // Retorna um array simples só com os caminhos das imagens
+        return $stmt->fetchAll(PDO::FETCH_COLUMN); 
+    }
+
+    // --- MÉTODOS DE VÍNCULO DE CHEFS ---
+    public function linkChef($restaurantId, $chefId, $role = 'Chef Principal') {
+        $sql = "INSERT INTO restaurant_chefs (restaurant_id, chef_id, role) VALUES (?, ?, ?)";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([$restaurantId, $chefId, $role]);
+    }
+
+    public function getLinkedChefs($restaurantId) {
+        // Traz os dados do Chef para montarmos os links na página do Restaurante
+        $sql = "SELECT c.id, c.name, c.photo, rc.role 
+                FROM chef c
+                JOIN restaurant_chefs rc ON c.id = rc.chef_id
+                WHERE rc.restaurant_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$restaurantId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function create(Restaurant $r) {
         try {
             $query = "INSERT INTO restaurants (name, email, password, address, phone, location_map_link, description, photo, opening_hours, services_offered, menu_description) 

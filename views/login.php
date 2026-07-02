@@ -1,12 +1,16 @@
 <?php
-require_once dirname(__DIR__) . '/base.php';
+// 1. Inicializa o banco e a sessão primeiro
 require_once dirname(__DIR__) . '/config/database.php';
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 
 // Se já estiver logado, redireciona para o perfil correto
 if (isset($_SESSION['user_id'])) {
-    header("Location: user_profile.php");
+    if ($_SESSION['user_type'] === 'restaurant') {
+        header("Location: restaurant_profile.php");
+    } else {
+        header("Location: user_profile.php");
+    }
     exit;
 }
 
@@ -16,13 +20,12 @@ $message = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
-    // LÓGICA DE LOGIN MULTI-TABELA (Mantida exatamente igual)
+    // LÓGICA DE LOGIN MULTI-TABELA
     if ($action === 'login') {
         $email = $_POST['login_email'];
         $password = $_POST['login_password'];
         $tables = ['users' => 'user', 'chef' => 'chef', 'restaurants' => 'restaurant'];
-        $found = false;
-
+        
         foreach ($tables as $table => $type) {
             $stmt = $conn->prepare("SELECT id, name, password FROM $table WHERE email = :email LIMIT 1");
             $stmt->execute([':email' => $email]);
@@ -39,6 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = "<div class='alert error'>E-mail ou senha incorretos!</div>";
     }
 }
+
+// 2. O visual (base.php) só é carregado se o script não tiver redirecionado antes
+require_once dirname(__DIR__) . '/base.php';
 ?>
 
 <div class="container">
