@@ -11,8 +11,10 @@ class Recipe {
     private $user_id;
     private $chef_id;
     private $restaurant_id;
+    private $created_at; // Novo
+    private $owner_name; // Campo auxiliar para o nome do Restaurante/Chef
 
-    public function __construct($name, $ingredients, $description = null, $preparation_time = null, $category = null, $price = 0.00, $is_public = 1, $user_id = null, $chef_id = null, $restaurant_id = null, $id = null) {
+    public function __construct($name, $ingredients, $description = null, $preparation_time = null, $category = null, $price = 0.00, $is_public = 1, $user_id = null, $chef_id = null, $restaurant_id = null, $id = null, $created_at = null) {
         $this->setName($name);
         $this->setIngredients($ingredients);
         $this->setDescription($description);
@@ -24,6 +26,7 @@ class Recipe {
         $this->setChefId($chef_id);
         $this->setRestaurantId($restaurant_id);
         $this->setId($id);
+        $this->created_at = $created_at;
     }
 
     // Getters
@@ -38,6 +41,8 @@ class Recipe {
     public function getUserId() { return $this->user_id; }
     public function getChefId() { return $this->chef_id; }
     public function getRestaurantId() { return $this->restaurant_id; }
+    public function getCreatedAt() { return $this->created_at; }
+    public function getOwnerName() { return $this->owner_name; }
 
     // Setters
     public function setId($id) { $this->id = $id; }
@@ -51,9 +56,5 @@ class Recipe {
     public function setUserId($uid) { $this->user_id = $uid; }
     public function setChefId($cid) { $this->chef_id = $cid; }
     public function setRestaurantId($rid) { $this->restaurant_id = $rid; }
-
-    public function __toString() {
-        return "{$this->name} - Categoria: {$this->category} - Preço: R$ " . number_format($this->price, 2, ',', '.');
-    }
+    public function setOwnerName($name) { $this->owner_name = $name; }
 }
-?>

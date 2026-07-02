@@ -80,52 +80,61 @@ class recipeDAO {
         return $r; 
     }
 
-    // READ — Busca Receita por ID
+    public function readAllPaginated($limit = 30, $offset = 0) {
+        // Regra: r.restaurant_id IS NULL para não aparecer na listagem geral
+        $sql = "SELECT r.* FROM recipes r
+                WHERE r.is_public = 1 
+                AND r.deleted_at IS NULL 
+                AND r.restaurant_id IS NULL
+                ORDER BY r.created_at DESC
+                LIMIT :limit OFFSET :offset";
+                
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $receitas = [];
+        while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $receitas[] = new Recipe(
+                $dados['name'], $dados['ingredients'], $dados['description'], 
+                $dados['preparation_time'], $dados['category'], $dados['price'], 
+                $dados['is_public'], $dados['user_id'], $dados['chef_id'], 
+                $dados['restaurant_id'], $dados['id'], $dados['created_at']
+            );
+        }
+        return $receitas;
+    }
+
+    public function countAllPublic() {
+        $sql = "SELECT COUNT(*) as total FROM recipes WHERE is_public = 1 AND deleted_at IS NULL AND restaurant_id IS NULL";
+        $stmt = $this->conn->query($sql);
+        return $stmt->fetch()['total'];
+    }
+
     public function read($id) {
-        $sql = "SELECT * FROM recipes WHERE id = ?";
+        // Query especial para trazer o nome do dono junto
+        $sql = "SELECT r.*, 
+                COALESCE(u.name, c.name, res.name) as owner_name 
+                FROM recipes r
+                LEFT JOIN users u ON r.user_id = u.id
+                LEFT JOIN chef c ON r.chef_id = c.id
+                LEFT JOIN restaurants res ON r.restaurant_id = res.id
+                WHERE r.id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$id]);
         $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$dados) return null;
         
-        return new Recipe(
-            $dados['name'], 
-            $dados['ingredients'], 
-            $dados['description'], 
-            $dados['preparation_time'], 
-            $dados['category'], 
-            $dados['price'], 
-            $dados['is_public'], 
-            $dados['user_id'], 
-            $dados['chef_id'], 
-            $dados['restaurant_id'],
-            $dados['id']
+        $r = new Recipe(
+            $dados['name'], $dados['ingredients'], $dados['description'], 
+            $dados['preparation_time'], $dados['category'], $dados['price'], 
+            $dados['is_public'], $dados['user_id'], $dados['chef_id'], 
+            $dados['restaurant_id'], $dados['id'], $dados['created_at']
         );
-    }
-
-    // READ ALL — Retorna array de objetos Receita
-    public function readAll() {
-        $sql = "SELECT * FROM recipes ORDER BY name";
-        $stmt = $this->conn->query($sql);
-        $receitas = [];
-
-        while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $receitas[] = new Recipe(
-                $dados['name'], 
-                $dados['ingredients'], 
-                $dados['description'], 
-                $dados['preparation_time'], 
-                $dados['category'], 
-                $dados['price'], 
-                $dados['is_public'], 
-                $dados['user_id'], 
-                $dados['chef_id'], 
-                $dados['restaurant_id'],
-                $dados['id']
-            );
-        }
-        return $receitas;
+        $r->setOwnerName($dados['owner_name']);
+        return $r;
     }
 
     // UPDATE

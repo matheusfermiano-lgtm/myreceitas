@@ -9,6 +9,11 @@ $receita = null;
 if (isset($_GET['id'])) {
     $receita = $dao->read($_GET['id']);
 }
+if ($receita && $receita->getUserId() != $_SESSION['user_id']) {
+    echo "<div class='container'><p class='alert error'>Você não tem permissão para alterar esta receita.</p></div>";
+    echo "<div class='container'><a href='recipes_list.php' class='btn-back'>Voltar para a lista</a></div>";
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $receitaAtualizada = new Recipe($_POST['name'], $_POST['ingredients'], $_POST['description'], $_POST['preparation_time'], $_POST['category'], 0.00);
