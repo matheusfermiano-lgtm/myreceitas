@@ -1,66 +1,303 @@
 <?php
-require_once dirname(__DIR__) . '/base.php';
+// 1. PRIMEIRO: Inicializa sessões e lógicas de banco (Sem gerar NENHUM HTML)
+if(!isset($_SESSION)) session_start();
+
 require_once dirname(__DIR__) . '/models/dao/userDAO.php';
 require_once dirname(__DIR__) . '/models/dao/recipeDAO.php';
-require_once dirname(__DIR__) . '/models/dao/restaurantDAO.php'; // Adicione este
-
-if(!isset($_SESSION)) session_start();
+require_once dirname(__DIR__) . '/models/dao/chefDAO.php';
 
 $id_perfil = $_GET['id'] ?? $_SESSION['user_id'];
 $tipo_perfil = $_GET['type'] ?? $_SESSION['user_type'];
 $id_logado = $_SESSION['user_id'] ?? null;
 
-// Verifica se quem está vendo é o dono do perfil
+// Proteção: Se for restaurante, manda pro arquivo correto (Aqui vai funcionar perfeito!)
+if ($tipo_perfil === 'restaurant') {
+    header("Location: restaurant_profile.php?id=" . $id_perfil);
+    exit;
+}
+
 $e_o_dono = ($id_perfil == $id_logado && $tipo_perfil == $_SESSION['user_type']);
 
 $uDAO = new userDAO();
 $rDAO = new recipeDAO();
 $chefDAO = new chefDAO();
-$restDAO = new RestaurantDAO();
 
 if($tipo_perfil == 'chef') {
     $profile = $chefDAO->read($id_perfil);
-} else if ($tipo_perfil == 'restaurant') {
-    $profile = $restDAO->getById($id_perfil);
 } else {
     $profile = $uDAO->read($id_perfil);
 }
 
-// Lógica de Receitas (Dono vê todas, Visitante vê só públicas)
-if ($e_o_dono) {
-    $minhasReceitas = $rDAO->getRecipesByUser($id_perfil);
-} else {
-    $minhasReceitas = $rDAO->getPublicRecipesByUser($id_perfil);
-}
+// Lógica de Receitas
+$minhasReceitas = $e_o_dono ? $rDAO->getRecipesByUser($id_perfil) : $rDAO->getPublicRecipesByUser($id_perfil);
+
+// BLINDAGEM CONTRA O TYPEERROR: Lê os dados seja Objeto ou Array
+$isObj = is_object($profile);
+$foto = $isObj ? ($profile->getPhoto() ?: 'default.png') : ($profile['photo'] ?? 'default.png');
+$nome = $isObj ? $profile->getName() : ($profile['name'] ?? 'Usuário');
+$dataCriacao = $isObj ? $profile->getCreatedAt() : ($profile['created_at'] ?? date('Y-m-d'));
+$email = $isObj ? $profile->getEmail() : ($profile['email'] ?? '');
+$telefone = $isObj && method_exists($profile, 'getPhone') ? $profile->getPhone() : ($profile['phone'] ?? '');
+$regiao = $isObj && method_exists($profile, 'getRegionOperation') ? $profile->getRegionOperation() : ($profile['region_operation'] ?? '');
+$endereco = $isObj && method_exists($profile, 'getAddress') ? $profile->getAddress() : ($profile['address'] ?? '');
+$servicos = $isObj && method_exists($profile, 'getServicesOffered') ? $profile->getServicesOffered() : ($profile['services_offered'] ?? '');
+$descricao = $isObj && method_exists($profile, 'getDescription') ? $profile->getDescription() : ($profile['description'] ?? '');
+$experiencia = $isObj && method_exists($profile, 'getProfessionalExperience') ? $profile->getProfessionalExperience() : ($profile['professional_experience'] ?? '');
+
+// 2. AGORA SIM: Se não redirecionou, podemos carregar a base visual do site
+require_once dirname(__DIR__) . '/base.php';
 ?>
 
-<div class="container">
-    <div class="profile-header">
-        <h1>Perfil de <?php echo $profile->getName(); ?></h1>
-        <p>Membro desde: <?php echo date('d/m/Y', strtotime($profile->getCreatedAt())); ?></p>
+<style>
+    .profile-container {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    /* Banner e Cabeçalho */
+    .profile-banner {
+        background: #8b2538;
+        height: 200px;
+        border-radius: 16px 16px 0 0;
+        position: relative;
+    }
+
+    .profile-header-card {
+        background: #fff;
+        border-radius: 0 0 16px 16px;
+        padding: 20px 40px 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        display: flex;
+        align-items: flex-end;
+        margin-top: -80px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .profile-avatar {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 5px solid #fff;
+        background: #eee;
+        object-fit: cover;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .profile-titles {
+        margin-left: 30px;
+        flex-grow: 1;
+    }
+
+    .profile-titles h1 {
+        margin: 0;
+        color: #333;
+        font-size: 2.2rem;
+    }
+
+    .profile-badges {
+        margin-top: 10px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-role { background: #fdf5f6; color: #8b2538; border: 1px solid #f8e1e4; }
+    .badge-date { background: #f0f4f8; color: #4a5568; }
+    .badge-private { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+
+    /* Layout do Corpo (Grid) */
+    .profile-body {
+        display: grid;
+        grid-template-columns: 1fr 2.5fr;
+        gap: 30px;
+        margin-top: 30px;
+    }
+
+    /* Cards Genéricos */
+    .info-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+        margin-bottom: 25px;
+    }
+
+    .info-card h3 {
+        color: #8b2538;
+        margin-top: 0;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 10px;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .contact-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .contact-list li {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        color: #555;
+        font-size: 0.95rem;
+    }
+
+    .contact-list i { color: #8b2538; margin-top: 4px; width: 20px; text-align: center; }
+
+    .text-content { line-height: 1.7; color: #444; }
+
+    /* Grid de Receitas */
+    .recipes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .recipe-item {
+        background: #fff;
+        border: 1px solid #eaeaea;
+        border-radius: 12px;
+        padding: 20px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .recipe-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    .recipe-item h4 { margin: 0 0 10px 0; color: #333; }
+    
+    .status-badge {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-weight: 600;
+    }
+    .status-public { background: #def7ec; color: #03543f; }
+    .status-private { background: #fde8e8; color: #9b1c1c; }
+
+    @media (max-width: 768px) {
+        .profile-body { grid-template-columns: 1fr; }
+        .profile-header-card { flex-direction: column; text-align: center; align-items: center; }
+        .profile-titles { margin-left: 0; margin-top: 20px; }
+        .profile-badges { justify-content: center; flex-wrap: wrap; }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-banner"></div>
+    <div class="profile-header-card">
+        <img src="../assets/uploads/<?php echo htmlspecialchars($foto); ?>" alt="Foto de Perfil" class="profile-avatar">
         
-        <?php if($e_o_dono): ?>
-            <div class="alert info">🔒 Você está vendo seus dados privados (Endereço: <?php echo $profile->getAddress(); ?>)</div>
-        <?php endif; ?>
-
-        <!-- Se for Chef, mostra experiência -->
-        <?php if($tipo_perfil == 'chef'): ?>
-            <p><strong>Experiência:</strong> <?php echo $profile->getProfessionalExperience(); ?></p>
-        <?php endif; ?>
-    </div>
-
-    <!-- Seção de Receitas (Cardápio ou Receitas) -->
-    <h2><?php echo ($tipo_perfil == 'restaurant') ? '🍴 Cardápio' : '📖 Receitas'; ?></h2>
-    <div class="recipe-grid">
-        <?php foreach($minhasReceitas as $r): ?>
-            <!-- Se for restaurante e a listagem for a geral, o SQL do readAll deve filtrar -->
-            <div class="recipe-card">
-                <h3><?php echo $r['name']; ?></h3>
-                <!-- Badges de privacidade só aparecem para o dono -->
+        <div class="profile-titles">
+            <h1><?php echo htmlspecialchars($nome); ?></h1>
+            <div class="profile-badges">
+                <span class="badge badge-role">
+                    <i class="fa-solid <?php echo $tipo_perfil == 'chef' ? 'fa-utensils' : 'fa-user'; ?>"></i>
+                    <?php echo ucfirst($tipo_perfil); ?>
+                </span>
+                <span class="badge badge-date"><i class="fa-solid fa-calendar-alt"></i> Membro desde <?php echo date('d/m/Y', strtotime($dataCriacao)); ?></span>
+                
                 <?php if($e_o_dono): ?>
-                    <span><?php echo $r['is_public'] ? '🌍 Pública' : '🔒 Privada'; ?></span>
+                    <span class="badge badge-private"><i class="fa-solid fa-lock"></i> Visualização Privada (Dono)</span>
                 <?php endif; ?>
             </div>
-        <?php endforeach; ?>
+        </div>
+    </div>
+
+    <div class="profile-body">
+        <div class="sidebar">
+            <div class="info-card">
+                <h3><i class="fa-solid fa-address-card"></i> Contato</h3>
+                <ul class="contact-list">
+                    <?php if(!empty($email)): ?>
+                        <li><i class="fa-solid fa-envelope"></i> <span><?php echo htmlspecialchars($email); ?></span></li>
+                    <?php endif; ?>
+                    
+                    <?php if(!empty($telefone)): ?>
+                        <li><i class="fa-solid fa-phone"></i> <span><?php echo htmlspecialchars($telefone); ?></span></li>
+                    <?php endif; ?>
+
+                    <?php if(!empty($regiao)): ?>
+                        <li><i class="fa-solid fa-map-location-dot"></i> <span><strong>Atende em:</strong><br><?php echo htmlspecialchars($regiao); ?></span></li>
+                    <?php endif; ?>
+
+                    <?php if($e_o_dono && !empty($endereco)): ?>
+                        <li><i class="fa-solid fa-house-lock" style="color:#856404;"></i> <span><strong>Seu Endereço:</strong><br><?php echo htmlspecialchars($endereco); ?></span></li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+
+            <?php if(!empty($servicos)): ?>
+            <div class="info-card">
+                <h3><i class="fa-solid fa-bell-concierge"></i> Serviços Oferecidos</h3>
+                <div class="text-content">
+                    <?php echo nl2br(htmlspecialchars($servicos)); ?>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+
+        <div class="main-content">
+            <?php if(!empty($descricao)): ?>
+            <div class="info-card">
+                <h3><i class="fa-solid fa-quote-left"></i> Sobre Mim</h3>
+                <div class="text-content">
+                    <?php echo nl2br(htmlspecialchars($descricao)); ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <?php if(!empty($experiencia)): ?>
+            <div class="info-card">
+                <h3><i class="fa-solid fa-briefcase"></i> Experiência Profissional</h3>
+                <div class="text-content">
+                    <?php echo nl2br(htmlspecialchars($experiencia)); ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <div class="info-card">
+                <h3>
+                    <i class="fa-solid fa-book-open"></i> 
+                    <?php echo $e_o_dono ? 'Meu Acervo de Receitas' : 'Receitas Públicas'; ?>
+                </h3>
+                
+                <?php if(empty($minhasReceitas)): ?>
+                    <p style="color: #888; text-align: center; padding: 20px;">Nenhuma receita encontrada.</p>
+                <?php else: ?>
+                    <div class="recipes-grid">
+                        <?php foreach($minhasReceitas as $r): ?>
+                            <div class="recipe-item">
+                                <h4><?php echo htmlspecialchars($r['name']); ?></h4>
+                                <?php if($e_o_dono): ?>
+                                    <span class="status-badge <?php echo $r['is_public'] ? 'status-public' : 'status-private'; ?>">
+                                        <?php echo $r['is_public'] ? '<i class="fa-solid fa-globe"></i> Pública' : '<i class="fa-solid fa-lock"></i> Privada'; ?>
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
 </div>

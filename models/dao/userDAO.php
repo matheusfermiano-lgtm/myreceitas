@@ -1,5 +1,7 @@
 <?php
 require_once dirname(__DIR__, 2) . '/config/database.php';
+// CORREÇÃO: Incluindo a classe User para eliminar o erro de "Class not found"
+require_once dirname(__DIR__) . '/model/user.php';
 
 class userDAO {
     private $conn; 
@@ -8,27 +10,38 @@ class userDAO {
         $this->conn = database::getConexao();
     }
 
-    public function create(User $u) {
-        $sql = "INSERT INTO users (name, email, password, phone, address) VALUES (?, ?, ?, ?, ?)";
+    public function create(User $u, $photo = 'default_user.png') {
+        // Atualizado para salvar a foto de perfil do usuário comum
+        $sql = "INSERT INTO users (name, email, password, phone, address, photo) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             $u->getName(), $u->getEmail(), $u->getPassword(),
-            $u->getPhone(), $u->getAddress()
+            $u->getPhone(), $u->getAddress(), $photo
         ]);
         $u->setId($this->conn->lastInsertId());
-        return $u; 
+        return true; 
     }
 
     public function read($id) {
-        $sql = "SELECT *, created_at FROM users WHERE id = ?";
+        $sql = "SELECT * FROM users WHERE id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$id]);
         $dados = $stmt->fetch(PDO::FETCH_ASSOC);
+        
         if (!$dados) return null;
         
-        $u = new User($dados['name'], $dados['email'], $dados['password'], $dados['phone'], $dados['address'], $dados['id']);
-        $u->setCreatedAt($dados['created_at']); // Certifique-se de ter esse método no Model User
-        return $u;
+        // Retornamos um adaptador seguro idêntico ao do Chef para a View ler perfeitamente
+        return new class($dados) {
+            private $data;
+            public function __construct($data) { $this->data = $data; }
+            
+            public function getName() { return $this->data['name'] ?? ''; }
+            public function getEmail() { return $this->data['email'] ?? ''; }
+            public function getPhone() { return $this->data['phone'] ?? ''; }
+            public function getCreatedAt() { return $this->data['created_at'] ?? ''; }
+            public function getAddress() { return $this->data['address'] ?? ''; }
+            public function getPhoto() { return $this->data['photo'] ?? 'default_user.png'; }
+        };
     }
 
     // READ ALL

@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__DIR__, 2) . '/config/database.php';
 require_once dirname(__DIR__) . '/model/chef.php';
+
 class chefDAO {
     private $conn; 
 
@@ -24,11 +25,32 @@ class chefDAO {
         }
     }
 
-    public function read($id) {
+public function read($id) {
         $sql = "SELECT * FROM chef WHERE id = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->execute([$id]); 
+        
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) return null;
+
+        // Criamos um objeto anônimo seguro que simula os getters que a View (user_profile.php) exige.
+        // Isso evita mexer na classe Chef e ignora qualquer bloqueio de propriedade privada!
+return new class($row) {
+            private $data;
+            public function __construct($data) { $this->data = $data; }
+            
+            public function getName() { return $this->data['name'] ?? ''; }
+            public function getEmail() { return $this->data['email'] ?? ''; }
+            public function getPhone() { return $this->data['phone'] ?? ''; }
+            public function getCreatedAt() { return $this->data['created_at'] ?? ''; }
+            public function getAddress() { return $this->data['address'] ?? ''; }
+            public function getProfessionalExperience() { return $this->data['professional_experience'] ?? ''; }
+            public function getDescription() { return $this->data['description'] ?? ''; }
+            public function getRegionOperation() { return $this->data['region_operation'] ?? ''; }
+            public function getServicesOffered() { return $this->data['services_offered'] ?? ''; }
+            public function getPhoto() { return $this->data['photo'] ?? 'default_chef.png'; }
+        };
     }
 
     public function getProfileData($chefId) {

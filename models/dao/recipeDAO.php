@@ -137,6 +137,44 @@ class recipeDAO {
         return $r;
     }
 
+    // READ ALL — Retorna array de objetos Receita
+    // READ ALL — Retorna array de objetos Receita (Feed Global)
+    public function readAll() {
+        // A regra de negócio exige que receitas de restaurantes NÃO apareçam no feed geral.
+        // Também filtramos apenas as receitas que são públicas (is_public = 1).
+        $sql = "SELECT * FROM recipes WHERE restaurant_id IS NULL AND is_public = 1 ORDER BY created_at DESC";
+        $stmt = $this->conn->query($sql);
+        $receitas = [];
+
+        while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $receitas[] = new Recipe(
+                $dados['name'], $dados['ingredients'], $dados['description'], 
+                $dados['preparation_time'], $dados['category'], $dados['price'], 
+                $dados['is_public'], $dados['user_id'], $dados['chef_id'], 
+                $dados['restaurant_id'], $dados['id']
+            );
+        }
+        return $receitas;
+    }
+
+    // Busca receitas exclusivas da página de um restaurante específico
+    public function getRecipesByRestaurant($restaurantId) {
+        $sql = "SELECT * FROM recipes WHERE restaurant_id = :restaurant_id ORDER BY created_at DESC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':restaurant_id', $restaurantId, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $receitas = [];
+        while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $receitas[] = new Recipe(
+                $dados['name'], $dados['ingredients'], $dados['description'], 
+                $dados['preparation_time'], $dados['category'], $dados['price'], 
+                $dados['is_public'], $dados['user_id'], $dados['chef_id'], 
+                $dados['restaurant_id'], $dados['id']
+            );
+        }
+        return $receitas;
+    }
     // UPDATE
     public function update(Recipe $r) {
         $sql = "UPDATE recipes SET name = ?, ingredients = ?, description = ?, preparation_time = ?, category = ?, price = ?, is_public = ?, user_id = ?, chef_id = ?, restaurant_id = ? WHERE id = ?";
