@@ -8,6 +8,55 @@ class recipeDAO {
         $this->conn = database::getConexao();
     }
 
+    // LISTAGEM GERAL (Apenas públicas e que NÃO são de restaurantes)
+    public function readGeneral() {
+        $sql = "SELECT * FROM recipes 
+                WHERE is_public = 1 
+                AND restaurant_id IS NULL 
+                AND deleted_at IS NULL 
+                ORDER BY created_at DESC";
+        $stmt = $this->conn->query($sql);
+        return $this->mapToArray($stmt);
+    }
+
+    // CARDÁPIO DO RESTAURANTE (Busca específica)
+    public function getMenuByRestaurant($restaurantId) {
+        $sql = "SELECT * FROM recipes 
+                WHERE restaurant_id = :rid 
+                AND deleted_at IS NULL";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':rid', $restaurantId);
+        $stmt->execute();
+        return $this->mapToArray($stmt);
+    }
+
+    // RANKING: TOP 10 RECEITAS (Baseado em Likes)
+    public function getTopRecipes() {
+        $sql = "SELECT r.*, COUNT(rl.id) as total_likes 
+                FROM recipes r
+                LEFT JOIN recipe_likes rl ON r.id = rl.recipe_id
+                WHERE r.is_public = 1 AND r.deleted_at IS NULL
+                GROUP BY r.id
+                ORDER BY total_likes DESC
+                LIMIT 10";
+        $stmt = $this->conn->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Helper para transformar resultados em Objetos Recipe
+    private function mapToArray($stmt) {
+        $receitas = [];
+        while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $receitas[] = new Recipe(
+                $dados['name'], $dados['ingredients'], $dados['description'], 
+                $dados['preparation_time'], $dados['category'], $dados['price'], 
+                $dados['is_public'], $dados['user_id'], $dados['chef_id'], 
+                $dados['restaurant_id'], $dados['id']
+            );
+        }
+        return $receitas;
+    }
+
     // CREATE - Insere uma Receita no banco
     public function create(Recipe $r) {
         $sql = "INSERT INTO recipes (name, ingredients, description, preparation_time, category, price, is_public, user_id, chef_id, restaurant_id) 

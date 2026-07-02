@@ -1,32 +1,36 @@
 <?php
+ob_start();
 require_once dirname(__DIR__, 2) . '/base.php';
 require_once dirname(__DIR__, 2) . '/models/model/recipe.php'; 
 require_once dirname(__DIR__, 2) . '/models/dao/recipeDAO.php';
 
-// Simulação de usuário logado (Em um sistema real, isso vem do login)
+
 if(!isset($_SESSION)) session_start();
-$_SESSION['user_id'] = 1; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userId = $_SESSION['user_id'];
-    
-    // Criando o objeto receita com os novos campos (incluindo is_public e user_id)
+    $userType = $_SESSION['user_type']; // 'user', 'chef' ou 'restaurant'
+
+    // Atribuição dinâmica do dono
+    $u_id = ($userType == 'user') ? $userId : null;
+    $c_id = ($userType == 'chef') ? $userId : null;
+    $r_id = ($userType == 'restaurant') ? $userId : null;
+
     $novaReceita = new Recipe(
         $_POST['name'], 
         $_POST['ingredients'], 
         $_POST['description'], 
         $_POST['preparation_time'], 
         $_POST['category'], 
-        0.00, // Preço (pode ser 0 para usuários comuns)
+        $_POST['price'] ?? 0.00, 
         $_POST['is_public'], 
-        $userId, // Aqui ligamos ao usuário!
-        null,    // chef_id
-        null     // restaurant_id
+        $u_id, $c_id, $r_id
     );
 
     $dao = new recipeDAO();
     $dao->create($novaReceita);
-    echo "<div class='container'><p style='color: green; font-weight: bold;'>Receita cadastrada com sucesso!</p></div>";
+    header("Location: recipes_list.php?msg=sucesso");
+    exit;
 }
 ?>
 <style>
@@ -94,9 +98,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label>Categoria:</label>
                     <select name="category">
                         <option value="">Selecione...</option>
-                        <option value="Doces e Sobremesas">Doces e Sobremesas</option>
-                        <option value="Carnes">Carnes</option>
-                        <option value="Massas">Massas</option>
+                        <option value="entrada">Entrada</option>
+                        <option value="prato principal">Prato Principal</option>
+                        <option value="sobremesas">Sobremesas</option>
+                        <option value="doces">Doces</option>
+                        <option value="carnes">Carnes</option>
+                        <option value="massas">Massas</option>
+                        <option value="lanches">Lanches</option>
+                        <option value="petiscos">Petiscos</option>
+                        <option value="saladas">Saladas</option>
+                        <option value="bolos">Bolos</option>
+                        <option value="peixes">Peixes</option>
+                        <option value="tortas">Tortas</option>
+                        <option value="sopas">Sopas</option>
+                       <option value="bebidas">Bebidas</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -107,6 +122,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </select>
                 </div>
             </div>
+
+            <?php if($_SESSION['user_type'] == 'restaurant'): ?>
+                <div class="form-group">
+                    <label>Preço no Cardápio (R$):</label>
+                    <input type="number" step="0.01" name="price" placeholder="0,00">
+                </div>
+            <?php endif; ?>
 
             <button type="submit" class="btn-submit">Finalizar Cadastro</button>
         </form>

@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['name'];
                 $_SESSION['user_type'] = $type; // Salva se é user, chef ou restaurant
-                header("Location: user_profile.php");
+                header("Location:user_profile.php");
                 exit;
             }
         }
