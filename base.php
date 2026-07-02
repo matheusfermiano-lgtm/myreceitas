@@ -26,7 +26,8 @@ require_once __DIR__ . '/config/database.php';
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             margin: 0; 
             padding: 0; 
-            background-color: #fcfcfc; 
+            /* NOVO: Fundo em off-white/creme */
+            background-color: #f5f2eb; 
         }
         
         /* Navbar inspirada no v0.app */
@@ -37,6 +38,7 @@ require_once __DIR__ . '/config/database.php';
             align-items: center; 
             justify-content: space-between; 
             color: white; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .logo-container { 
             display: flex; 
@@ -60,10 +62,17 @@ require_once __DIR__ . '/config/database.php';
             width: 100%; 
             padding: 12px 20px 12px 45px; 
             border-radius: 25px; 
-            border: none; 
+            /* NOVO: Fundo branco com borda creme para destacar do fundo da página */
+            border: 1px solid #e1dacb; 
+            background-color: #ffffff;
             outline: none; 
             font-size: 15px;
             box-sizing: border-box;
+            transition: all 0.3s;
+        }
+        .search-bar input:focus {
+            border-color: #8b2538;
+            box-shadow: 0 0 8px rgba(139, 37, 56, 0.2);
         }
         .search-bar i { 
             position: absolute; 
@@ -97,8 +106,10 @@ require_once __DIR__ . '/config/database.php';
             right: -320px;
             width: 300px;
             height: 100vh;
+            /* NOVO: Sidebar em branco puro para contrastar com o fundo */
             background-color: #ffffff;
-            box-shadow: -4px 0 15px rgba(0,0,0,0.15);
+            border-left: 1px solid #e1dacb;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.08);
             transition: right 0.3s ease-in-out;
             z-index: 1050;
             display: flex;
@@ -166,16 +177,18 @@ require_once __DIR__ . '/config/database.php';
         }
 
         .sidebar-item:hover {
-            background-color: #f9f9f9;
+            /* NOVO: Efeito de hover agora em tom bege */
+            background-color: #f7f4ed;
             border-left-color: #8b2538;
             color: #8b2538;
         }
 
         /* Destaque especial para o botão de Login/Cadastro */
         .sidebar-item.highlight {
-            background-color: #fdf5f6; /* Fundo avermelhado bem claro */
+            /* NOVO: Destaque com fundo creme quente */
+            background-color: #faf5ec; 
             font-weight: bold;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #eee2cc;
             margin-bottom: 10px;
         }
 
@@ -186,7 +199,7 @@ require_once __DIR__ . '/config/database.php';
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0,0,0,0.5);
+            background: rgba(40, 30, 20, 0.4); /* Fundo um pouco mais quente e aconchegante */
             opacity: 0;
             visibility: hidden;
             transition: 0.3s;
@@ -211,7 +224,6 @@ require_once __DIR__ . '/config/database.php';
         </div>
         
         <div class="nav-icons">
-
             <a href="#" id="btnPerfil" title="Menu do Usuário">
                 <i class="fa-regular fa-user"></i>
             </a>
@@ -226,7 +238,7 @@ require_once __DIR__ . '/config/database.php';
             <button id="fecharSidebar" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
         </div>
         
-<div class="sidebar-content">
+        <div class="sidebar-content">
             
             <?php if ($isLoggedIn): ?>
                 <a href="<?php echo $base_path; ?>views/user_profile.php" class="sidebar-item highlight">
@@ -244,7 +256,7 @@ require_once __DIR__ . '/config/database.php';
                 </a>
             <?php endif; ?>
 
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 20px;">
+            <hr style="border: 0; border-top: 1px solid #eee2cc; margin: 10px 20px;">
 
             <a href="<?php echo $base_path; ?>views/restaurant/restaurant_list.php" class="sidebar-item">
                 <i class="fa-solid fa-store"></i>
@@ -272,17 +284,17 @@ require_once __DIR__ . '/config/database.php';
 
         // Função para abrir a sidebar
         function abrirSidebar(e) {
-            e.preventDefault(); // Evita que a página pule pro topo ao clicar no link "#"
+            e.preventDefault(); 
             sidebar.classList.add('ativa');
             overlay.classList.add('ativa');
-            document.body.style.overflow = 'hidden'; // Evita rolagem da página por baixo
+            document.body.style.overflow = 'hidden'; 
         }
 
         // Função para fechar a sidebar
         function fecharSidebar() {
             sidebar.classList.remove('ativa');
             overlay.classList.remove('ativa');
-            document.body.style.overflow = ''; // Devolve a rolagem normal
+            document.body.style.overflow = ''; 
         }
 
         // Atrelando os eventos aos botões e ao fundo
