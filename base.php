@@ -197,6 +197,86 @@ require_once __DIR__ . '/config/database.php';
             opacity: 1;
             visibility: visible;
         }
+
+ /* =========================================
+   VARIÁVEIS DE TEMA (MODO CLARO / VERMELHO ESCURO)
+   ========================================= */
+:root {
+    --bg-principal: #fcfcfc;
+    --bg-navbar: #8b2538;
+    --bg-sidebar: #ffffff;
+    --texto-principal: #333333;
+    --borda-item: #eee;
+    --sombra: rgba(0,0,0,0.15);
+    --bg-toggle-capsula: #FAF7F0; /* Creme original */
+    --cor-toggle-elementos: #8b2538; /* Bordô original */
+}
+
+body.dark-theme {
+    --bg-principal: #6d0000; /* Fundo geral: Vermelho bem escuro/Burgundy */
+    --bg-navbar: #6d0000;    /* Navbar: Tom de vinho quase preto */
+    --bg-sidebar: #6d0000;   /* Sidebar: Vermelho escuro para destacar do fundo */
+    --texto-principal: #fceef0; /* Texto: Branco sutilmente rosado para leitura confortável */
+    --borda-item: #6d0000;   /* Linhas divisórias em vermelho fosco */
+    --sombra: rgba(0,0,0,0.4);
+    --bg-toggle-capsula: #6d0000; /* Fundo da cápsula do botão no modo escuro */
+    --cor-toggle-elementos: #dcb382; /* Elementos do botão viram dourado */
+
+    
+    color: #FAF7F0 !important; /* Cor off-white */
+}
+
+body.dark-theme .section-title h2 { 
+    color: #FAF7F0 !important; /* Cor off-white */
+}
+/* Para o link "Ver todas" mudar no modo escuro */
+body.dark-theme .section-title a { 
+    color: #FAF7F0 !important; /* Cor off-white */
+}
+
+/* Para o texto "Nenhuma receita em destaque no momento" */
+body.dark-theme .container p { 
+    color: #FAF7F0 !important; /* Cor off-white */
+}
+
+
+/* Aplicando as variáveis nos elementos do seu site */
+body { 
+    background-color: var(--bg-principal) !important; 
+    color: var(--texto-principal) !important;
+    transition: background-color 0.3s, color 0.3s;
+}
+.navbar { background-color: var(--bg-navbar) !important; }
+.user-sidebar { background-color: var(--bg-sidebar) !important; box-shadow: -4px 0 15px var(--sombra) !important; }
+.sidebar-item { color: var(--texto-principal) !important; }
+.sidebar-content { flex: 1; } 
+
+body.dark-theme .sidebar-item i { color: #dcb382 !important; }
+body.dark-theme .sidebar-item:hover { color: #dcb382 !important; border-left-color: #dcb382 !important; }
+
+/* Estilos estruturais do Switch (Garante o visual arredondado) */
+.theme-toggle__switch {
+    position: relative;
+    width: 46px;
+    height: 24px;
+    background-color: #C1C3C6;
+    border-radius: 24px;
+    transition: background-color 0.3s;
+}
+.theme-toggle__switch::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    background-color: var(--cor-toggle-elementos);
+    border-radius: 50%;
+    transition: transform 0.3s ease, background-color 0.3s;
+}
+.theme-toggle__checkbox:checked + .theme-toggle__container .theme-toggle__switch::after {
+    transform: translateX(22px);
+}
     </style>
 </head>
 <body>
@@ -260,6 +340,19 @@ require_once __DIR__ . '/config/database.php';
                 <i class="fa-solid fa-users"></i>
                 <span>Lista de Usuários</span>
             </a>
+
+            <div class="sidebar-toggle-container" style="padding: 20px 25px; margin-top: auto; border-top: 1px solid var(--borda-item);">
+    <label class="theme-toggle" style="cursor: pointer; display: block; width: 100%;">
+        <input type="checkbox" id="dark-mode-switch" class="theme-toggle__checkbox" style="display: none;" checked>
+        <div class="theme-toggle__container" style="display: flex; align-items: center; justify-content: space-between; background-color: var(--bg-toggle-capsula); padding: 12px 20px; border-radius: 50px; transition: background-color 0.3s;">
+            <div class="theme-toggle__info" style="display: flex; align-items: center; gap: 12px; color: var(--cor-toggle-elementos); transition: color 0.3s;">
+                <i class="fa-regular fa-sun theme-toggle__icon" id="theme-icon" style="font-size: 1.2rem;"></i>
+                <span class="theme-toggle__text" id="theme-text" style="font-size: 1rem; font-weight: 600;">Modo claro</span>
+            </div>
+            <div class="theme-toggle__switch"></div>
+        </div>
+    </label>
+</div>
         </div>
     </div>
 
@@ -269,6 +362,7 @@ require_once __DIR__ . '/config/database.php';
         const sidebar = document.getElementById('userSidebar');
         const overlay = document.getElementById('sidebarOverlay');
         const fecharSidebarBtn = document.getElementById('fecharSidebar');
+        
 
         // Função para abrir a sidebar
         function abrirSidebar(e) {
@@ -289,5 +383,43 @@ require_once __DIR__ . '/config/database.php';
         if (btnPerfil) btnPerfil.addEventListener('click', abrirSidebar);
         if (fecharSidebarBtn) fecharSidebarBtn.addEventListener('click', fecharSidebar);
         if (overlay) overlay.addEventListener('click', fecharSidebar);
+
+        // =========================================
+// INTERAÇÃO DO MODO ESCURO
+// =========================================
+const darkSwitch = document.getElementById('dark-mode-switch');
+const themeText = document.getElementById('theme-text');
+const themeIcon = document.getElementById('theme-icon');    
+
+// Verificar preferência salva ao carregar a página
+if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-theme');
+    darkSwitch.checked = false; // Move a bolinha para a esquerda
+    themeText.textContent = 'Modo escuro';
+    themeIcon.className = 'fa-regular fa-moon';
+} else {
+    document.body.classList.remove('dark-theme');
+    darkSwitch.checked = true; // Move a bolinha para a direita
+    themeText.textContent = 'Modo claro';
+    themeIcon.className = 'fa-regular fa-sun';
+}
+
+// Ouvir o clique no botão
+darkSwitch.addEventListener('change', function() {
+    if (this.checked) {
+        document.body.classList.remove('dark-theme');
+        themeText.textContent = 'Modo claro';
+        themeIcon.className = 'fa-regular fa-sun';
+        localStorage.setItem('theme', 'light');
+    } else {
+        document.body.classList.add('dark-theme');
+        themeText.textContent = 'Modo escuro';
+        themeIcon.className = 'fa-regular fa-moon';
+        localStorage.setItem('theme', 'dark');
+    }
+});
     });
+
+
     </script>
+
