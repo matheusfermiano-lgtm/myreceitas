@@ -1,6 +1,6 @@
 <?php
 require_once dirname(__DIR__, 2) . '/config/database.php';
-
+require_once dirname(__DIR__) . '/model/recipe.php'; 
 class recipeDAO {
     private $conn; 
 
@@ -43,15 +43,23 @@ class recipeDAO {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Helper para transformar resultados em Objetos Recipe
+    // Helper central para transformar qualquer busca em array de Objetos Recipe
     private function mapToArray($stmt) {
         $receitas = [];
         while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $receitas[] = new Recipe(
-                $dados['name'], $dados['ingredients'], $dados['description'], 
-                $dados['preparation_time'], $dados['category'], $dados['price'], 
-                $dados['is_public'], $dados['user_id'], $dados['chef_id'], 
-                $dados['restaurant_id'], $dados['id']
+                $dados['name'], 
+                $dados['ingredients'], 
+                $dados['description'] ?? null, 
+                $dados['preparation_time'] ?? null, 
+                $dados['category'] ?? null, 
+                $dados['price'] ?? 0.00, 
+                $dados['is_public'] ?? 1, 
+                $dados['user_id'] ?? null, 
+                $dados['chef_id'] ?? null, 
+                $dados['restaurant_id'] ?? null,
+                $dados['id'],
+                $dados['created_at'] ?? null
             );
         }
         return $receitas;
@@ -80,30 +88,20 @@ class recipeDAO {
         return $r; 
     }
 
+    // LISTAGEM GERAL (Com paginação e sem receitas de restaurantes)
     public function readAllPaginated($limit = 30, $offset = 0) {
-        // Regra: r.restaurant_id IS NULL para não aparecer na listagem geral
-        $sql = "SELECT r.* FROM recipes r
-                WHERE r.is_public = 1 
-                AND r.deleted_at IS NULL 
-                AND r.restaurant_id IS NULL
-                ORDER BY r.created_at DESC
+        $sql = "SELECT * FROM recipes 
+                WHERE is_public = 1 
+                AND restaurant_id IS NULL 
+                AND deleted_at IS NULL 
+                ORDER BY created_at DESC 
                 LIMIT :limit OFFSET :offset";
                 
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         $stmt->execute();
-        
-        $receitas = [];
-        while ($dados = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $receitas[] = new Recipe(
-                $dados['name'], $dados['ingredients'], $dados['description'], 
-                $dados['preparation_time'], $dados['category'], $dados['price'], 
-                $dados['is_public'], $dados['user_id'], $dados['chef_id'], 
-                $dados['restaurant_id'], $dados['id'], $dados['created_at']
-            );
-        }
-        return $receitas;
+        return $this->mapToArray($stmt);
     }
 
     public function countAllPublic() {
@@ -195,25 +193,23 @@ class recipeDAO {
         $stmt->execute([$id]);
     }
 
-    // Busca receitas criadas pelo usuário (Públicas e Privadas)
+    // Busca receitas do dono do perfil (Usado no user_profile.php)
     public function getRecipesByUser($userId) {
-        $sql = "SELECT * FROM recipes WHERE user_id = :user_id ORDER BY created_at DESC";
+        $sql = "SELECT * FROM recipes WHERE user_id = :user_id AND deleted_at IS NULL ORDER BY created_at DESC";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(':user_id', $userId);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->mapToArray($stmt); // Agora retorna OBJETOS
     }
 
-    // Busca receitas que o usuário favoritou (Com nome do autor)
+    // Busca receitas favoritadas (Usado no user_profile.php)
     public function getFavoriteRecipes($userId) {
-        $sql = "SELECT r.*, u.name as author_name 
-                FROM recipes r
+        $sql = "SELECT r.* FROM recipes r
                 JOIN user_favorites uf ON r.id = uf.recipe_id
-                LEFT JOIN users u ON r.user_id = u.id
-                WHERE uf.user_id = :user_id";
+                WHERE uf.user_id = :user_id AND r.deleted_at IS NULL";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(':user_id', $userId);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->mapToArray($stmt); // Agora retorna OBJETOS
     }
 }

@@ -1,7 +1,9 @@
 <?php
-// 1. PRIMEIRO: Inicializa sessões e lógicas de banco (Sem gerar NENHUM HTML)
 if(!isset($_SESSION)) session_start();
 
+require_once dirname(__DIR__) . '/models/model/user.php';
+require_once dirname(__DIR__) . '/models/model/chef.php';
+require_once dirname(__DIR__) . '/models/model/recipe.php';
 require_once dirname(__DIR__) . '/models/dao/userDAO.php';
 require_once dirname(__DIR__) . '/models/dao/recipeDAO.php';
 require_once dirname(__DIR__) . '/models/dao/chefDAO.php';
@@ -10,13 +12,10 @@ $id_perfil = $_GET['id'] ?? $_SESSION['user_id'];
 $tipo_perfil = $_GET['type'] ?? $_SESSION['user_type'];
 $id_logado = $_SESSION['user_id'] ?? null;
 
-// Proteção: Se for restaurante, manda pro arquivo correto (Aqui vai funcionar perfeito!)
 if ($tipo_perfil === 'restaurant') {
-    header("Location: restaurant_profile.php?id=" . $id_perfil);
+    header("Location:restaurant_profile.php?id=" . $id_perfil);
     exit;
 }
-
-$e_o_dono = ($id_perfil == $id_logado && $tipo_perfil == $_SESSION['user_type']);
 
 $uDAO = new userDAO();
 $rDAO = new recipeDAO();
@@ -28,23 +27,27 @@ if($tipo_perfil == 'chef') {
     $profile = $uDAO->read($id_perfil);
 }
 
-// Lógica de Receitas
+if (!$profile) {
+    die("Perfil não encontrado.");
+}
+
+// LOGICA SIMPLIFICADA (Tudo como Objeto)
+$nome = $profile->getName();
+$email = $profile->getEmail();
+$dataCriacao = $profile->getCreatedAt();
+$foto = (method_exists($profile, 'getPhoto')) ? ($profile->getPhoto() ?: 'default.png') : 'default.png';
+$telefone = (method_exists($profile, 'getPhone')) ? $profile->getPhone() : '';
+$endereco = (method_exists($profile, 'getAddress')) ? $profile->getAddress() : '';
+
+// Campos exclusivos de Chef
+$regiao = ($tipo_perfil == 'chef') ? $profile->getRegionOperation() : '';
+$servicos = ($tipo_perfil == 'chef') ? $profile->getServicesOffered() : '';
+$descricao = ($tipo_perfil == 'chef') ? $profile->getDescription() : '';
+$experiencia = ($tipo_perfil == 'chef') ? $profile->getProfessionalExperience() : '';
+
+$e_o_dono = ($id_perfil == $id_logado && $tipo_perfil == $_SESSION['user_type']);
 $minhasReceitas = $e_o_dono ? $rDAO->getRecipesByUser($id_perfil) : $rDAO->getPublicRecipesByUser($id_perfil);
 
-// BLINDAGEM CONTRA O TYPEERROR: Lê os dados seja Objeto ou Array
-$isObj = is_object($profile);
-$foto = $isObj ? ($profile->getPhoto() ?: 'default.png') : ($profile['photo'] ?? 'default.png');
-$nome = $isObj ? $profile->getName() : ($profile['name'] ?? 'Usuário');
-$dataCriacao = $isObj ? $profile->getCreatedAt() : ($profile['created_at'] ?? date('Y-m-d'));
-$email = $isObj ? $profile->getEmail() : ($profile['email'] ?? '');
-$telefone = $isObj && method_exists($profile, 'getPhone') ? $profile->getPhone() : ($profile['phone'] ?? '');
-$regiao = $isObj && method_exists($profile, 'getRegionOperation') ? $profile->getRegionOperation() : ($profile['region_operation'] ?? '');
-$endereco = $isObj && method_exists($profile, 'getAddress') ? $profile->getAddress() : ($profile['address'] ?? '');
-$servicos = $isObj && method_exists($profile, 'getServicesOffered') ? $profile->getServicesOffered() : ($profile['services_offered'] ?? '');
-$descricao = $isObj && method_exists($profile, 'getDescription') ? $profile->getDescription() : ($profile['description'] ?? '');
-$experiencia = $isObj && method_exists($profile, 'getProfessionalExperience') ? $profile->getProfessionalExperience() : ($profile['professional_experience'] ?? '');
-
-// 2. AGORA SIM: Se não redirecionou, podemos carregar a base visual do site
 require_once dirname(__DIR__) . '/base.php';
 ?>
 
@@ -287,12 +290,20 @@ require_once dirname(__DIR__) . '/base.php';
                     <div class="recipes-grid">
                         <?php foreach($minhasReceitas as $r): ?>
                             <div class="recipe-item">
-                                <h4><?php echo htmlspecialchars($r['name']); ?></h4>
+                                <!-- CORREÇÃO: Usando métodos do objeto ->get... -->
+                                <h4><?php echo htmlspecialchars($r->getName()); ?></h4>
+                                
+                                <p style="font-size: 0.85rem; color: #666;">
+                                    <i class="fa-regular fa-clock"></i> <?php echo $r->getPreparationTime(); ?> min
+                                </p>
+
                                 <?php if($e_o_dono): ?>
-                                    <span class="status-badge <?php echo $r['is_public'] ? 'status-public' : 'status-private'; ?>">
-                                        <?php echo $r['is_public'] ? '<i class="fa-solid fa-globe"></i> Pública' : '<i class="fa-solid fa-lock"></i> Privada'; ?>
+                                    <span class="status-badge <?php echo $r->getIsPublic() ? 'status-public' : 'status-private'; ?>">
+                                        <?php echo $r->getIsPublic() ? '<i class="fa-solid fa-globe"></i> Pública' : '<i class="fa-solid fa-lock"></i> Privada'; ?>
                                     </span>
                                 <?php endif; ?>
+                                
+                                <a href="recipe_view.php?id=<?php echo $r->getId(); ?>" style="display:block; margin-top:10px; font-size: 0.8rem; color: #8b2538;">Ver detalhes</a>
                             </div>
                         <?php endforeach; ?>
                     </div>

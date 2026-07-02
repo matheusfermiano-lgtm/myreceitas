@@ -55,7 +55,7 @@ require_once __DIR__ . '/base.php';
 <div class="hero">
     <div class="hero-content">
         <h1 class="titulo-logo">MyReceitas</h1>
-        <p>se a fome bateu,<br>podemos te ajudar!</p>
+        <p>Seu site de receitas<br>para todos os momentos!</p>
     </div>
 </div>
 

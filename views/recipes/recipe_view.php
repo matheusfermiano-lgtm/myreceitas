@@ -28,6 +28,7 @@ $isRestaurant = !empty($r->getRestaurantId());
 </style>
 
 <div class="container">
+    <a href="recipes_list.php" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Voltar para a lista</a>
     <div class="view-card">
         <div class="view-header">
             <h1><?= htmlspecialchars($r->getName()) ?></h1>
