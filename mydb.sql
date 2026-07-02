@@ -1,14 +1,9 @@
--- Schema SQL para Sistema Petshop
+-- Schema SQL para Site de Receitas
 -- Banco de dados com todas as tabelas
 /*
 DROP DATABASE myreceitas_db;
 Somente em casos estremamente necessarios, nunca rodar quando estiver com raiva
 */
-SET SQL_SAFE_UPDATES = 0;
-
-DELETE FROM restaurants;
-
-SET SQL_SAFE_UPDATES = 1;
 
 CREATE DATABASE IF NOT EXISTS myreceitas_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE myreceitas_db;
@@ -183,7 +178,7 @@ CREATE TABLE recipe_likes (
     UNIQUE(user_id, recipe_id) -- Impede curtir a mesma receita duas vezes
 );
 
-/*
+
 SELECT * FROM recipes;
 SELECT * FROM users;
 SELECT * FROM restaurants;
