@@ -183,7 +183,7 @@ SELECT * FROM recipes;
 SELECT * FROM users;
 SELECT * FROM restaurants;
 SELECT * FROM chef;
-*/
+
 /*
 SELECT r.name, AVG(rv.rating) as media_estrelas
 FROM restaurants r
