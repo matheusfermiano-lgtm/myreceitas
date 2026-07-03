@@ -42,6 +42,32 @@ class recipeDAO {
         $stmt = $this->conn->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    // Retorna apenas as receitas PÚBLICAS de um usuário comum (Para quando visitantes virem o perfil)
+    public function getPublicRecipesByUser($userId) {
+        $sql = "SELECT * FROM recipes WHERE user_id = :user_id AND is_public = 1 AND deleted_at IS NULL ORDER BY created_at DESC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':user_id', $userId);
+        $stmt->execute();
+        return $this->mapToArray($stmt);
+    }
+
+    // Retorna todas as receitas de um Chef (Dono do perfil vê tudo)
+    public function getRecipesByChef($chefId) {
+        $sql = "SELECT * FROM recipes WHERE chef_id = :chef_id AND deleted_at IS NULL ORDER BY created_at DESC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':chef_id', $chefId);
+        $stmt->execute();
+        return $this->mapToArray($stmt);
+    }
+
+    // Retorna apenas as receitas PÚBLICAS de um Chef (Visitante vê apenas as públicas)
+    public function getPublicRecipesByChef($chefId) {
+        $sql = "SELECT * FROM recipes WHERE chef_id = :chef_id AND is_public = 1 AND deleted_at IS NULL ORDER BY created_at DESC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':chef_id', $chefId);
+        $stmt->execute();
+        return $this->mapToArray($stmt);
+    }
 
     // Helper central para transformar qualquer busca em array de Objetos Recipe
     private function mapToArray($stmt) {
@@ -63,6 +89,7 @@ class recipeDAO {
             );
         }
         return $receitas;
+        
     }
 
     // CREATE - Insere uma Receita no banco

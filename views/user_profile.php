@@ -35,7 +35,15 @@ if (!$profile) {
 $nome = $profile->getName();
 $email = $profile->getEmail();
 $dataCriacao = $profile->getCreatedAt();
-$foto = (method_exists($profile, 'getPhoto')) ? ($profile->getPhoto() ?: 'default.png') : 'default.png';
+
+// Correção da Foto: Fallback inteligente para Chef ou Usuário Comum
+$foto_banco = (method_exists($profile, 'getPhoto')) ? $profile->getPhoto() : '';
+if ($tipo_perfil === 'chef') {
+    $foto = (!empty($foto_banco) && $foto_banco !== 'default.png') ? $foto_banco : 'default_chef.png';
+} else {
+    $foto = (!empty($foto_banco)) ? $foto_banco : 'default.png';
+}
+
 $telefone = (method_exists($profile, 'getPhone')) ? $profile->getPhone() : '';
 $endereco = (method_exists($profile, 'getAddress')) ? $profile->getAddress() : '';
 
@@ -46,7 +54,13 @@ $descricao = ($tipo_perfil == 'chef') ? $profile->getDescription() : '';
 $experiencia = ($tipo_perfil == 'chef') ? $profile->getProfessionalExperience() : '';
 
 $e_o_dono = ($id_perfil == $id_logado && $tipo_perfil == $_SESSION['user_type']);
-$minhasReceitas = $e_o_dono ? $rDAO->getRecipesByUser($id_perfil) : $rDAO->getPublicRecipesByUser($id_perfil);
+
+// Correção das Receitas: Chama o método certo do DAO dependendo do tipo de perfil
+if ($tipo_perfil === 'chef') {
+    $minhasReceitas = $e_o_dono ? $rDAO->getRecipesByChef($id_perfil) : $rDAO->getPublicRecipesByChef($id_perfil);
+} else {
+    $minhasReceitas = $e_o_dono ? $rDAO->getRecipesByUser($id_perfil) : $rDAO->getPublicRecipesByUser($id_perfil);
+}
 
 require_once dirname(__DIR__) . '/base.php';
 ?>
@@ -208,7 +222,7 @@ require_once dirname(__DIR__) . '/base.php';
 <div class="profile-container">
     <div class="profile-banner"></div>
     <div class="profile-header-card">
-        <img src="../assets/uploads/<?php echo htmlspecialchars($foto); ?>" alt="Foto de Perfil" class="profile-avatar">
+    <img src="../assets/uploads/<?php echo htmlspecialchars($foto); ?>" alt="Foto de Perfil" class="profile-avatar">
         
         <div class="profile-titles">
             <h1><?php echo htmlspecialchars($nome); ?></h1>
@@ -290,7 +304,6 @@ require_once dirname(__DIR__) . '/base.php';
                     <div class="recipes-grid">
                         <?php foreach($minhasReceitas as $r): ?>
                             <div class="recipe-item">
-                                <!-- CORREÇÃO: Usando métodos do objeto ->get... -->
                                 <h4><?php echo htmlspecialchars($r->getName()); ?></h4>
                                 
                                 <p style="font-size: 0.85rem; color: #666;">
@@ -303,7 +316,7 @@ require_once dirname(__DIR__) . '/base.php';
                                     </span>
                                 <?php endif; ?>
                                 
-                                <a href="recipe_view.php?id=<?php echo $r->getId(); ?>" style="display:block; margin-top:10px; font-size: 0.8rem; color: #8b2538;">Ver detalhes</a>
+                                <a href="recipes/recipe_view.php?id=<?php echo $r->getId(); ?>" style="display:block; margin-top:10px; font-size: 0.8rem; color: #8b2538;">Ver detalhes</a>
                             </div>
                         <?php endforeach; ?>
                     </div>
