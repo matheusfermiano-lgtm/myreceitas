@@ -62,6 +62,37 @@ if ($tipo_perfil === 'chef') {
     $minhasReceitas = $e_o_dono ? $rDAO->getRecipesByUser($id_perfil) : $rDAO->getPublicRecipesByUser($id_perfil);
 }
 
+// --- LÓGICA DE REVIEWS DO CHEF ---
+$reviews = [];
+$mediaAvaliacoes = 0;
+$totalReviews = 0;
+
+if ($tipo_perfil === 'chef') {
+    try {
+        $db = database::getConexao();
+        // Busca as avaliações trazendo o nome correspondente (seja da tabela de clientes ou de restaurantes)
+        $stmtRev = $db->prepare("
+            SELECT cr.*, 
+                   COALESCE(u.name, r.name, 'Usuário Anônimo') as user_name 
+            FROM chef_reviews cr 
+            LEFT JOIN users u ON cr.user_id = u.id AND NOT EXISTS (SELECT 1 FROM restaurants WHERE id = cr.user_id)
+            LEFT JOIN restaurants r ON cr.user_id = r.id
+            WHERE cr.chef_id = ? 
+            ORDER BY cr.created_at DESC
+        ");
+        $stmtRev->execute([$id_perfil]);
+        $reviews = $stmtRev->fetchAll(PDO::FETCH_ASSOC);
+        $totalReviews = count($reviews);
+        
+        if ($totalReviews > 0) {
+            $soma = array_sum(array_column($reviews, 'rating'));
+            $mediaAvaliacoes = $soma / $totalReviews;
+        }
+    } catch (Exception $e) {
+        // Silencia erro caso as tabelas ainda estejam a ser criadas
+    }
+}
+
 require_once dirname(__DIR__) . '/base.php';
 ?>
 
@@ -322,6 +353,75 @@ require_once dirname(__DIR__) . '/base.php';
                     </div>
                 <?php endif; ?>
             </div>
+
+            <?php if ($tipo_perfil === 'chef'): ?>
+            <div class="info-card" style="margin-top: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 20px;">
+                    <h3 style="border: none; padding: 0; margin: 0;"><i class="fa-solid fa-star" style="color: #f39c12;"></i> Avaliações (<?php echo $totalReviews; ?>)</h3>
+                    <?php if ($totalReviews > 0): ?>
+                        <div style="font-size: 1.2rem; font-weight: bold; color: #333;">
+                            Média: <span style="color: #f39c12;"><?php echo number_format($mediaAvaliacoes, 1, ',', '.'); ?> <i class="fa-solid fa-star"></i></span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <?php if ((isset($_SESSION['user_id']) || isset($_SESSION['restaurant_id'])) && !$e_o_dono): ?>
+                    <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #eee;">
+                        <h4 style="margin-top: 0; color: #333;">Deixe a sua avaliação profissional</h4>
+                        <form action="process_review.php" method="POST">
+                            <input type="hidden" name="chef_id" value="<?php echo $id_perfil; ?>">
+                            <input type="hidden" name="type" value="chef">
+                            
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">Classificação (1 a 5 estrelas):</label>
+                                <select name="rating" required style="padding: 10px; border-radius: 6px; border: 1px solid #ccc; width: 100%; max-width: 200px;">
+                                    <option value="5">⭐⭐⭐⭐⭐ (5/5) - Excelente</option>
+                                    <option value="4">⭐⭐⭐⭐ (4/5) - Muito Bom</option>
+                                    <option value="3">⭐⭐⭐ (3/5) - Bom</option>
+                                    <option value="2">⭐⭐ (2/5) - Razoável</option>
+                                    <option value="1">⭐ (1/5) - Mau</option>
+                                </select>
+                            </div>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">Comentário:</label>
+                                <textarea name="comment" rows="3" required placeholder="Escreva a sua avaliação..." style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; resize: vertical; font-family: inherit;"></textarea>
+                            </div>
+                            
+                            <button type="submit" style="background: #8b2538; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s;">Publicar Avaliação</button>
+                        </form>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (empty($reviews)): ?>
+                    <p style="color: #888; text-align: center; padding: 20px; background: #fdfdfd; border-radius: 8px; border: 1px dashed #ddd;">Ainda não há avaliações para este chef. Seja o primeiro a avaliar!</p>
+                <?php else: ?>
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <?php foreach ($reviews as $rev): ?>
+                            <div style="background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #eaeaea; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <strong style="color: #333; font-size: 1.05rem;"><i class="fa-solid fa-user-circle" style="color: #8b2538;"></i> <?php echo htmlspecialchars($rev['user_name']); ?></strong>
+                                    <span style="color: #999; font-size: 0.85rem;"><?php echo date('d/m/Y', strtotime($rev['created_at'])); ?></span>
+                                </div>
+                                
+                                <div style="color: #f39c12; margin-bottom: 12px; font-size: 0.9rem;">
+                                    <?php 
+                                    for ($i = 1; $i <= 5; $i++) {
+                                        echo $i <= $rev['rating'] ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
+                                    }
+                                    ?>
+                                </div>
+                                
+                                <p style="color: #555; margin: 0; line-height: 1.5; font-size: 0.95rem;">
+                                    "<?php echo nl2br(htmlspecialchars($rev['comment'])); ?>"
+                                </p>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+
         </div>
     </div>
 </div>
