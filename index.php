@@ -13,7 +13,7 @@ $destaques = $dao->getRanking(4);
     @import url('https://fonts.googleapis.com/css2?family=Birthstone&family=Montserrat:wght@400;600;700&display=swap');
 
     .hero {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('https://placehold.co/1920x600/e3cfbc/333?text=Coloque+sua+imagem+de+fundo+aqui'); 
+        background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('assets/img/fundo.png'); 
         background-size: cover;
         background-position: center;
         height: 500px;
