@@ -2,7 +2,7 @@
 
 USE myreceitas_db;
 
-INSERT INTO recipes (name, ingredients, description, preparation_time, category, price, is_public) VALUES
+INSERT INTO recipes (name, ingredients, description, preparation_time, category, is_public) VALUES
 ('Bolo de Chocolate', 'farinha de trigo, açúcar, cacau em pó, ovos, leite, fermento, óleo', 'Misture os ingredientes secos, adicione os líquidos, bata até homogeneizar. Asse em forma untada por 40 minutos.', 40, 'sobremesa', TRUE),
 ('Salada Caesar', 'alface romana, peito de frango, parmesão, croutons, molho caesar', 'Lave e rasgue a alface. Grelhe o frango e corte em tiras. Misture todos os ingredientes e finalize com o molho.', 20, 'salada', TRUE),
 ('Macarrão à Carbonara', 'macarrão spaghetti, ovos, queijo pecorino, pancetta, pimenta preta', 'Cozinhe o macarrão al dente. Enquanto isso, frite a pancetta. Bata os ovos com o queijo. Misture tudo com o macarrão quente.', 25, 'massa', TRUE),
