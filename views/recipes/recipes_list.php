@@ -136,9 +136,9 @@ if (isset($_GET['delete_id'])) {
         <div class="google-logo">
             <span class="letter-bordo">M</span><span class="letter-bege">y</span><span class="letter-bordo">R</span><span class="letter-bege">e</span><span class="letter-bordo">c</span><span class="letter-bege">e</span><?php 
                 for($i=1; $i<=$totalPages; $i++) {
-                    echo "<span class='letter-bege'>i</span>";
+                    echo "<span class='letter-bordo'>i</span>";
                 }
-            ?><span class="letter-bordo">t</span><span class="letter-bege">a</span><span class="letter-bordo">s</span>
+            ?><span class="letter-bege">t</span><span class="letter-bordo">a</span><span class="letter-bege">s</span>
         </div>
 
         <div class="page-numbers">
