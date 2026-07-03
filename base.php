@@ -343,7 +343,7 @@ body.dark-theme .sidebar-item:hover { color: #dcb382 !important; border-left-col
                 <span>Restaurantes</span>
             </a>
             
-            <a href="<?php echo $base_path; ?>views/recipes/recipes_list.php" class="sidebar-item">
+            <a href="<?php echo $base_path; ?>views/recipes/recipe_list.php" class="sidebar-item">
                 <i class="fa-solid fa-book-open"></i>
                 <span>Todas as Receitas</span>
             </a>

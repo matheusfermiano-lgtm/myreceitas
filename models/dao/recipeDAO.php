@@ -239,4 +239,79 @@ class recipeDAO {
         $stmt->execute();
         return $this->mapToArray($stmt); // Agora retorna OBJETOS
     }
+    /* =========================================
+    SISTEMA DE INTERAÇÃO (LIKES & REVIEWS)
+    ========================================= */
+
+    // CURTIDAS: Inverte o estado (Se curtiu, descurte. Se não, curte)
+    public function toggleLike($recipeId, $userId) {
+        $check = "SELECT 1 FROM recipe_likes WHERE recipe_id = ? AND user_id = ?";
+        $stmt = $this->conn->prepare($check);
+        $stmt->execute([$recipeId, $userId]);
+
+        if ($stmt->fetch()) {
+            $sql = "DELETE FROM recipe_likes WHERE recipe_id = ? AND user_id = ?";
+        } else {
+            $sql = "INSERT INTO recipe_likes (recipe_id, user_id) VALUES (?, ?)";
+        }
+        return $this->conn->prepare($sql)->execute([$recipeId, $userId]);
+    }
+
+    // CONTAGEM: Total de curtidas de uma receita
+    public function getLikeCount($recipeId) {
+        $sql = "SELECT COUNT(*) as total FROM recipe_likes WHERE recipe_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$recipeId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    }
+
+    // VERIFICAÇÃO: O usuário logado já curtiu?
+    public function userLiked($recipeId, $userId) {
+        $sql = "SELECT 1 FROM recipe_likes WHERE recipe_id = ? AND user_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$recipeId, $userId]);
+        return (bool)$stmt->fetch();
+    }
+
+    // FEEDBACKS: Adicionar avaliação
+    public function addReview($recipeId, $userId, $rating, $comment) {
+        $sql = "INSERT INTO recipe_reviews (recipe_id, user_id, rating, comment) VALUES (?, ?, ?, ?)";
+        return $this->conn->prepare($sql)->execute([$recipeId, $userId, $rating, $comment]);
+    }
+
+    // FEEDBACKS: Listar avaliações com nome do autor
+    public function getReviews($recipeId) {
+        $sql = "SELECT rv.*, u.name as user_name 
+                FROM recipe_reviews rv 
+                JOIN users u ON rv.user_id = u.id 
+                WHERE rv.recipe_id = ? 
+                ORDER BY rv.created_at DESC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([$recipeId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /* =========================================
+    SISTEMA DE RANKING (INTELIGENTE)
+    ========================================= */
+    public function getRanking($limit = 10) {
+        // Cálculo: (Likes * 1) + (Média de Estrelas * 5)
+        // Isso prioriza receitas bem avaliadas, não apenas as mais clicadas
+        $sql = "SELECT r.*, 
+                COUNT(DISTINCT l.user_id) as total_likes,
+                IFNULL(AVG(rv.rating), 0) as avg_rating,
+                (COUNT(DISTINCT l.user_id) + (IFNULL(AVG(rv.rating), 0) * 5)) as score
+                FROM recipes r
+                LEFT JOIN recipe_likes l ON r.id = l.recipe_id
+                LEFT JOIN recipe_reviews rv ON r.id = rv.recipe_id
+                WHERE r.is_public = 1 AND r.deleted_at IS NULL
+                GROUP BY r.id
+                ORDER BY score DESC
+                LIMIT :limit";
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

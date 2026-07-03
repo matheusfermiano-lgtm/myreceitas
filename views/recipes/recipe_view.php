@@ -12,6 +12,11 @@ if (!$r) {
     exit;
 }
 
+$userIdLogado = $_SESSION['user_id'] ?? null;
+
+$curtiu = ($userIdLogado) ? $dao->userLiked($r->getId(), $userIdLogado) : false;
+$totalLikes = $dao->getLikeCount($r->getId());
+
 $isRestaurant = !empty($r->getRestaurantId());
 ?>
 
@@ -28,7 +33,7 @@ $isRestaurant = !empty($r->getRestaurantId());
 </style>
 
 <div class="container">
-    <a href="recipes_list.php" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Voltar para a lista</a>
+    <a href="recipe_list.php" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Voltar para a lista</a>
     <div class="view-card">
         <div class="view-header">
             <h1><?= htmlspecialchars($r->getName()) ?></h1>
@@ -61,8 +66,63 @@ $isRestaurant = !empty($r->getRestaurantId());
         <?php endif; ?>
 
         <div class="section-title">Feedbacks e Avaliações</div>
-        <p><em>Esta receita ainda não possui comentários.</em></p>
+        <div class="interaction-bar" style="display: flex; align-items: center; gap: 20px; margin: 20px 0;">
+        <!-- Botão de Like -->
+        
+        <div class="interaction-bar" style="display: flex; align-items: center; gap: 20px; margin: 20px 0;">
+            <!-- Se estiver logado, o link funciona. Se não, manda para o login -->
+            <?php if($userIdLogado): ?>
+                <a href="recipe_like_action.php?id=<?= $r->getId() ?>" style="text-decoration: none; font-size: 24px;">
+                    <?= $curtiu ? '❤️' : '🤍' ?> 
+                </a>
+            <?php else: ?>
+                <a href="../users/login.php" style="text-decoration: none; font-size: 24px;" title="Faça login para curtir">
+                    🤍 
+                </a>
+            <?php endif; ?>
+            
+            <span style="font-size: 18px; color: #333;"><?= $totalLikes ?> curtidas</span>
+        </div>
     </div>
+
+    <hr>
+
+    <!-- Seção de Feedbacks -->
+    <div class="reviews-section">
+        <h3>Comentários e Avaliações</h3>
+        
+        <!-- Formulário de Feedback (Apenas para logados) -->
+        <?php if(isset($_SESSION['user_id'])): ?>
+        <form action="recipe_post_review.php" method="POST" style="background: #f9f9f9; padding: 20px; border-radius: 10px;">
+            <input type="hidden" name="recipe_id" value="<?= $r->getId() ?>">
+            <label>Sua nota (1 a 5):</label>
+            <select name="rating" required>
+                <option value="5">⭐⭐⭐⭐⭐ (Incrível)</option>
+                <option value="4">⭐⭐⭐⭐ (Muito bom)</option>
+                <option value="3">⭐⭐⭐ (Bom)</option>
+                <option value="2">⭐⭐ (Pode melhorar)</option>
+                <option value="1">⭐ (Não gostei)</option>
+            </select>
+            <textarea name="comment" placeholder="O que achou dessa receita?" required style="width: 100%; margin-top: 10px;"></textarea>
+            <button type="submit" class="btn-add">Enviar Avaliação</button>
+        </form>
+        <?php endif; ?>
+
+        <div class="reviews-list" style="margin-top: 30px;">
+            <?php $reviews = $dao->getReviews($r->getId()); ?>
+            <?php foreach($reviews as $rev): ?>
+                <div class="review-card" style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                    <strong><?= htmlspecialchars($rev['user_name']) ?></strong> 
+                    <span style="color: #ffc107;"><?= str_repeat('⭐', $rev['rating']) ?></span>
+                    <p style="margin: 5px 0;"><?= nl2br(htmlspecialchars($rev['comment'])) ?></p>
+                    <small style="color: #999;"><?= date('d/m/Y', strtotime($rev['created_at'])) ?></small>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+        
+    </div>
+
 </div>
 </body>
 </html>
