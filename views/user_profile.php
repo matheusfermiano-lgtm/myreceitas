@@ -265,8 +265,11 @@ require_once dirname(__DIR__) . '/base.php';
                 <span class="badge badge-date"><i class="fa-solid fa-calendar-alt"></i> Membro desde <?php echo date('d/m/Y', strtotime($dataCriacao)); ?></span>
                 
                 <?php if($e_o_dono): ?>
-                    <span class="badge badge-private"><i class="fa-solid fa-lock"></i> Visualização Privada (Dono)</span>
-                <?php endif; ?>
+                <span class="badge badge-private"><i class="fa-solid fa-lock"></i> Visualização Privada (Dono)</span>
+                <a href="edit_profile.php" style="background: #fff; color: #8b2538; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; text-decoration: none; margin-left: 10px; border: 1px solid #8b2538; display: inline-flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-pen"></i> Editar Perfil
+                </a>
+            <?php endif; ?>
             </div>
         </div>
     </div>

@@ -6,7 +6,10 @@ if(!isset($_SESSION)) session_start();
 
 $id_perfil = $_GET['id'] ?? $_SESSION['user_id'];
 $id_logado = $_SESSION['user_id'] ?? null;
-$e_o_dono = ($id_perfil == $id_logado && $_SESSION['user_type'] == 'restaurant');
+
+// Ajuste para aceitar tanto 'restaurant' quanto 'restaurante' vindo da sessão
+$user_type = $_SESSION['user_type'] ?? '';
+$e_o_dono = ($id_perfil == $id_logado && ($user_type === 'restaurant' || $user_type === 'restaurante'));
 
 $restDAO = new RestaurantDAO();
 $profile = $restDAO->getById($id_perfil);
@@ -42,7 +45,7 @@ $chefsVinculados = $stmtC->fetchAll(PDO::FETCH_ASSOC);
 
 <style>
     .profile-container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-        .profile-banner {
+    .profile-banner {
         background: #8b2538;
         height: 200px;
         border-radius: 16px 16px 0 0;
@@ -80,11 +83,25 @@ $chefsVinculados = $stmtC->fetchAll(PDO::FETCH_ASSOC);
     <div class="profile-banner"></div>
     <div class="profile-header-card">
         <img src="../assets/uploads/<?php echo htmlspecialchars($foto); ?>" alt="Logo do Restaurante" class="profile-avatar">
+        
         <div class="profile-titles">
-            <h1><?php echo htmlspecialchars($nome); ?></h1>
-            <span class="badge badge-role"><i class="fa-solid fa-shop"></i> Perfil Oficial de Restaurante</span>
-        </div>
-    </div>
+            <h1 style="margin: 0; font-size: 28px; font-weight: bold; color: #333;">
+                <?php echo htmlspecialchars($nome); ?>
+            </h1>
+
+            <div style="display: flex; gap: 10px; align-items: center; margin-top: 5px;">
+                <span style="background: #fce8e6; color: #a83244; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">
+                    <i class="fa-solid fa-store"></i> Perfil Oficial de Restaurante
+                </span>
+
+                <?php if ($e_o_dono): ?>
+                    <a href="edit_profile.php" style="background: #8b2538; color: #fff; padding: 5px 15px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                        <i class="fa-solid fa-pen-to-square"></i> Editar Perfil
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div> 
+    </div> 
 
     <div class="profile-body">
         <div class="sidebar">

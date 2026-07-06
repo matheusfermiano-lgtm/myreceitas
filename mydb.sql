@@ -26,6 +26,8 @@ CREATE TABLE users (
     deleted_at DATETIME
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Atualização da tabela de Usuários
+
 -- 2. Tabela de Chefes
 CREATE TABLE chef (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -177,6 +179,7 @@ CREATE TABLE recipe_likes (
     CONSTRAINT fk_like_recipe FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
     UNIQUE(user_id, recipe_id) -- Impede curtir a mesma receita duas vezes
 );
+
 
 
 SELECT * FROM recipes;
