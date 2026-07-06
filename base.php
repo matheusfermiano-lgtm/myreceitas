@@ -290,6 +290,28 @@ body.dark-theme .sidebar-item:hover { color: #dcb382 !important; border-left-col
 .theme-toggle__checkbox:checked + .theme-toggle__container .theme-toggle__switch::after {
     transform: translateX(22px);
 }
+
+/* =========================================
+   CORREÇÃO DO BOTÃO ENTRAR E DA LINHA (HR)
+   ========================================= */
+
+/* Ajusta o botão "Entrar / Cadastrar" no modo escuro */
+body.dark-theme .sidebar-item.highlight {
+    background-color: #4a0000 !important; /* Fundo vermelho bem escuro para contrastar */
+    color: #FAF7F0 !important;            /* Texto em Off-White legível */
+    border-bottom: 1px solid #3a0000 !important;
+}
+
+/* Deixa o ícone do "Entrar / Cadastrar" dourado no modo escuro */
+body.dark-theme .sidebar-item.highlight i {
+    color: #dcb382 !important;
+}
+
+/* Corrige a linha divisória (hr) que estava sumindo/ficando clara demais */
+body.dark-theme .sidebar-content hr {
+    border-top-color: rgba(250, 247, 240, 0.15) !important; /* Linha off-white bem sutil */
+}
+
     </style>
 </head>
 <body>
