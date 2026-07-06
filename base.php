@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/config/database.php';
 // Linha mágica da navbar: detecta automaticamente a pasta do projeto no XAMPP
 // No início do base.php
 if (session_status() === PHP_SESSION_NONE) {
@@ -318,8 +320,8 @@ body.dark-theme .sidebar-content hr {
         ?>
         <div class="search-bar">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Pesquisar receitas, ingredientes...">
-        </div>
+            <input type="text" name="q" placeholder="Pesquisar por nome ou ingrediente..." value="<?= $_GET['q'] ?? '' ?>">
+        </form>
         <?php endif; ?>
         
         <div class="nav-icons">
