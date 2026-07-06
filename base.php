@@ -12,6 +12,7 @@ if ($base_path === '//') { $base_path = '/'; }
 
 // CORREÇÃO DA LINHA 3 (Busca o banco direto na raiz do projeto):
 require_once __DIR__ . '/config/database.php'; 
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -21,6 +22,11 @@ require_once __DIR__ . '/config/database.php';
     <title>MyReceitas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+
+        .search-bar {
+            display: none !important;
+          }
+
         /* Estilos Globais */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
