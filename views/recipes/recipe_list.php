@@ -1,20 +1,26 @@
 <?php
 ob_start();
 require_once dirname(__DIR__, 2) . '/base.php';
-require_once dirname(__DIR__, 2) . '/models/model/recipe.php'; 
-require_once dirname(__DIR__, 2) . '/models/dao/recipeDAO.php';
+require_once dirname(__DIR__, 2) . '/config/config.php';
+require_once ROOT_PATH . '/models/model/recipe.php'; 
+require_once ROOT_PATH . '/models/dao/recipeDAO.php';
 
 $dao = new recipeDAO();
 
-// Configuração da Paginação
+// Captura filtros
+$filters = [
+    'q' => $_GET['q'] ?? '',
+    'category' => $_GET['category'] ?? '',
+    'max_time' => $_GET['max_time'] ?? ''
+];
+
 $limit = 30;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-if ($page < 1) $page = 1;
 $offset = ($page - 1) * $limit;
 
-// Busca dados
-$receitas = $dao->readAllPaginated($limit, $offset);
-$totalReceitas = $dao->countAllPublic();
+// Usa o novo método de busca
+$receitas = $dao->searchRecipes($filters, $limit, $offset);
+$totalReceitas = $dao->countAllPublic(); // Você pode ajustar este count para considerar filtros se quiser precisão total
 $totalPages = ceil($totalReceitas / $limit);
 
 // Tratamento de exclusão
@@ -92,6 +98,29 @@ if (isset($_GET['delete_id'])) {
         <h2>Todas as Receitas</h2>
         <a href="recipe_form.php" class="btn-add"><i class="fa-solid fa-plus"></i> Nova Receita</a>
     </div>
+
+    <!-- Barra de Filtros -->
+    <form class="filter-section" method="GET">
+        <input type="hidden" name="q" value="<?= htmlspecialchars($filters['q']) ?>">
+        
+        <div class="filter-group">
+            <label>Categoria</label>
+            <select name="category">
+                <option value="">Todas</option>
+                <option value="entrada" <?= $filters['category'] == 'entrada' ? 'selected' : '' ?>>Entrada</option>
+                <option value="prato principal" <?= $filters['category'] == 'prato principal' ? 'selected' : '' ?>>Prato Principal</option>
+                <option value="sobremesa" <?= $filters['category'] == 'sobremesa' ? 'selected' : '' ?>>Sobremesa</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>Tempo Máximo (min)</label>
+            <input type="number" name="max_time" placeholder="Ex: 60" value="<?= $filters['max_time'] ?>">
+        </div>
+
+        <button type="submit" class="btn-filter">Aplicar Filtros</button>
+        <a href="recipe_list.php" style="font-size: 13px; color: #666; margin-bottom: 10px;">Limpar</a>
+    </form>
 
     <div class="recipe-grid">
         <?php if(empty($receitas)): ?>

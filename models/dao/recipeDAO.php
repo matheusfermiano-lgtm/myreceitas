@@ -314,4 +314,51 @@ class recipeDAO {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    public function searchRecipes($filters, $limit = 30, $offset = 0) {
+    $sql = "SELECT * FROM recipes 
+            WHERE is_public = 1 
+            AND deleted_at IS NULL 
+            AND restaurant_id IS NULL";
+    
+    $params = [];
+
+    // Filtro por Nome ou Ingredientes (Busca Geral)
+    if (!empty($filters['q'])) {
+        $sql .= " AND (name LIKE :q OR ingredients LIKE :q)";
+        $params[':q'] = '%' . $filters['q'] . '%';
+    }
+
+    // Filtro específico por Categoria
+    if (!empty($filters['category'])) {
+        $sql .= " AND category = :category";
+        $params[':category'] = $filters['category'];
+    }
+
+    // Filtro por Tempo Máximo
+    if (!empty($filters['max_time'])) {
+        $sql .= " AND preparation_time <= :max_time";
+        $params[':max_time'] = (int)$filters['max_time'];
+    }
+
+    // Ordenação Inteligente: 
+    // Se pesquisou por ingrediente, ordena pelo tamanho do texto (menos ingredientes primeiro)
+    if (!empty($filters['q'])) {
+        $sql .= " ORDER BY LENGTH(ingredients) ASC, name ASC";
+    } else {
+        $sql .= " ORDER BY created_at DESC";
+    }
+
+    $sql .= " LIMIT :limit OFFSET :offset";
+
+    $stmt = $this->conn->prepare($sql);
+    foreach ($params as $key => $val) {
+        $stmt->bindValue($key, $val);
+    }
+    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $this->mapToArray($stmt);
+}
 }

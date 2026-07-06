@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/config/database.php';
 // Linha mágica da navbar: detecta automaticamente a pasta do projeto no XAMPP
 // No início do base.php
 if (session_status() === PHP_SESSION_NONE) {
@@ -298,10 +300,10 @@ body.dark-theme .sidebar-item:hover { color: #dcb382 !important; border-left-col
             <i class="fa-solid fa-utensils"></i>
         </a>
         
-        <div class="search-bar">
+        <form class="search-bar" action="<?= BASE_URL ?>views/recipes/recipe_list.php" method="GET">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Pesquisar receitas, ingredientes...">
-        </div>
+            <input type="text" name="q" placeholder="Pesquisar por nome ou ingrediente..." value="<?= $_GET['q'] ?? '' ?>">
+        </form>
         
         <div class="nav-icons">
             <a href="#" id="btnPerfil" title="Menu do Usuário">
