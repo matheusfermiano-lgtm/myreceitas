@@ -324,7 +324,7 @@ body.dark-theme .sidebar-content hr {
         </div>
         <?php endif; ?>
         
-        <div class="nav-icons">
+       <div class="nav-icons">
             <a href="#" id="btnPerfil" title="Menu do Usuário">
                 <i class="fa-regular fa-user"></i>
             </a>
@@ -346,6 +346,13 @@ body.dark-theme .sidebar-content hr {
                     <i class="fa-solid fa-user-check"></i>
                     <span>Meu Perfil</span>
                 </a>
+
+                <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] !== 'restaurant' && $_SESSION['user_type'] !== 'restaurante'): ?>
+                    <a href="<?php echo $base_path; ?>views/receitas_curtidas.php" class="sidebar-item">
+                        <i class="fa-solid fa-heart" style="color: #8b2538;"></i>
+                        <span>Receitas Curtidas</span>
+                    </a>
+                <?php endif; ?>
                 <a href="<?php echo $base_path; ?>views/logout.php" class="sidebar-item" style="color: #8b2538;">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span>Sair da Conta</span>
@@ -373,17 +380,18 @@ body.dark-theme .sidebar-content hr {
                 <i class="fa-solid fa-utensils"></i>
                 <span>Nossos Chefs</span>
             </a>
+
             <div class="sidebar-toggle-container" style="padding: 20px 25px; margin-top: auto; border-top: 1px solid var(--borda-item);">
-    <label class="theme-toggle" style="cursor: pointer; display: block; width: 100%;">
-        <input type="checkbox" id="dark-mode-switch" class="theme-toggle__checkbox" style="display: none;" checked>
-        <div class="theme-toggle__container" style="display: flex; align-items: center; justify-content: space-between; background-color: var(--bg-toggle-capsula); padding: 12px 20px; border-radius: 50px; transition: background-color 0.3s;">
-            <div class="theme-toggle__info" style="display: flex; align-items: center; gap: 12px; color: var(--cor-toggle-elementos); transition: color 0.3s;">
-                <i class="fa-regular fa-sun theme-toggle__icon" id="theme-icon" style="font-size: 1.2rem;"></i>
-                <span class="theme-toggle__text" id="theme-text" style="font-size: 1rem; font-weight: 600;">Modo claro</span>
-            </div>
-            <div class="theme-toggle__switch"></div>
-        </div>
-    </label>
+                <label class="theme-toggle" style="cursor: pointer; display: block; width: 100%;">
+                    <input type="checkbox" id="dark-mode-switch" class="theme-toggle__checkbox" style="display: none;" checked>
+                    <div class="theme-toggle__container" style="display: flex; align-items: center; justify-content: space-between; background-color: var(--bg-toggle-capsula); padding: 12px 20px; border-radius: 50px; transition: background-color 0.3s;">
+                        <div class="theme-toggle__info" style="display: flex; align-items: center; gap: 12px; color: var(--cor-toggle-elementos); transition: color 0.3s;">
+                            <i class="fa-regular fa-sun theme-toggle__icon" id="theme-icon" style="font-size: 1.2rem;"></i>
+                            <span class="theme-toggle__text" id="theme-text" style="font-size: 1rem; font-weight: 600;">Modo claro</span>
+                        </div>
+                        <div class="theme-toggle__switch"></div>
+                    </div>
+                </label>
 </div>
         </div>
     </div>
