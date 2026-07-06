@@ -32,6 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: recipes_list.php?msg=sucesso");
     exit;
 }
+$price = 0.00;
+if ($_SESSION['user_type'] === 'restaurant') {
+    $price = $_POST['price'];
+}
+
 ?>
 <style>
     .form-wrapper { background-color: #fbeceb; padding: 40px; border-radius: 12px; max-width: 800px; margin: 40px auto; }
@@ -123,12 +128,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <?php if($_SESSION['user_type'] == 'restaurant'): ?>
+            <?php if ($_SESSION['user_type'] === 'restaurant'): ?>
                 <div class="form-group">
-                    <label>Preço no Cardápio (R$):</label>
-                    <input type="number" step="0.01" name="price" placeholder="0,00">
+                    <label>Preço do Prato:</label>
+                    <input type="number" step="0.01" name="price" placeholder="0,00" required>
                 </div>
             <?php endif; ?>
+
+            
 
             <button type="submit" class="btn-submit">Finalizar Cadastro</button>
         </form>

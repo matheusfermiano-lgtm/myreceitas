@@ -365,16 +365,15 @@ body.dark-theme .sidebar-content hr {
                 <span>Restaurantes</span>
             </a>
             
-            <a href="<?php echo $base_path; ?>views/recipes/recipes_list.php" class="sidebar-item">
+            <a href="<?php echo $base_path; ?>views/recipes/recipe_list.php" class="sidebar-item">
                 <i class="fa-solid fa-book-open"></i>
                 <span>Todas as Receitas</span>
             </a>
-            
-            <a href="<?php echo $base_path; ?>users/users_list.php" class="sidebar-item">
-                <i class="fa-solid fa-users"></i>
-                <span>Lista de Usuários</span>
-            </a>
 
+            <a href="<?php echo $base_path; ?>views/chefs/chef_list.php" class="sidebar-item">
+                <i class="fa-solid fa-utensils"></i>
+                <span>Nossos Chefs</span>
+            </a>
             <div class="sidebar-toggle-container" style="padding: 20px 25px; margin-top: auto; border-top: 1px solid var(--borda-item);">
     <label class="theme-toggle" style="cursor: pointer; display: block; width: 100%;">
         <input type="checkbox" id="dark-mode-switch" class="theme-toggle__checkbox" style="display: none;" checked>
