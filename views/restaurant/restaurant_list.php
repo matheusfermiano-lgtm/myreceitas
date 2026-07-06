@@ -68,7 +68,6 @@ $restaurants = $restaurantDAO->getAll();
 
     <div class="restaurant-header">
         <h1><i class="fa-solid fa-utensils"></i> Restaurantes Parceiros</h1>
-        <a href="restaurant_form.php" class="btn-add"><i class="fa-solid fa-plus"></i> Novo Restaurante</a>
     </div>
 
     <?php if (empty($restaurants)): ?>
@@ -77,9 +76,9 @@ $restaurants = $restaurantDAO->getAll();
         <div class="restaurant-grid">
             <?php foreach ($restaurants as $rest): ?>
                 <div class="restaurant-card">
-                    <img src="<?php echo $base_path; ?>uploads/<?php echo $rest->photo; ?>" class="restaurant-img" alt="<?php echo $rest->name; ?>">
+                <img src="../../assets/uploads/<?php echo htmlspecialchars($rest['photo']); ?>" class="restaurant-img" alt="<?php echo htmlspecialchars($rest['name']); ?>">
                     <div class="restaurant-body">
-                        <div class="restaurant-title"><?php echo $rest->name; ?></div>
+                        <div class="restaurant-title"><?php echo htmlspecialchars($rest['name']); ?></div>
                         
                         <div class="stars">
                             <i class="fa-solid fa-star"></i>
@@ -91,17 +90,17 @@ $restaurants = $restaurantDAO->getAll();
                         </div>
                         
                         <div class="restaurant-info">
-                            <i class="fa-solid fa-location-dot"></i> <?php echo $rest->address; ?>
+                            <i class="fa-solid fa-location-dot"></i> <?php echo htmlspecialchars($rest['address']); ?>
                         </div>
-                        <?php if(!empty($rest->phone)): ?>
+                        <?php if(!empty($rest['phone'])): ?>
                             <div class="restaurant-info">
-                                <i class="fa-solid fa-phone"></i> <?php echo $rest->phone; ?>
+                                <i class="fa-solid fa-phone"></i> <?php echo htmlspecialchars($rest['phone']); ?>
                             </div>
                         <?php endif; ?>
                         
-                        <p style="font-size: 14px; color: #555; line-height: 1.4;"><?php echo substr($rest->description, 0, 100) . '...'; ?></p>
+                        <p style="font-size: 14px; color: #555; line-height: 1.4;"><?php echo htmlspecialchars(substr($rest['description'], 0, 100)) . '...'; ?></p>
                         
-                        <a href="restaurant_edit.php?id=<?php echo $rest->id; ?>" class="btn-view">Ver Detalhes & Cardápio</a>
+                        <a href="../restaurant_profile.php?id=<?php echo $rest['id']; ?>" class="btn-view">Ver Detalhes & Cardápio</a>
                     </div>
                 </div>
             <?php endforeach; ?>
