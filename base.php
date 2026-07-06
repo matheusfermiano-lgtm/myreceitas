@@ -14,6 +14,7 @@ if ($base_path === '//') { $base_path = '/'; }
 
 // CORREÇÃO DA LINHA 3 (Busca o banco direto na raiz do projeto):
 require_once __DIR__ . '/config/database.php'; 
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -23,6 +24,11 @@ require_once __DIR__ . '/config/database.php';
     <title>MyReceitas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+
+        .search-bar {
+            display: none !important;
+          }
+
         /* Estilos Globais */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -292,6 +298,28 @@ body.dark-theme .sidebar-item:hover { color: #dcb382 !important; border-left-col
 .theme-toggle__checkbox:checked + .theme-toggle__container .theme-toggle__switch::after {
     transform: translateX(22px);
 }
+
+/* =========================================
+   CORREÇÃO DO BOTÃO ENTRAR E DA LINHA (HR)
+   ========================================= */
+
+/* Ajusta o botão "Entrar / Cadastrar" no modo escuro */
+body.dark-theme .sidebar-item.highlight {
+    background-color: #4a0000 !important; /* Fundo vermelho bem escuro para contrastar */
+    color: #FAF7F0 !important;            /* Texto em Off-White legível */
+    border-bottom: 1px solid #3a0000 !important;
+}
+
+/* Deixa o ícone do "Entrar / Cadastrar" dourado no modo escuro */
+body.dark-theme .sidebar-item.highlight i {
+    color: #dcb382 !important;
+}
+
+/* Corrige a linha divisória (hr) que estava sumindo/ficando clara demais */
+body.dark-theme .sidebar-content hr {
+    border-top-color: rgba(250, 247, 240, 0.15) !important; /* Linha off-white bem sutil */
+}
+
     </style>
 </head>
 <body>
