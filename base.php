@@ -321,7 +321,7 @@ body.dark-theme .sidebar-content hr {
         <div class="search-bar">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" name="q" placeholder="Pesquisar por nome ou ingrediente..." value="<?= $_GET['q'] ?? '' ?>">
-        </form>
+        </div>
         <?php endif; ?>
         
         <div class="nav-icons">
