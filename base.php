@@ -23,17 +23,12 @@ require_once __DIR__ . '/config/database.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
 
-        .search-bar {
-            display: none !important;
-          }
-
         /* Estilos Globais */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             margin: 0; 
             padding: 0; 
-            /* NOVO: Fundo em off-white/creme */
-            background-color: #f5f2eb; 
+            background-color: #FAF7F0; /* Trocado para o tom exato de creme */
         }
         
         /* Navbar inspirada no v0.app */
@@ -68,7 +63,6 @@ require_once __DIR__ . '/config/database.php';
             width: 100%; 
             padding: 12px 20px 12px 45px; 
             border-radius: 25px; 
-            /* NOVO: Fundo branco com borda creme para destacar do fundo da página */
             border: 1px solid #e1dacb; 
             background-color: #ffffff;
             outline: none; 
@@ -112,7 +106,6 @@ require_once __DIR__ . '/config/database.php';
             right: -320px;
             width: 300px;
             height: 100vh;
-            /* NOVO: Sidebar em branco puro para contrastar com o fundo */
             background-color: #ffffff;
             border-left: 1px solid #e1dacb;
             box-shadow: -5px 0 25px rgba(0,0,0,0.08);
@@ -175,7 +168,7 @@ require_once __DIR__ . '/config/database.php';
         }
 
         .sidebar-item i {
-            width: 35px; /* Trava a largura do ícone para alinhar o texto */
+            width: 35px;
             font-size: 1.3rem;
             color: #8b2538;
             text-align: center;
@@ -183,29 +176,25 @@ require_once __DIR__ . '/config/database.php';
         }
 
         .sidebar-item:hover {
-            /* NOVO: Efeito de hover agora em tom bege */
             background-color: #f7f4ed;
             border-left-color: #8b2538;
             color: #8b2538;
         }
 
-        /* Destaque especial para o botão de Login/Cadastro */
         .sidebar-item.highlight {
-            /* NOVO: Destaque com fundo creme quente */
             background-color: #faf5ec; 
             font-weight: bold;
             border-bottom: 1px solid #eee2cc;
             margin-bottom: 10px;
         }
 
-        /* Overlay (Fundo escurecido atrás da sidebar) */
         .sidebar-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(40, 30, 20, 0.4); /* Fundo um pouco mais quente e aconchegante */
+            background: rgba(40, 30, 20, 0.4); 
             opacity: 0;
             visibility: hidden;
             transition: 0.3s;
@@ -221,43 +210,40 @@ require_once __DIR__ . '/config/database.php';
    VARIÁVEIS DE TEMA (MODO CLARO / VERMELHO ESCURO)
    ========================================= */
 :root {
-    --bg-principal: #fcfcfc;
+    --bg-principal: #FAF7F0; /* Trocado para o tom exato de creme da foto */
     --bg-navbar: #8b2538;
     --bg-sidebar: #ffffff;
     --texto-principal: #333333;
     --borda-item: #eee;
     --sombra: rgba(0,0,0,0.15);
-    --bg-toggle-capsula: #FAF7F0; /* Creme original */
-    --cor-toggle-elementos: #8b2538; /* Bordô original */
+    --bg-toggle-capsula: #FAF7F0;
+    --cor-toggle-elementos: #8b2538; 
 }
 
 body.dark-theme {
-    --bg-principal: #6d0000; /* Fundo geral: Vermelho bem escuro/Burgundy */
-    --bg-navbar: #6d0000;    /* Navbar: Tom de vinho quase preto */
-    --bg-sidebar: #6d0000;   /* Sidebar: Vermelho escuro para destacar do fundo */
-    --texto-principal: #fceef0; /* Texto: Branco sutilmente rosado para leitura confortável */
-    --borda-item: #6d0000;   /* Linhas divisórias em vermelho fosco */
+    --bg-principal: #6d0000; 
+    --bg-navbar: #6d0000;    
+    --bg-sidebar: #6d0000;   
+    --texto-principal: #fceef0; 
+    --borda-item: #6d0000;   
     --sombra: rgba(0,0,0,0.4);
-    --bg-toggle-capsula: #6d0000; /* Fundo da cápsula do botão no modo escuro */
-    --cor-toggle-elementos: #dcb382; /* Elementos do botão viram dourado */
-
+    --bg-toggle-capsula: #6d0000; 
+    --cor-toggle-elementos: #dcb382; 
     
-    color: #FAF7F0 !important; /* Cor off-white */
+    color: #FAF7F0 !important; 
 }
 
 body.dark-theme .section-title h2 { 
-    color: #FAF7F0 !important; /* Cor off-white */
+    color: #FAF7F0 !important; 
 }
-/* Para o link "Ver todas" mudar no modo escuro */
+
 body.dark-theme .section-title a { 
-    color: #FAF7F0 !important; /* Cor off-white */
+    color: #FAF7F0 !important; 
 }
 
-/* Para o texto "Nenhuma receita em destaque no momento" */
 body.dark-theme .container p { 
-    color: #FAF7F0 !important; /* Cor off-white */
+    color: #FAF7F0 !important; 
 }
-
 
 /* Aplicando as variáveis nos elementos do seu site */
 body { 
@@ -273,7 +259,7 @@ body {
 body.dark-theme .sidebar-item i { color: #dcb382 !important; }
 body.dark-theme .sidebar-item:hover { color: #dcb382 !important; border-left-color: #dcb382 !important; }
 
-/* Estilos estruturais do Switch (Garante o visual arredondado) */
+/* Estilos estruturais do Switch */
 .theme-toggle__switch {
     position: relative;
     width: 46px;
@@ -301,35 +287,40 @@ body.dark-theme .sidebar-item:hover { color: #dcb382 !important; border-left-col
    CORREÇÃO DO BOTÃO ENTRAR E DA LINHA (HR)
    ========================================= */
 
-/* Ajusta o botão "Entrar / Cadastrar" no modo escuro */
 body.dark-theme .sidebar-item.highlight {
-    background-color: #4a0000 !important; /* Fundo vermelho bem escuro para contrastar */
-    color: #FAF7F0 !important;            /* Texto em Off-White legível */
+    background-color: #4a0000 !important;
+    color: #FAF7F0 !important;            
     border-bottom: 1px solid #3a0000 !important;
 }
 
-/* Deixa o ícone do "Entrar / Cadastrar" dourado no modo escuro */
 body.dark-theme .sidebar-item.highlight i {
     color: #dcb382 !important;
 }
 
-/* Corrige a linha divisória (hr) que estava sumindo/ficando clara demais */
 body.dark-theme .sidebar-content hr {
-    border-top-color: rgba(250, 247, 240, 0.15) !important; /* Linha off-white bem sutil */
+    border-top-color: rgba(250, 247, 240, 0.15) !important; 
 }
 
     </style>
 </head>
 <body>
-    <header class="navbar">
+<header class="navbar">
         <a href="<?php echo $base_path; ?>index.php" class="logo-container">
             <i class="fa-solid fa-utensils"></i>
         </a>
         
+        <?php 
+        // 1. Pegamos o nome do arquivo atual (ex: index.php, login.php)
+        $pagina_atual = basename($_SERVER['PHP_SELF']); 
+        
+        // 2. A barra SÓ aparece se a página NÃO for login e NÃO for cadastro
+        if ($pagina_atual !== 'login.php' && $pagina_atual !== 'cadastro.php' && $pagina_atual !== 'register.php'): 
+        ?>
         <div class="search-bar">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" placeholder="Pesquisar receitas, ingredientes...">
         </div>
+        <?php endif; ?>
         
         <div class="nav-icons">
             <a href="#" id="btnPerfil" title="Menu do Usuário">
@@ -461,4 +452,3 @@ darkSwitch.addEventListener('change', function() {
 
 
     </script>
-

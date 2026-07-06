@@ -9,23 +9,54 @@ $dao = new recipeDAO();
 $destaques = $dao->getRanking(4); 
 ?>
 <style>
-    /* ... (Mantenha seus estilos de Hero e Section-Title aqui) ... */
     @import url('https://fonts.googleapis.com/css2?family=Birthstone&family=Montserrat:wght@400;600;700&display=swap');
 
     .hero {
         background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('assets/img/fundo.png'); 
         background-size: cover;
         background-position: center;
-        height: 500px;
+        height: 540px; 
         display: flex;
         align-items: center;
-        padding: 0 10%;
+        padding: 0 10% 80px 10%; 
         color: #f4ebd0;
+        position: relative; 
+        overflow: hidden;    
+        box-sizing: border-box;
     }
-    .hero-content { max-width: 500px; }
+    
+    .hero-content { max-width: 500px; z-index: 2; } 
     .hero h1 { font-family: 'Birthstone', cursive; font-size: 85px; margin: 0 0 -5px 0; color: #f4ebd0; text-shadow: 2px 2px 10px rgba(0,0,0,0.7); }
     .hero p { font-family: 'Montserrat', sans-serif; font-size: 24px; margin: 0; font-weight: 700; color: #e6d8b8; text-shadow: 1px 1px 8px rgba(0,0,0,0.7); }
 
+    /* ==========================================================================
+       ESTILOS DA ONDA SIMÉTRICA (MÁXIMA PRECISÃO)
+       ========================================================================== */
+    .wave-container {
+        position: absolute;
+        bottom: -1px; /* Gruda perfeitamente na seção de baixo */
+        left: 0;
+        width: 100%;
+        overflow: hidden;
+        line-height: 0;
+        z-index: 1;
+    }
+
+    .wave-container svg {
+        position: relative;
+        display: block;
+        width: calc(100% + 1.3px); 
+        height: 70px; /* Ajuste aqui a altura/profundidade das ondinhas */
+    }
+
+    .wave-container .wave-shape {
+        fill: var(--bg-principal) !important; /* Mapeia a cor de fundo claro/escuro perfeitamente */
+        transition: fill 0.3s ease; 
+    }
+
+    /* =========================================
+       RESTO DOS SEUS ESTILOS ATUAIS
+       ========================================= */
     .section-title { 
         display: flex; justify-content: space-between; align-items: baseline; 
         margin-top: 50px; border-bottom: 2px solid #e1dacb; padding-bottom: 10px;
@@ -83,6 +114,12 @@ $destaques = $dao->getRanking(4);
         <h1 class="titulo-logo">MyReceitas</h1>
         <p>se a fome bateu,<br>podemos te ajudar!</p>
     </div>
+
+    <div class="wave-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" preserveAspectRatio="none">
+            <path d="M0,60 Q90,30 180,60 T360,60 T540,60 T720,60 T900,60 T1080,60 T1260,60 T1440,60 L1440,100 L0,100 Z" class="wave-shape"></path>
+        </svg>
+    </div>
 </div>
 
 <div class="container">
@@ -115,7 +152,6 @@ $destaques = $dao->getRanking(4);
     <?php endif; ?>
 </div>
 
-<!-- Rank de Chefs (Ideia para o Pedro implementar depois) -->
 <div class="container" style="margin-top: 60px; margin-bottom: 80px;">
     <div class="section-title">
         <h2>Top Chefs da Semana</h2>
