@@ -31,68 +31,6 @@ if (isset($_GET['delete_id'])) {
 }
 ?>
 
-<style>
-    .header-list { display: flex; justify-content: space-between; align-items: center; margin: 30px 0; }
-    .header-list h2 { color: #8b2538; font-size: 32px; margin: 0; font-family: 'Segoe UI', sans-serif; }
-    
-    .btn-add { 
-        background-color: #8b2538; color: white; padding: 12px 25px; 
-        text-decoration: none; border-radius: 30px; font-weight: bold; 
-        transition: 0.3s; box-shadow: 0 4px 10px rgba(139, 37, 56, 0.2);
-    }
-    .btn-add:hover { background-color: #dcb382; color: #8b2538; }
-
-    /* Estilização dos Cards */
-    .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
-    
-    .recipe-card { 
-        background: white; border: 1px solid #e1dacb; border-radius: 15px; 
-        padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
-        transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: space-between;
-    }
-    .recipe-card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-color: #dcb382; }
-
-    .recipe-card h3 { margin: 0 0 10px 0; color: #333; font-size: 20px; line-height: 1.3; }
-    .recipe-card .category { color: #8b2538; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: block; }
-    .recipe-card .info { color: #777; font-size: 14px; margin-bottom: 20px; display: flex; gap: 15px; }
-    .recipe-card .info i { color: #dcb382; }
-
-    .card-actions { display: flex; gap: 10px; border-top: 1px solid #f5f2eb; padding-top: 15px; }
-    .card-actions a { 
-        padding: 10px 15px; border-radius: 8px; text-decoration: none; 
-        font-size: 13px; font-weight: bold; flex: 1; text-align: center; transition: 0.2s;
-    }
-    
-    .btn-view { background-color: #8b2538; color: white; }
-    .btn-view:hover { opacity: 0.9; }
-    .btn-edit { background-color: #f7f4ed; color: #8b2538; border: 1px solid #dcb382; }
-    .btn-delete { background-color: #fff; color: #e74c3c; border: 1px solid #ffdada; }
-    .btn-delete:hover { background-color: #e74c3c; color: white; }
-
-    /* Paginação Estilo Google Customizada */
-    .google-pagination { display: flex; flex-direction: column; align-items: center; margin: 60px 0; }
-    
-    .google-logo { font-family: 'Georgia', serif; font-size: 32px; font-weight: bold; margin-bottom: 15px; }
-    .letter-bordo { color: #8b2538; }
-    .letter-bege { color: #dcb382; }
-
-    .page-numbers { display: flex; gap: 5px; align-items: center; }
-    .page-link { 
-        text-decoration: none; color: #8b2538; padding: 8px 16px; 
-        border-radius: 4px; font-weight: 600; transition: 0.2s;
-    }
-    .page-link:hover { background-color: #f5f2eb; }
-    .page-link.active { color: #333; cursor: default; pointer-events: none; }
-    .page-link.active::after { 
-        content: ''; display: block; width: 100%; height: 3px; 
-        background: #8b2538; margin-top: 2px; border-radius: 2px;
-    }
-    .nav-btn { 
-        color: #8b2538; font-weight: bold; text-decoration: none; 
-        padding: 8px 15px; margin: 0 10px;
-    }
-</style>
-
 <div class="container">
     <div class="header-list">
         <h2>Todas as Receitas</h2>

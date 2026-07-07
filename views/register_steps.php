@@ -164,14 +164,6 @@ require_once dirname(__DIR__) . '/base.php';
 <div class="container">
     <div class="form-wrapper">
         <style>
-            .form-wrapper { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 500px; margin: 40px auto; }
-            .form-wrapper input:not([type="checkbox"]), .form-wrapper textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-            .form-wrapper label { font-weight: bold; margin-bottom: 5px; display: block; color: #444; }
-            .btn-next { background: #8b2538; color: white; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
-            .file-input { border: 2px dashed #ddd; padding: 15px; text-align: center; border-radius: 8px; background: #fafafa; margin-bottom: 15px; }
-            .privacy-box { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 12px; border-radius: 8px; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.4; }
-            .chef-list { max-height: 150px; overflow-y: auto; border: 1px solid #ddd; border-radius: 8px; padding: 10px; margin-bottom: 15px; background: #fdfdfd; }
-            .chef-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
         </style>
 
         <h2>Cadastro de <?php echo $type === 'user' ? 'Usuário' : ucfirst($type); ?> - Etapa <?php echo $step; ?></h2>

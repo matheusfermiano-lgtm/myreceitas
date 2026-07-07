@@ -69,45 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <div class="container">
-    <style>
-        .form-card {
-            background: #fff;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            max-width: 600px;
-            margin: 40px auto;
-        }
-        .form-card h2 { color: #8b2538; text-align: center; margin-bottom: 30px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #444; }
-        .form-group input, .form-group textarea {
-            width: 100%; padding: 12px 16px; border: 1px solid #ddd;
-            border-radius: 8px; box-sizing: border-box; font-size: 1rem;
-            background-color: #fafafa; transition: border-color 0.2s;
-        }
-        .form-group input:focus, .form-group textarea:focus {
-            border-color: #8b2538; background-color: #fff; outline: none;
-        }
-        .form-group textarea { resize: vertical; min-height: 100px; }
-        
-        /* Estilo especial para o campo de arquivo */
-        .file-input-wrapper {
-            border: 2px dashed #ddd; padding: 20px; text-align: center;
-            border-radius: 8px; background: #fafafa; cursor: pointer; transition: 0.3s;
-        }
-        .file-input-wrapper:hover { border-color: #8b2538; background: #fff; }
-        .file-input-wrapper input[type="file"] { margin-top: 10px; cursor: pointer; }
-
-        .btn-submit {
-            background: linear-gradient(135deg, #8b2538, #a83248); color: white;
-            border: none; padding: 15px; font-size: 1.1rem; font-weight: bold;
-            border-radius: 25px; cursor: pointer; width: 100%; transition: 0.3s ease; margin-top: 20px;
-        }
-        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(139, 37, 56, 0.3); }
-        .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold; }
-        .error { background: #fde8e8; color: #9b1c1c; border: 1px solid #f8b4b4; }
-    </style>
 
     <div class="form-card">
         <h2>Cadastro de Chef Profissional</h2>

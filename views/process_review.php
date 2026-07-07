@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $db = database::getConexao();
     
-    // ... resto do código igual ao anterior ...
+
 
     // Se a avaliação for para um CHEF
     if ($type === 'chef' && !empty($_POST['chef_id'])) {

@@ -43,42 +43,6 @@ $stmtC->execute([$id_perfil]);
 $chefsVinculados = $stmtC->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<style>
-    .profile-container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-    .profile-banner {
-        background: #8b2538;
-        height: 200px;
-        border-radius: 16px 16px 0 0;
-        position: relative;
-    }
-    .profile-header-card { background: #fff; border-radius: 0 0 16px 16px; padding: 20px 40px 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; align-items: flex-end; margin-top: -80px; position: relative; z-index: 2; }
-    .profile-avatar { width: 150px; height: 150px; border-radius: 12px; border: 5px solid #fff; background: #eee; object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-    .profile-titles { margin-left: 30px; flex-grow: 1; }
-    .profile-titles h1 { margin: 0; color: #333; font-size: 2.2rem; }
-    .badge { padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; }
-    .badge-role { background: #fdf5f6; color: #8b2538; border: 1px solid #f8e1e4; }
-    
-    .profile-body { display: grid; grid-template-columns: 1fr 2.5fr; gap: 30px; margin-top: 30px; }
-    .info-card { background: #fff; border-radius: 16px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); margin-bottom: 25px; }
-    .info-card h3 { color: #8b2538; margin-top: 0; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
-    .contact-list { list-style: none; padding: 0; margin: 0; }
-    .contact-list li { margin-bottom: 15px; display: flex; align-items: flex-start; gap: 12px; color: #555; font-size: 0.95rem; }
-    .contact-list i { color: #8b2538; margin-top: 4px; width: 20px; text-align: center; }
-    
-    /* Galeria */
-    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-    .gallery-img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; transition: transform 0.3s; }
-    .gallery-img:hover { transform: scale(1.05); }
-
-    /* Equipe */
-    .chef-team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-    .chef-card { text-align: center; padding: 15px; border: 1px solid #eee; border-radius: 12px; text-decoration: none; color: inherit; transition: box-shadow 0.2s; }
-    .chef-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
-    .chef-card img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; }
-
-    @media (max-width: 768px) { .profile-body { grid-template-columns: 1fr; } }
-</style>
-
 <div class="profile-container">
     <div class="profile-banner"></div>
     <div class="profile-header-card">

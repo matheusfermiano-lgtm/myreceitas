@@ -23,36 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<style>
-    .form-wrapper { background-color: #fbeceb; padding: 40px; border-radius: 12px; max-width: 600px; margin: 40px auto; }
-    .form-group { display: flex; flex-direction: column; margin-bottom: 20px; }
-    .form-group label { color: #d37e42; font-weight: 600; margin-bottom: 8px; font-size: 16px; }
-    .form-group input, .form-group textarea { 
-        background-color: #fefce5; 
-        border: 1px solid #e0d9b5; 
-        border-radius: 8px; 
-        padding: 12px; 
-        font-size: 15px; 
-        outline: none;
-        color: #444;
-    }
-    .btn-submit { 
-        background: linear-gradient(to bottom, #ff9e22, #e57300); 
-        color: white; 
-        font-size: 20px; 
-        font-weight: bold;
-        padding: 15px 40px; 
-        border: none; 
-        border-radius: 8px; 
-        cursor: pointer; 
-        display: block;
-        margin: 30px auto 0;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-        transition: 0.2s;
-    }
-    .btn-submit:hover { filter: brightness(1.1); transform: translateY(-2px); }
-</style>
-
 <div class="container">
     <div class="form-wrapper">
         <h2 style="color: #8b2538; text-align: center; margin-top: 0;">Criar Conta no MyReceitas</h2>
