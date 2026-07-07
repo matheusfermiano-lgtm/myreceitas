@@ -44,19 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <div class="container">
-    <style>
-        .form-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 700px; margin: 40px auto; }
-        .form-card h2 { color: #8b2538; margin-top: 0; border-bottom: 2px solid #dcb382; padding-bottom: 10px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; outline: none; font-size: 15px; }
-        .form-group input:focus, .form-group textarea:focus { border-color: #8b2538; }
-        .btn-submit { background: linear-gradient(135deg, #8b2538, #b0354b); color: white; border: none; padding: 14px 28px; font-size: 16px; font-weight: bold; border-radius: 25px; cursor: pointer; width: 100%; transition: 0.3s; }
-        .btn-submit:hover { opacity: 0.9; }
-        .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; }
-        .success { background-color: #d4edda; color: #155724; }
-        .error { background-color: #f8d7da; color: #721c24; }
-    </style>
 
     <div class="form-card">
         <h2><i class="fa-solid fa-shop"></i> Cadastrar Novo Restaurante</h2>

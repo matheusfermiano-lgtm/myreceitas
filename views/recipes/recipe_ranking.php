@@ -10,17 +10,6 @@ $ranking = $dao->getRanking(10); // Pega o top 10
 require_once ROOT_PATH . '/base.php';
 ?>
 
-<style>
-    .rank-container { max-width: 800px; margin: 40px auto; }
-    .rank-item { display: flex; align-items: center; background: white; padding: 20px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #e1dacb; transition: 0.3s; }
-    .rank-item:hover { transform: scale(1.02); border-color: #dcb382; }
-    .pos { font-size: 32px; font-weight: 800; color: #dcb382; width: 60px; }
-    .rank-content { flex-grow: 1; }
-    .rank-content h3 { margin: 0; color: #8b2538; }
-    .rank-stats { text-align: right; font-weight: bold; }
-    .medal { font-size: 24px; margin-right: 10px; }
-</style>
-
 <div class="container">
     <div class="rank-container">
         <h1 style="text-align: center; color: #8b2538; margin-bottom: 40px;">🏆 Ranking de Receitas</h1>

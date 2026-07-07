@@ -20,18 +20,6 @@ $totalLikes = $dao->getLikeCount($r->getId());
 $isRestaurant = !empty($r->getRestaurantId());
 ?>
 
-<style>
-    .view-card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 900px; margin: 40px auto; }
-    .view-header { border-bottom: 2px solid #fbeceb; padding-bottom: 20px; margin-bottom: 30px; }
-    .view-header h1 { color: #8b2538; margin: 0; font-size: 32px; }
-    .badge-info { display: inline-block; background: #fdf5f6; color: #8b2538; padding: 5px 15px; border-radius: 20px; font-weight: 600; margin-right: 10px; font-size: 14px; }
-    
-    .section-title { color: #d37e42; font-size: 20px; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-    .content-box { background: #fefce5; padding: 20px; border-radius: 10px; border: 1px solid #e0d9b5; line-height: 1.6; color: #444; margin-bottom: 30px; }
-    
-    .btn-back { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #8b2538; font-weight: bold; }
-</style>
-
 <div class="container">
     <a href="recipe_list.php" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Voltar para a lista</a>
     <div class="view-card">
