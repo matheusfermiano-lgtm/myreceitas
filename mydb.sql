@@ -16,6 +16,7 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
     address TEXT,
+    photo VARCHAR(255) DEFAULT 'default_user.png',
     is_active BOOLEAN DEFAULT TRUE,
     login_attempts INT DEFAULT 0,
     last_login DATETIME,
