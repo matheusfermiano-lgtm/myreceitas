@@ -230,31 +230,37 @@ class recipeDAO {
     }
 
     // Busca receitas favoritadas (Usado no user_profile.php)
-    public function getFavoriteRecipes($userId) {
+public function getFavoriteRecipes($userId, $userType) {
         $sql = "SELECT r.* FROM recipes r
-                JOIN user_favorites uf ON r.id = uf.recipe_id
-                WHERE uf.user_id = :user_id AND r.deleted_at IS NULL";
+                JOIN recipe_likes rl ON r.id = rl.recipe_id
+                WHERE rl.user_id = :user_id AND rl.user_type = :user_type AND r.deleted_at IS NULL
+                ORDER BY rl.id DESC"; // Mostra as últimas curtidas primeiro
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(':user_id', $userId);
+        $stmt->bindValue(':user_type', $userType);
         $stmt->execute();
-        return $this->mapToArray($stmt); // Agora retorna OBJETOS
+        return $this->mapToArray($stmt); 
     }
     /* =========================================
     SISTEMA DE INTERAÇÃO (LIKES & REVIEWS)
     ========================================= */
 
     // CURTIDAS: Inverte o estado (Se curtiu, descurte. Se não, curte)
-    public function toggleLike($recipeId, $userId) {
-        $check = "SELECT 1 FROM recipe_likes WHERE recipe_id = ? AND user_id = ?";
+public function toggleLike($recipeId, $userId, $userType) {
+        // Agora checamos a receita, o ID e o tipo de conta (user, chef ou restaurante)
+        $check = "SELECT 1 FROM recipe_likes WHERE recipe_id = ? AND user_id = ? AND user_type = ?";
         $stmt = $this->conn->prepare($check);
-        $stmt->execute([$recipeId, $userId]);
+        $stmt->execute([$recipeId, $userId, $userType]);
 
         if ($stmt->fetch()) {
-            $sql = "DELETE FROM recipe_likes WHERE recipe_id = ? AND user_id = ?";
+            // Se já curtiu, removemos a curtida usando os 3 parâmetros
+            $sql = "DELETE FROM recipe_likes WHERE recipe_id = ? AND user_id = ? AND user_type = ?";
+            return $this->conn->prepare($sql)->execute([$recipeId, $userId, $userType]);
         } else {
-            $sql = "INSERT INTO recipe_likes (recipe_id, user_id) VALUES (?, ?)";
+            // Se não curtiu, inserimos a curtida com a nova coluna user_type
+            $sql = "INSERT INTO recipe_likes (recipe_id, user_id, user_type) VALUES (?, ?, ?)";
+            return $this->conn->prepare($sql)->execute([$recipeId, $userId, $userType]);
         }
-        return $this->conn->prepare($sql)->execute([$recipeId, $userId]);
     }
 
     // CONTAGEM: Total de curtidas de uma receita
@@ -266,10 +272,10 @@ class recipeDAO {
     }
 
     // VERIFICAÇÃO: O usuário logado já curtiu?
-    public function userLiked($recipeId, $userId) {
-        $sql = "SELECT 1 FROM recipe_likes WHERE recipe_id = ? AND user_id = ?";
+public function userLiked($recipeId, $userId, $userType) {
+        $sql = "SELECT 1 FROM recipe_likes WHERE recipe_id = ? AND user_id = ? AND user_type = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$recipeId, $userId]);
+        $stmt->execute([$recipeId, $userId, $userType]);
         return (bool)$stmt->fetch();
     }
 
