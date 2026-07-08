@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
             
             if (in_array($fileExt, ['jpg', 'jpeg', 'png', 'webp'])) {
-                $uploadDir = dirname(__DIR__) . '/assets/uploads/';
+                $uploadDir = dirname(__DIR__) . '/static/assets/uploads/';
                 if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
                 
                 $newFileName = 'rest_main_' . uniqid() . '.' . $fileExt;
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
             
             if (in_array($fileExt, ['jpg', 'jpeg', 'png', 'webp'])) {
-                $uploadDir = dirname(__DIR__) . '/assets/uploads/';
+                $uploadDir = dirname(__DIR__) . '/static/assets/uploads/';
                 if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
                 
                 $prefix = ($type === 'chef') ? 'chef_' : 'user_';
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // --- UPLOAD DA GALERIA DO RESTAURANTE (Etapa 2) ---
         if ($type === 'restaurant' && isset($_FILES['gallery'])) {
             $galleryImages = [];
-            $uploadDir = dirname(__DIR__) . '/assets/uploads/';
+            $uploadDir = dirname(__DIR__) . '/static/assets/uploads/';
             if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
 
             foreach ($_FILES['gallery']['tmp_name'] as $key => $tmpName) {
@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once dirname(__DIR__) . '/base.php';
 ?>
 
-<div class="container">
+<div class="container" style="margin-top: 40px;">
     <div class="form-wrapper">
         <style>
         </style>
@@ -193,7 +193,7 @@ require_once dirname(__DIR__) . '/base.php';
                     <input type="text" name="location_map_link" placeholder="Cole a URL aqui" value="<?php echo $_SESSION['reg_data']['location_map_link'] ?? ''; ?>">
                     
                     <label>Foto Principal do Restaurante:</label>
-                    <div class="file-input">
+                    <div class="file-input-wrapper">
                         <i class="fa-solid fa-store" style="color: #8b2538; margin-bottom: 5px;"></i><br>
                         <input type="file" name="main_photo" accept="image/png, image/jpeg, image/webp" style="border: none; padding:0; margin:0;">
                     </div>
@@ -205,7 +205,7 @@ require_once dirname(__DIR__) . '/base.php';
                 
                 <?php if($type == 'user'): ?>
                     <label>Escolha uma Foto de Perfil (Opcional):</label>
-                    <div class="file-input">
+                    <div class="file-input-wrapper">
                         <i class="fa-solid fa-image" style="color: #8b2538; margin-bottom: 5px;"></i><br>
                         <input type="file" name="photo" accept="image/png, image/jpeg, image/webp" style="border: none; padding:0; margin:0;">
                     </div>
@@ -213,7 +213,7 @@ require_once dirname(__DIR__) . '/base.php';
                 
                 <?php elseif($type == 'chef'): ?>
                     <label>Foto de Perfil (Opcional):</label>
-                    <div class="file-input">
+                    <div class="file-input-wrapper">
                         <input type="file" name="photo" accept="image/png, image/jpeg, image/webp" style="border: none; padding:0; margin:0;">
                     </div>
                     <label>Sua Biografia/Descrição:</label>

@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once dirname(__DIR__) . '/base.php';
 ?>
 
-<div class="container">
+<div class="container" style="margin-top: 40px;">
     
     <!-- Mensagens de Feedback -->
     <div style="margin-top: 30px;">

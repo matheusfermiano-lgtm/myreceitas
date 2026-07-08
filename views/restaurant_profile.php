@@ -46,10 +46,10 @@ $chefsVinculados = $stmtC->fetchAll(PDO::FETCH_ASSOC);
 <div class="profile-container">
     <div class="profile-banner"></div>
     <div class="profile-header-card">
-        <img src="../assets/uploads/<?php echo htmlspecialchars($foto); ?>" alt="Logo do Restaurante" class="profile-avatar">
+        <img src="<?php echo $base_path; ?>static/assets/uploads/<?php echo htmlspecialchars($foto); ?>" alt="Logo do Restaurante" class="profile-avatar">
         
         <div class="profile-titles">
-            <h1 style="margin: 0; font-size: 28px; font-weight: bold; color: #333;">
+            <h1 style="margin: 0; font-size: 28px; font-weight: bold; color: var(--primary);">
                 <?php echo htmlspecialchars($nome); ?>
             </h1>
 
@@ -90,7 +90,7 @@ $chefsVinculados = $stmtC->fetchAll(PDO::FETCH_ASSOC);
             <?php if(!empty($servicos)): ?>
             <div class="info-card">
                 <h3><i class="fa-solid fa-bell-concierge"></i> Oferecemos</h3>
-                <p style="line-height: 1.6; color: #555;"><?php echo nl2br(htmlspecialchars($servicos)); ?></p>
+                <p style="line-height: 1.6; color: var(--text);"><?php echo nl2br(htmlspecialchars($servicos)); ?></p>
             </div>
             <?php endif; ?>
         </div>
@@ -99,18 +99,18 @@ $chefsVinculados = $stmtC->fetchAll(PDO::FETCH_ASSOC);
             <?php if(!empty($descricao)): ?>
             <div class="info-card">
                 <h3><i class="fa-solid fa-quote-left"></i> A Casa</h3>
-                <p style="line-height: 1.6; color: #555;"><?php echo nl2br(htmlspecialchars($descricao)); ?></p>
+                <p style="line-height: 1.6; color: var(--text);"><?php echo nl2br(htmlspecialchars($descricao)); ?></p>
             </div>
             <?php endif; ?>
 
             <div class="info-card">
                 <h3><i class="fa-solid fa-images"></i> Galeria de Fotos</h3>
                 <?php if(empty($galeria)): ?>
-                    <p style="color: #888;">Nenhuma foto cadastrada.</p>
+                    <p style="color: var(--text);">Nenhuma foto cadastrada.</p>
                 <?php else: ?>
                     <div class="gallery-grid">
                         <?php foreach($galeria as $img): ?>
-                            <img src="../assets/uploads/<?php echo htmlspecialchars($img); ?>" class="gallery-img" alt="Foto do Restaurante">
+                            <img src="<?php echo $base_path; ?>static/assets/uploads/<?php echo htmlspecialchars($img); ?>" class="gallery-img" alt="Foto do Restaurante">
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
@@ -119,14 +119,14 @@ $chefsVinculados = $stmtC->fetchAll(PDO::FETCH_ASSOC);
             <div class="info-card">
                 <h3><i class="fa-solid fa-users"></i> Nossa Equipe (Chefs)</h3>
                 <?php if(empty($chefsVinculados)): ?>
-                    <p style="color: #888;">Nenhum chef vinculado ao restaurante no momento.</p>
+                    <p style="color: var(--text);">Nenhum chef vinculado ao restaurante no momento.</p>
                 <?php else: ?>
                     <div class="chef-team-grid">
                         <?php foreach($chefsVinculados as $c): 
                             $fotoChef = empty($c['photo']) ? 'default.png' : $c['photo'];
                         ?>
                             <a href="user_profile.php?id=<?php echo $c['id']; ?>&type=chef" class="chef-card">
-                                <img src="../assets/uploads/<?php echo htmlspecialchars($fotoChef); ?>" alt="Foto do Chef">
+                                <img src="<?php echo $base_path; ?>static/assets/uploads/<?php echo htmlspecialchars($fotoChef); ?>" alt="Foto do Chef">
                                 <div><strong><?php echo htmlspecialchars($c['name']); ?></strong></div>
                                 <div style="font-size: 0.8rem; color: #888;">Ver perfil</div>
                             </a>

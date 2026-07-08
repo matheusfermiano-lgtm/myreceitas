@@ -181,6 +181,14 @@ CREATE TABLE recipe_likes (
     UNIQUE(user_id, user_type, recipe_id)
 );
 
+CREATE TABLE IF NOT EXISTS `restaurant_gallery` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `restaurant_id` INT NOT NULL,
+    `image_path` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`restaurant_id`) REFERENCES `restaurants`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 SELECT * FROM recipes;
 SELECT * FROM users;
 SELECT * FROM restaurants;

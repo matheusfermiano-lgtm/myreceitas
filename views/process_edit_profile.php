@@ -18,9 +18,7 @@ if (!$id_logado) {
 }
 
 // ========== Função de upload ==========
-function uploadPhoto($file, $oldPhoto = null)
-{
-    // Se não enviou arquivo válido, mantém a foto atual
+function uploadPhoto($file, $oldPhoto = null) {
     if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK || $file['size'] === 0) {
         return $oldPhoto;
     }
@@ -30,18 +28,23 @@ function uploadPhoto($file, $oldPhoto = null)
         mkdir($targetDir, 0755, true);
     }
 
-    $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+    if (!in_array($ext, $allowed)) {
+        return $oldPhoto; // extensão não permitida
+    }
+
     $nome = uniqid('profile_') . '.' . $ext;
     $caminho = $targetDir . $nome;
 
     if (move_uploaded_file($file['tmp_name'], $caminho)) {
-        // Remove a foto antiga (se não for padrão)
+        // Remove foto antiga se existir
         if ($oldPhoto && $oldPhoto !== 'default.png' && $oldPhoto !== 'default_chef.png' && file_exists($targetDir . $oldPhoto)) {
             unlink($targetDir . $oldPhoto);
         }
         return $nome;
     }
-    return $oldPhoto; // Se falhar, mantém a antiga
+    return $oldPhoto; // falha no upload
 }
 
 // Dados comuns

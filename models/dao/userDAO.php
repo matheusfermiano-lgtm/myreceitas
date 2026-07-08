@@ -27,21 +27,19 @@ class userDAO {
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$id]);
         $dados = $stmt->fetch(PDO::FETCH_ASSOC);
-        
         if (!$dados) return null;
-        
-        // Retornamos um adaptador seguro idêntico ao do Chef para a View ler perfeitamente
-        return new class($dados) {
-            private $data;
-            public function __construct($data) { $this->data = $data; }
-            
-            public function getName() { return $this->data['name'] ?? ''; }
-            public function getEmail() { return $this->data['email'] ?? ''; }
-            public function getPhone() { return $this->data['phone'] ?? ''; }
-            public function getCreatedAt() { return $this->data['created_at'] ?? ''; }
-            public function getAddress() { return $this->data['address'] ?? ''; }
-            public function getPhoto() { return $this->data['photo'] ?? 'default_user.png'; }
-        };
+
+        $user = new User(
+            $dados['name'],
+            $dados['email'],
+            $dados['password'],
+            $dados['phone'] ?? null,
+            $dados['address'] ?? null,
+            $dados['photo'] ?? null,   // ← foto (6º parâmetro)
+            $dados['id'],              // ← id (7º)
+            $dados['created_at'] ?? null
+        );
+        return $user;
     }
 
     // READ ALL
@@ -56,14 +54,25 @@ class userDAO {
     }
 
     // UPDATE
-    public function update(User $u) {
-        $sql = "UPDATE users SET name = ?, email = ?, password = ?, phone = ?, address = ? WHERE id = ?";
+    public function update($user) {
+        $sql = "UPDATE users SET 
+                    name = ?,
+                    email = ?,
+                    password = ?,
+                    phone = ?,
+                    address = ?,
+                    photo = ?
+                WHERE id = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute([
-            $u->getName(), $u->getEmail(), $u->getPassword(),
-            $u->getPhone(), $u->getAddress(), $u->getId()
+        return $stmt->execute([
+            $user->getName(),
+            $user->getEmail(),
+            $user->getPassword(),
+            $user->getPhone(),
+            $user->getAddress(),
+            $user->getPhoto(),    // ← agora salva a foto
+            $user->getId()
         ]);
-        return $u;
     }
 
     public function getProfileData($userId) {

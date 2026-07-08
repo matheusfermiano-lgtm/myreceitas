@@ -68,7 +68,7 @@ $chefs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php else: ?>
         <div class="chefs-grid">
             <?php foreach($chefs as $c): 
-                $foto = !empty($c['photo']) ? $c['photo'] : 'default.png';
+                $foto = !empty($c['photo']) ? $c['photo'] : 'default_chef.png';
                 $regiao = !empty($c['region_operation']) ? $c['region_operation'] : 'Região não informada';
                 
                 // Lógica matemática para pintura das estrelas do FontAwesome
@@ -78,7 +78,7 @@ $chefs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $estrelasVazias = 5 - $estrelasCheias - $meiaEstrela;
             ?>
                <a href="../user_profile.php?id=<?php echo $c['id']; ?>&type=chef" class="chef-card">
-               <img src="../../assets/uploads/<?php echo htmlspecialchars($foto); ?>" alt="Foto do Chef" class="chef-avatar">
+               <img src="<?php echo $base_path; ?>static/assets/uploads/<?php echo htmlspecialchars($foto); ?>" alt="Foto do Chef" class="chef-avatar">
                     <h3 class="chef-name"><?php echo htmlspecialchars($c['name']); ?></h3>
                     <div class="chef-region"><i class="fa-solid fa-map-location-dot"></i> <?php echo htmlspecialchars($regiao); ?></div>
                     

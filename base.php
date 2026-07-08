@@ -34,7 +34,7 @@ if ($base_path === '//') { $base_path = '/'; }
         
         <?php 
         $pagina_atual = basename($_SERVER['PHP_SELF']); 
-        if ($pagina_atual !== 'login.php' && $pagina_atual !== 'cadastro.php' && $pagina_atual !== 'register.php'): 
+        if ($pagina_atual !== 'login.php' && $pagina_atual !== 'cadastro.php' && $pagina_atual !== 'register.php' && $pagina_atual !== 'register_steps.php'): 
         ?>
         <!-- Depois: transformado em formulário -->
         <form class="search-bar" action="<?= $base_path ?>views/recipes/recipe_list.php" method="GET">

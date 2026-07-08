@@ -9,7 +9,7 @@ require_once dirname(__DIR__) . '/models/dao/recipeDAO.php';
 require_once dirname(__DIR__) . '/models/dao/chefDAO.php';
 
 $id_perfil = $_GET['id'] ?? $_SESSION['user_id'];
-$tipo_perfil = $_GET['type'] ?? $_SESSION['user_type'];
+$tipo_perfil = $_GET['type'] ?? $_SESSION['user_type'] ?? 'user';
 $tipo_perfil = strtok($tipo_perfil, '?');
 $id_logado = $_SESSION['user_id'] ?? null;
 
@@ -40,9 +40,9 @@ $dataCriacao = $profile->getCreatedAt();
 // Correção da Foto: Fallback inteligente para Chef ou Usuário Comum
 $foto_banco = (method_exists($profile, 'getPhoto')) ? $profile->getPhoto() : '';
 if ($tipo_perfil === 'chef') {
-    $foto = (!empty($foto_banco) && $foto_banco !== 'default.png') ? $foto_banco : 'default_chef.png';
+    $foto = (!empty($foto_banco) && $foto_banco !== 'default_user.png') ? $foto_banco : 'default_chef.png';
 } else {
-    $foto = (!empty($foto_banco)) ? $foto_banco : 'default.png';
+    $foto = (!empty($foto_banco)) ? $foto_banco : 'default_user.png';
 }
 
 $telefone = (method_exists($profile, 'getPhone')) ? $profile->getPhone() : '';

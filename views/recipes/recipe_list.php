@@ -14,7 +14,7 @@ $filters = [
     'max_time' => $_GET['max_time'] ?? '' 
 ];
 
-$limit = 30;
+$limit = 28;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 $queryParams = $_GET; // copia os parâmetros atuais (q, category, max_time)

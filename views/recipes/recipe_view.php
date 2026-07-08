@@ -86,7 +86,7 @@ if (!empty($r->getUserId())) {
                     <?= $curtiu ? '❤️' : '🤍' ?> 
                 </a>
             <?php else: ?>
-                <a href="../users/login.php" style="text-decoration: none; font-size: 24px;" title="Faça login para curtir">
+                <a href="../login.php" style="text-decoration: none; font-size: 24px;" title="Faça login para curtir">
                     🤍 
                 </a>
             <?php endif; ?>

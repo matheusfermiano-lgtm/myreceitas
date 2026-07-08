@@ -6,14 +6,16 @@ class User {
     private $password;
     private $phone;
     private $address;
+    private $photo;
     private $created_at;
 
-    public function __construct($name, $email, $password, $phone = null, $address = null, $id = null, $created_at = null) {
+    public function __construct($name, $email, $password, $phone = null, $address = null, $photo = null, $id = null, $created_at = null) {
         $this->name = $name;
         $this->email = $email;
         $this->password = $password;
         $this->phone = $phone;
         $this->address = $address;
+        $this->photo = $photo;    // agora definido
         $this->id = $id;
         $this->created_at = $created_at;
     }
@@ -25,9 +27,16 @@ class User {
     public function getPassword() { return $this->password; }
     public function getPhone() { return $this->phone; }
     public function getAddress() { return $this->address; }
+    public function getPhoto() { return $this->photo; }
     public function getCreatedAt() { return $this->created_at; }
 
     // Setters
     public function setId($id) { $this->id = $id; }
+    public function setName($name) {$this->name = $name;}
+    public function setEmail($email) {$this->email = $email;}
     public function setPassword($p) { $this->password = $p; }
+    public function setPhone($phone) { $this->phone = $phone; }
+    public function setAddress($address) { $this->address = $address; }
+    public function setPhoto($photo) { $this->photo = $photo; }
+
 }
