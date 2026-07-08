@@ -17,6 +17,9 @@ $filters = [
 $limit = 30;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
+$queryParams = $_GET; // copia os parâmetros atuais (q, category, max_time)
+$queryParams['page'] = $page - 1;
+$prevUrl = '?' . http_build_query($queryParams);
 
 // Usa o novo método de busca
 $receitas = $dao->searchRecipes($filters, $limit, $offset);
@@ -109,17 +112,24 @@ if (isset($_GET['delete_id'])) {
         </div>
 
         <div class="page-numbers">
-            <?php if($page > 1): ?>
-                <a href="?page=<?= $page - 1 ?>" class="nav-btn">&lt; Anterior</a>
-            <?php endif; ?>
+            <?php
+                $queryParams = $_GET; // copia os parâmetros atuais (q, category, max_time)
+                $queryParams['page'] = $page - 1;
+                $prevUrl = '?' . http_build_query($queryParams);
+            ?>
+            <a href="<?= $prevUrl ?>" class="nav-btn">&lt; Anterior</a>
 
-            <?php for($i = 1; $i <= $totalPages; $i++): ?>
-                <a href="?page=<?= $i ?>" class="page-link <?= ($i == $page) ? 'active' : '' ?>"><?= $i ?></a>
-            <?php endfor; ?>
-
+            <?php
+                $queryParams = $_GET;
+                $queryParams['page'] = $i;
+                $linkUrl = '?' . http_build_query($queryParams);
+            ?>
+            <a href="<?= $linkUrl ?>" class="page-link <?= ($i == $page) ? 'active' : '' ?>"><?= $i ?></a>
+            
             <?php if($page < $totalPages): ?>
                 <a href="?page=<?= $page + 1 ?>" class="nav-btn">Próximo &gt;</a>
             <?php endif; ?>
+            
         </div>
     </div>
 </div>

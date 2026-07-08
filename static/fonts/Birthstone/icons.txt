@@ -1,0 +1,80 @@
+html
+<i class="fa-solid fa-chef-hat"></i>         <!-- chapéu de chef -->
+<i class="fa-solid fa-kitchen-set"></i>       <!-- ambiente de cozinha -->
+<i class="fa-solid fa-fire-burner"></i>       <!-- boca do fogão -->
+<i class="fa-solid fa-temperature-high"></i>  <!-- temperatura/forno -->
+<i class="fa-solid fa-blender"></i>           <!-- liquidificador -->
+<i class="fa-solid fa-mortar-pestle"></i>     <!-- almofariz/pilão -->
+<i class="fa-solid fa-jar"></i>               <!-- pote de vidro -->
+<i class="fa-solid fa-bowl-food"></i>         <!-- tigela de comida -->
+🥕 Alimentos e Ingredientes
+html
+<i class="fa-solid fa-carrot"></i>            <!-- cenoura -->
+<i class="fa-solid fa-apple-whole"></i>       <!-- maçã -->
+<i class="fa-solid fa-lemon"></i>             <!-- limão -->
+<i class="fa-solid fa-pepper-hot"></i>        <!-- pimenta -->
+<i class="fa-solid fa-egg"></i>               <!-- ovo -->
+<i class="fa-solid fa-cheese"></i>            <!-- queijo -->
+<i class="fa-solid fa-bread-slice"></i>       <!-- fatia de pão -->
+<i class="fa-solid fa-cookie"></i>            <!-- biscoito -->
+<i class="fa-solid fa-cake-candles"></i>      <!-- bolo -->
+<i class="fa-solid fa-ice-cream"></i>         <!-- sorvete -->
+<i class="fa-solid fa-drumstick-bite"></i>    <!-- coxinha de frango -->
+<i class="fa-solid fa-bacon"></i>             <!-- bacon -->
+<i class="fa-solid fa-pizza-slice"></i>       <!-- pizza -->
+<i class="fa-solid fa-hotdog"></i>            <!-- cachorro-quente -->
+<i class="fa-solid fa-burger"></i>            <!-- hambúrguer -->
+<i class="fa-solid fa-fish"></i>              <!-- peixe -->
+<i class="fa-solid fa-bowl-rice"></i>         <!-- arroz -->
+<i class="fa-solid fa-wheat-awn"></i>         <!-- trigo -->
+<i class="fa-solid fa-seedling"></i>          <!-- broto (vegano/vegetariano) -->
+🍷 Bebidas
+html
+<i class="fa-solid fa-mug-hot"></i>           <!-- chocolate/café quente -->
+<i class="fa-solid fa-mug-saucer"></i>        <!-- xícara de café -->
+<i class="fa-solid fa-wine-glass"></i>        <!-- taça de vinho -->
+<i class="fa-solid fa-martini-glass"></i>     <!-- coquetel -->
+<i class="fa-solid fa-beer-mug"></i>          <!-- cerveja -->
+<i class="fa-solid fa-bottle-water"></i>      <!-- garrafa d'água -->
+<i class="fa-solid fa-glass-water"></i>       <!-- copo d'água -->
+
+Utensílios e Serviço
+html
+<i class="fa-solid fa-utensils"></i>          <!-- garfo e faca (cardápio) -->
+<i class="fa-solid fa-spoon"></i>             <!-- colher -->
+<i class="fa-solid fa-plate-wheat"></i>       <!-- prato saudável -->
+<i class="fa-solid fa-pot-food"></i>          <!-- panela com comida -->
+<i class="fa-solid fa-basket-shopping"></i>   <!-- cesta de compras -->
+<i class="fa-solid fa-cart-shopping"></i>     <!-- carrinho -->
+<i class="fa-solid fa-receipt"></i>           <!-- lista de ingredientes -->
+<i class="fa-solid fa-book-open"></i>         <!-- livro de receitas aberto -->
+<i class="fa-solid fa-book"></i>              <!-- livro de receitas -->
+<i class="fa-solid fa-clock"></i>             <!-- tempo de preparo -->
+<i class="fa-solid fa-stopwatch"></i>         <!-- cronômetro -->
+<i class="fa-solid fa-list-check"></i>        <!-- checklist (modo de preparo) -->
+
+Ações e Navegação
+html
+<i class="fa-solid fa-magnifying-glass"></i>  <!-- buscar receitas -->
+<i class="fa-solid fa-filter"></i>            <!-- filtrar -->
+<i class="fa-solid fa-star"></i>              <!-- favorito (vazio) -->
+<i class="fa-solid fa-heart"></i>             <!-- curtir -->
+<i class="fa-solid fa-share-nodes"></i>       <!-- compartilhar -->
+<i class="fa-solid fa-print"></i>             <!-- imprimir receita -->
+<i class="fa-solid fa-download"></i>          <!-- salvar PDF -->
+<i class="fa-solid fa-circle-plus"></i>       <!-- adicionar receita -->
+<i class="fa-solid fa-pen-to-square"></i>     <!-- editar -->
+<i class="fa-solid fa-comment"></i>           <!-- comentários -->
+<i class="fa-solid fa-camera"></i>            <!-- foto do prato -->
+<i class="fa-solid fa-circle-check"></i>      <!-- confirmar/dica -->
+<i class="fa-solid fa-triangle-exclamation"></i> <!-- alerta (alérgenos) -->
+
+Restaurante e Contato
+html
+<i class="fa-solid fa-shop"></i>              <!-- fachada da loja -->
+<i class="fa-solid fa-location-dot"></i>      <!-- localização -->
+<i class="fa-solid fa-phone"></i>             <!-- telefone -->
+<i class="fa-solid fa-envelope"></i>          <!-- e-mail -->
+<i class="fa-solid fa-clock"></i>             <!-- horário de funcionamento -->
+<i class="fa-solid fa-people-group"></i>      <!-- equipe -->
+<i class="fa-solid fa-chair"></i>             <!-- mesas/disponibilidade -->

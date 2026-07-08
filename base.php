@@ -36,10 +36,13 @@ if ($base_path === '//') { $base_path = '/'; }
         $pagina_atual = basename($_SERVER['PHP_SELF']); 
         if ($pagina_atual !== 'login.php' && $pagina_atual !== 'cadastro.php' && $pagina_atual !== 'register.php'): 
         ?>
-        <div class="search-bar">
+        <!-- Depois: transformado em formulário -->
+        <form class="search-bar" action="<?= $base_path ?>views/recipes/recipe_list.php" method="GET">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" name="q" placeholder="Pesquisar..." value="<?= $_GET['q'] ?? '' ?>">
-        </div>
+            <input type="text" name="q" placeholder="Buscar receitas..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
+            <!-- botão invisível para permitir submit com Enter -->
+            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
         <?php endif; ?>
         
         <div class="nav-icons">
