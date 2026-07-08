@@ -12,7 +12,7 @@ $destaques = $dao->getRanking(4);
 <div class="hero">
     <div class="hero-content">
         <h1 class="titulo-logo">MyReceitas</h1>
-        <p>se a fome bateu,<br>podemos te ajudar!</p>
+        <p>Se a fome bateu,<br>podemos te ajudar!</p>
     </div>
 
     <div class="wave-container">

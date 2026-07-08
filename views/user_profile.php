@@ -99,7 +99,7 @@ require_once dirname(__DIR__) . '/base.php';
 <div class="profile-container">
     <div class="profile-banner"></div>
     <div class="profile-header-card">
-    <img src="../assets/uploads/<?php echo htmlspecialchars($foto); ?>" alt="Foto de Perfil" class="profile-avatar">
+    <img src="../static/assets/uploads/<?php echo htmlspecialchars($foto); ?>" alt="Foto de Perfil" class="profile-avatar">
         
         <div class="profile-titles">
             <h1><?php echo htmlspecialchars($nome); ?></h1>
