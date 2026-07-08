@@ -10,6 +10,7 @@ require_once dirname(__DIR__) . '/models/dao/chefDAO.php';
 
 $id_perfil = $_GET['id'] ?? $_SESSION['user_id'];
 $tipo_perfil = $_GET['type'] ?? $_SESSION['user_type'];
+$tipo_perfil = strtok($tipo_perfil, '?');
 $id_logado = $_SESSION['user_id'] ?? null;
 
 if ($tipo_perfil === 'restaurant') {
@@ -162,6 +163,7 @@ require_once dirname(__DIR__) . '/base.php';
                     <p style="color: #888; text-align: center; padding: 20px;">Nenhuma receita encontrada.</p>
                 <?php else: ?>
                     <div class="recipes-grid">
+                        <br>
                         <?php foreach($minhasReceitas as $r): ?>
                             <div class="recipe-item">
                                 <h4><?php echo htmlspecialchars($r->getName()); ?></h4>

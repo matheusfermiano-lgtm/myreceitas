@@ -1,92 +1,126 @@
 <?php
-if(!isset($_SESSION)) session_start();
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: ../index.php");
-    exit;
-}
-
+if (!isset($_SESSION)) session_start();
 require_once dirname(__DIR__) . '/config/database.php';
+require_once dirname(__DIR__) . '/models/dao/userDAO.php';
+require_once dirname(__DIR__) . '/models/dao/chefDAO.php';
+require_once dirname(__DIR__) . '/models/model/user.php';
+require_once dirname(__DIR__) . '/models/model/chef.php';
 
-$id_logado = $_SESSION['user_id'] ?? $_SESSION['restaurant_id'];
+$id_logado = $_SESSION['user_id'] ?? $_SESSION['restaurant_id'] ?? null;
 $tipo_logado = $_SESSION['user_type'] ?? 'user';
-
 if ($tipo_logado === 'restaurante') {
     $tipo_logado = 'restaurant';
 }
 
-$name = trim($_POST['name']);
-$email = trim($_POST['email']);
-$phone = trim($_POST['phone'] ?? '');
-$address = trim($_POST['address'] ?? '');
-
-$db = database::getConexao();
-
-// Upload da foto de perfil
-$foto_nova = null;
-if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
-    $extensao = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
-    $nome_arquivo = $tipo_logado . "_" . uniqid() . "." . $extensao;
-    $destino = dirname(__DIR__) . "/assets/uploads/" . $nome_arquivo;
-
-    if (move_uploaded_file($_FILES['photo']['tmp_name'], $destino)) {
-        $foto_nova = $nome_arquivo;
-    }
+if (!$id_logado) {
+    header("Location: login.php");
+    exit;
 }
 
-// 1. Processamento de CHEF
+// ========== Função de upload ==========
+function uploadPhoto($file, $oldPhoto = null)
+{
+    // Se não enviou arquivo válido, mantém a foto atual
+    if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK || $file['size'] === 0) {
+        return $oldPhoto;
+    }
+
+    $targetDir = dirname(__DIR__) . '/static/assets/uploads/';
+    if (!is_dir($targetDir)) {
+        mkdir($targetDir, 0755, true);
+    }
+
+    $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $nome = uniqid('profile_') . '.' . $ext;
+    $caminho = $targetDir . $nome;
+
+    if (move_uploaded_file($file['tmp_name'], $caminho)) {
+        // Remove a foto antiga (se não for padrão)
+        if ($oldPhoto && $oldPhoto !== 'default.png' && $oldPhoto !== 'default_chef.png' && file_exists($targetDir . $oldPhoto)) {
+            unlink($targetDir . $oldPhoto);
+        }
+        return $nome;
+    }
+    return $oldPhoto; // Se falhar, mantém a antiga
+}
+
+// Dados comuns
+$name  = $_POST['name'] ?? '';
+$email = $_POST['email'] ?? '';
+$phone = $_POST['phone'] ?? '';
+$address = $_POST['address'] ?? '';
+
+$conn = database::getConexao();
+
 if ($tipo_logado === 'chef') {
-    $region = trim($_POST['region_operation'] ?? '');
-    $services = trim($_POST['services_offered'] ?? '');
-    $description = trim($_POST['description'] ?? '');
-    $experience = trim($_POST['professional_experience'] ?? '');
-
-    if ($foto_nova) {
-        $sql = "UPDATE chef SET name = ?, email = ?, phone = ?, address = ?, region_operation = ?, services_offered = ?, description = ?, professional_experience = ?, photo = ? WHERE id = ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([$name, $email, $phone, $address, $region, $services, $description, $experience, $foto_nova, $id_logado]);
-    } else {
-        $sql = "UPDATE chef SET name = ?, email = ?, phone = ?, address = ?, region_operation = ?, services_offered = ?, description = ?, professional_experience = ? WHERE id = ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([$name, $email, $phone, $address, $region, $services, $description, $experience, $id_logado]);
+    $chefDAO = new chefDAO();
+    $chefAtual = $chefDAO->read($id_logado);
+    if (!$chefAtual) {
+        die("Chef não encontrado.");
     }
 
-    header("Location: user_profile.php?id=" . $id_logado . "&type=chef");
-    exit;
-} 
-// 2. Processamento de RESTAURANTE (Sincronizado com a tabela 'restaurants')
-elseif ($tipo_logado === 'restaurant') {
-    $opening_hours = trim($_POST['opening_hours'] ?? '');
-    $location_map_link = trim($_POST['location_map_link'] ?? '');
-    $description = trim($_POST['description'] ?? '');
-    $services_offered = trim($_POST['services_offered'] ?? '');
-    $menu_description = trim($_POST['menu_description'] ?? '');
+    $oldPhoto = method_exists($chefAtual, 'getPhoto') ? $chefAtual->getPhoto() : 'default_chef.png';
+    $newPhoto = uploadPhoto($_FILES['photo'] ?? null, $oldPhoto);
 
-    if ($foto_nova) {
-        $sql = "UPDATE restaurants SET name = ?, email = ?, phone = ?, address = ?, opening_hours = ?, location_map_link = ?, description = ?, services_offered = ?, menu_description = ?, photo = ? WHERE id = ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([$name, $email, $phone, $address, $opening_hours, $location_map_link, $description, $services_offered, $menu_description, $foto_nova, $id_logado]);
-    } else {
-        $sql = "UPDATE restaurants SET name = ?, email = ?, phone = ?, address = ?, opening_hours = ?, location_map_link = ?, description = ?, services_offered = ?, menu_description = ? WHERE id = ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([$name, $email, $phone, $address, $opening_hours, $location_map_link, $description, $services_offered, $menu_description, $id_logado]);
+    // Atualiza os dados do chef
+    $chefAtual->setName($name);
+    $chefAtual->setEmail($email);
+    if (method_exists($chefAtual, 'setPhone')) $chefAtual->setPhone($phone);
+    if (method_exists($chefAtual, 'setAddress')) $chefAtual->setAddress($address);
+    $chefAtual->setPhoto($newPhoto);
+    $chefAtual->setRegionOperation($_POST['region_operation'] ?? '');
+    $chefAtual->setServicesOffered($_POST['services_offered'] ?? '');
+    $chefAtual->setDescription($_POST['description'] ?? '');
+    $chefAtual->setProfessionalExperience($_POST['professional_experience'] ?? '');
+
+    $chefDAO->update($chefAtual);
+    $redirect = "user_profile.php?id=$id_logado&type=chef";
+    header("Location: $redirect&msg=atualizado");
+
+} elseif ($tipo_logado === 'restaurant') {
+    $stmt = $conn->prepare("SELECT photo FROM restaurants WHERE id = ?");
+    $stmt->execute([$id_logado]);
+    $oldPhoto = $stmt->fetchColumn();
+
+    $newPhoto = uploadPhoto($_FILES['photo'] ?? null, $oldPhoto);
+
+    $sql = "UPDATE restaurants SET
+                name = ?, email = ?, phone = ?, address = ?,
+                photo = ?, opening_hours = ?, location_map_link = ?,
+                description = ?, services_offered = ?, menu_description = ?
+            WHERE id = ?";
+    $conn->prepare($sql)->execute([
+        $name, $email, $phone, $address,
+        $newPhoto,
+        $_POST['opening_hours'] ?? '',
+        $_POST['location_map_link'] ?? '',
+        $_POST['description'] ?? '',
+        $_POST['services_offered'] ?? '',
+        $_POST['menu_description'] ?? '',
+        $id_logado
+    ]);
+    $redirect = "restaurant_profile.php?id=$id_logado";
+    header("Location: $redirect&msg=atualizado");
+
+} else {
+    $userDAO = new userDAO();
+    $userAtual = $userDAO->read($id_logado);
+    if (!$userAtual) {
+        die("Usuário não encontrado.");
     }
 
-    header("Location: restaurant_profile.php?id=" . $id_logado);
-    exit;
-} 
-// 3. Processamento de USUÁRIO PADRÃO
-else {
-    if ($foto_nova) {
-        $sql = "UPDATE users SET name = ?, email = ?, phone = ?, address = ?, photo = ? WHERE id = ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([$name, $email, $phone, $address, $foto_nova, $id_logado]);
-    } else {
-        $sql = "UPDATE users SET name = ?, email = ?, phone = ?, address = ? WHERE id = ?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([$name, $email, $phone, $address, $id_logado]);
-    }
+    $oldPhoto = method_exists($userAtual, 'getPhoto') ? $userAtual->getPhoto() : 'default.png';
+    $newPhoto = uploadPhoto($_FILES['photo'] ?? null, $oldPhoto);
 
-    header("Location: user_profile.php?id=" . $id_logado . "&type=user");
-    exit;
+    $userAtual->setName($name);
+    $userAtual->setEmail($email);
+    if (method_exists($userAtual, 'setPhone')) $userAtual->setPhone($phone);
+    if (method_exists($userAtual, 'setAddress')) $userAtual->setAddress($address);
+    if (method_exists($userAtual, 'setPhoto')) $userAtual->setPhoto($newPhoto);
+
+    $userDAO->update($userAtual);
+    $redirect = "user_profile.php";
+    header("Location: $redirect?msg=atualizado"); 
 }
+
+exit;

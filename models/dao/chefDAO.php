@@ -58,4 +58,30 @@ public function read($id) {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    public function update($chef) {
+    $sql = "UPDATE chef SET 
+                name = ?,
+                email = ?,
+                phone = ?,
+                address = ?,
+                photo = ?,
+                region_operation = ?,
+                services_offered = ?,
+                description = ?,
+                professional_experience = ?
+            WHERE id = ?";
+    $stmt = $this->conn->prepare($sql);
+    return $stmt->execute([
+        $chef->getName(),
+        $chef->getEmail(),
+        $chef->getPhone(),
+        $chef->getAddress(),
+        $chef->getPhoto(),
+        $chef->getRegionOperation(),
+        $chef->getServicesOffered(),
+        $chef->getDescription(),
+        $chef->getProfessionalExperience(),
+        $chef->getId()
+    ]);
+}
 }
