@@ -82,6 +82,10 @@ if ($base_path === '//') { $base_path = '/'; }
                     <i class="fa-solid fa-user-check"></i>
                     <span>Meu Perfil</span>
                 </a>
+                <a href="<?php echo $base_path; ?>views/receitas_curtidas.php" class="sidebar-item">
+                    <i class="fa-solid fa-heart"></i>
+                    <span>Minhas receitas Favoritas</span>
+                </a>
                 <a href="<?php echo $base_path; ?>views/logout.php" class="sidebar-item" style="color: var(--danger);">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span>Sair da Conta</span>
@@ -98,6 +102,10 @@ if ($base_path === '//') { $base_path = '/'; }
             <a href="<?php echo $base_path; ?>views/restaurant/restaurant_list.php" class="sidebar-item">
                 <i class="fa-solid fa-store"></i>
                 <span>Restaurantes</span>
+            </a>
+            <a href="<?php echo $base_path; ?>views/chefs/chef_list.php" class="sidebar-item">
+                <i class="fa-solid fa-people-group"></i>
+                <span>Chefes</span>
             </a>
             <a href="<?php echo $base_path; ?>views/recipes/recipe_list.php" class="sidebar-item">
                 <i class="fa-solid fa-book-open"></i>
