@@ -42,6 +42,7 @@ $isRestaurant = !empty($r->getRestaurantId());
         </div>
 
         <div class="section-title">Ingredientes</div>
+        <br>
         <div class="content-box"><?= nl2br(htmlspecialchars($r->getIngredients())) ?></div>
 
         <?php if ($isRestaurant): ?>
@@ -53,6 +54,7 @@ $isRestaurant = !empty($r->getRestaurantId());
             </div>
         <?php else: ?>
             <div class="section-title">Modo de Preparo</div>
+            <br>
             <div class="content-box"><?= nl2br(htmlspecialchars($r->getDescription())) ?></div>
         <?php endif; ?>
 
@@ -60,7 +62,7 @@ $isRestaurant = !empty($r->getRestaurantId());
         
         <div class="interaction-bar" style="display: flex; align-items: center; gap: 20px; margin: 20px 0;">
             <?php if($userIdLogado): ?>
-                <a href="recipes/recipe_like_action.php?id=<?= $r->getId() ?>" style="text-decoration: none; font-size: 24px;">
+                <a href="recipe_like_action.php?id=<?= $r->getId() ?>" style="text-decoration: none; font-size: 24px;">
                     <?= $curtiu ? '❤️' : '🤍' ?> 
                 </a>
             <?php else: ?>

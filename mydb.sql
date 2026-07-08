@@ -175,18 +175,17 @@ CREATE TABLE bookings (
 CREATE TABLE recipe_likes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
+	user_type VARCHAR(50) NOT NULL DEFAULT 'user',
     recipe_id INT NOT NULL,
-    CONSTRAINT fk_like_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT fk_like_recipe FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
-    UNIQUE(user_id, recipe_id) -- Impede curtir a mesma receita duas vezes
+    UNIQUE(user_id, user_type, recipe_id)
 );
-
-
 
 SELECT * FROM recipes;
 SELECT * FROM users;
 SELECT * FROM restaurants;
 SELECT * FROM chef;
+
 
 /*
 SELECT r.name, AVG(rv.rating) as media_estrelas

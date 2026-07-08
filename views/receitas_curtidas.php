@@ -16,14 +16,6 @@ $recipes = $recipeDAO->getFavoriteRecipes($userId, $userType);
 $base_path = "../"; 
 ?>
 
-
-
-<div class="main-container">
-    
-    <div class="page-header">
-        <i class="fa-solid fa-heart"></i>
-        <h1>Minhas Receitas Curtidas</h1>
-</head>
 <body>
 
     <!-- 
@@ -34,57 +26,12 @@ $base_path = "../";
     -->
 
     <div class="main-container">
-        
-
-
         <!-- Cabeçalho da Página -->
         <div class="page-header">
             <i class="fa-solid fa-heart"></i>
             <h1>Minhas Receitas Curtidas</h1>
         </div>
 
-        <?php if (!empty($recipes)): ?>
-            <!-- Grid Ativo de Receitas Favoritadas -->
-            <div class="recipes-grid">
-                <?php foreach ($recipes as $recipe): ?>
-                    <div class="recipe-card" id="recipe-card-<?php echo $recipe['id']; ?>">
-                        
-                        <!-- Caminho adaptável para imagens cadastradas ou fallback visual elegante -->
-                        <img src="<?php echo !empty($recipe['imagem']) ? $base_path . htmlspecialchars($recipe['imagem']) : 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?q=80&w=600&auto=format&fit=cover'; ?>" 
-                             alt="<?php echo htmlspecialchars($recipe['titulo']); ?>" 
-                             class="recipe-image">
-                        
-                        <div class="recipe-info">
-                            <div>
-                                <h2 class="recipe-title"><?php echo htmlspecialchars($recipe['titulo']); ?></h2>
-                                <p class="recipe-description">
-                                    <?php echo htmlspecialchars($recipe['descricao'] ?? 'Explore os detalhes para conferir os ingredientes e o modo de preparo completo deste prato.'); ?>
-                                </p>
-                            </div>
-                            
-                            <div class="card-footer">
-                                <a href="<?php echo $base_path; ?>views/recipes/recipe_details.php?id=<?php echo $recipe['id']; ?>" class="btn-view">Ver Receita</a>
-                                
-                                <!-- Botão de Interação com Efeito Visual -->
-                                <button class="btn-unlike" title="Remover dos favoritos" onclick="removerCurtida(<?php echo $recipe['id']; ?>)">
-                                    <i class="fa-solid fa-heart"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
-            <!-- Estado Vazio (Tratamento se o usuário não tiver curtido nada) -->
-            <div class="empty-state">
-                <i class="fa-regular fa-heart"></i>
-                <h2>Seu caderno de receitas está vazio</h2>
-                <p>Você ainda não favoritou nenhuma receita. Navegue pelo site, encontre seus pratos prediletos e clique no ícone de coração para salvá-los aqui!</p>
-                <a href="<?php echo $base_path; ?>views/recipes/recipe_list.php" class="btn-explore">Explorar Receitas</a>
-            </div>
-        <?php endif; ?>
-
-    </div>
 
     <?php if (!empty($recipes)): ?>
         <div class="recipes-grid">
@@ -126,7 +73,7 @@ $base_path = "../";
             <i class="fa-regular fa-heart"></i>
             <h2>Seu caderno de receitas está vazio</h2>
             <p>Você ainda não favoritou nenhuma receita. Navegue pelo site, encontre seus pratos prediletos e clique no ícone de coração para salvá-los aqui!</p>
-            <a href="<?php echo $base_path; ?>views/recipe_list.php" class="btn-explore">Explorar Receitas</a>
+            <a href="<?php echo $base_path; ?>views/recipes/recipe_list.php" class="btn-explore">Explorar Receitas</a>
         </div>
     <?php endif; ?>
 
