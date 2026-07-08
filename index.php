@@ -7,6 +7,25 @@ require_once __DIR__ . '/models/dao/recipeDAO.php';
 $dao = new recipeDAO();
 // Buscamos as 4 melhores receitas para o destaque
 $destaques = $dao->getRanking(4); 
+
+$conn = database::getConexao();
+$stmtTopChefs = $conn->prepare("
+    SELECT 
+        c.id, 
+        c.name, 
+        c.photo, 
+        c.region_operation,
+        COALESCE(AVG(cr.rating), 0) as avg_rating,
+        COUNT(cr.id) as total_reviews
+    FROM chef c
+    LEFT JOIN chef_reviews cr ON c.id = cr.chef_id
+    GROUP BY c.id, c.name, c.photo, c.region_operation
+    ORDER BY avg_rating DESC, total_reviews DESC
+    LIMIT 4
+");
+$stmtTopChefs->execute();
+$topChefs = $stmtTopChefs->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <div class="hero">
@@ -55,9 +74,66 @@ $destaques = $dao->getRanking(4);
 <div class="container" style="margin-top: 60px; margin-bottom: 80px;">
     <div class="section-title">
         <h2>Top Chefs da Semana</h2>
+        <a href="views/chefs/chef_list.php">Ver todos</a>
     </div>
-    <p style="margin-top: 20px; color: #667;">Em breve, conheça nossos chefs mais bem avaliados!</p>
+
+    <?php if(empty($topChefs)): ?>
+        <p style="margin-top: 20px; color: #667;">Nenhum chef em destaque no momento.</p>
+    <?php else: ?>
+        <div class="featured-grid">
+            <?php foreach($topChefs as $chef): 
+                $fotoChef = !empty($chef['photo']) ? $chef['photo'] : 'default_chef.png';
+                $regiao = !empty($chef['region_operation']) ? $chef['region_operation'] : 'Brasil';
+                
+                // Lógica de estrelas
+                $nota = round($chef['avg_rating'] * 2) / 2;
+                $estrelasCheias = floor($nota);
+                $meiaEstrela = ($nota - $estrelasCheias) > 0 ? 1 : 0;
+                $estrelasVazias = 5 - $estrelasCheias - $meiaEstrela;
+            ?>
+                <a href="views/user_profile.php?id=<?= $chef['id'] ?>&type=chef" class="featured-card" style="text-decoration: none; color: inherit;">
+                    <!-- Imagem do chef -->
+                    <img src="static/assets/uploads/<?= htmlspecialchars($fotoChef) ?>" 
+                         alt="<?= htmlspecialchars($chef['name']) ?>" 
+                         style="width: 100%; height: 200px; object-fit: cover;">
+                    
+                    <div class="card-body">
+                        <span class="card-category">
+                            <i class="fa-solid fa-map-location-dot"></i> <?= htmlspecialchars($regiao) ?>
+                        </span>
+                        <h3 class="card-title"><?= htmlspecialchars($chef['name']) ?></h3>
+                        
+                        <div style="color: #f39c12; font-size: 14px; margin-bottom: 10px;">
+                            <?php for($i = 0; $i < $estrelasCheias; $i++): ?>
+                                <i class="fa-solid fa-star"></i>
+                            <?php endfor; ?>
+                            <?php if($meiaEstrela): ?>
+                                <i class="fa-solid fa-star-half-stroke"></i>
+                            <?php endif; ?>
+                            <?php for($i = 0; $i < $estrelasVazias; $i++): ?>
+                                <i class="fa-regular fa-star"></i>
+                            <?php endfor; ?>
+                            <span style="color: #888; font-weight: bold;">
+                                <?= number_format($chef['avg_rating'], 1, ',', '.') ?>
+                            </span>
+                            <span style="color: #888; font-size: 0.85rem;">
+                                (<?= $chef['total_reviews'] ?> avaliações)
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <span style="color: var(--primary); font-weight: 600;">
+                            <i class="fa-solid fa-trophy"></i> Top Chef
+                        </span>
+                        <span class="btn-view-destaque">Ver Perfil</span>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 </div>
+
 
 </body>
 </html>

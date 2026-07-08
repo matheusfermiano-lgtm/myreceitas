@@ -21,6 +21,24 @@ $curtiu = ($userIdLogado) ? $dao->userLiked($r->getId(), $userIdLogado, $userTyp
 $totalLikes = $dao->getLikeCount($r->getId());
 
 $isRestaurant = !empty($r->getRestaurantId());
+
+$autorNome = '';
+$autorLink = '';
+$autorIcon = '';
+
+if (!empty($r->getUserId())) {
+    $autorNome = $r->getOwnerName();
+    $autorLink = '../user_profile.php?id=' . $r->getUserId(); // tipo user padrão
+    $autorIcon = 'fa-user';
+} elseif (!empty($r->getChefId())) {
+    $autorNome = $r->getOwnerName();
+    $autorLink = '../user_profile.php?id=' . $r->getChefId() . '&type=chef';
+    $autorIcon = 'fa-utensils';
+} elseif (!empty($r->getRestaurantId())) {
+    $autorNome = $r->getOwnerName();
+    $autorLink = '../restaurant_profile.php?id=' . $r->getRestaurantId();
+    $autorIcon = 'fa-store';
+}
 ?>
 
 
@@ -35,8 +53,10 @@ $isRestaurant = !empty($r->getRestaurantId());
                 <span class="badge-info"><i class="fa-solid fa-tag"></i> <?= htmlspecialchars($r->getCategory()) ?></span>
                 <span class="badge-info"><i class="fa-regular fa-clock"></i> <?= htmlspecialchars($r->getPreparationTime()) ?> min</span>
                 
-                <?php if ($isRestaurant): ?>
-                    <span class="badge-info" style="background:#8b2538; color:white;"><i class="fa-solid fa-shop"></i> <?= htmlspecialchars($r->getOwnerName()) ?></span>
+                <?php if ($autorNome && $autorLink): ?>
+                    <a href="<?= $autorLink ?>" class="badge-info" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid <?= $autorIcon ?>"></i> <?= htmlspecialchars($autorNome) ?>
+                    </a>
                 <?php endif; ?>
             </div>
         </div>

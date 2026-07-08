@@ -120,7 +120,7 @@ require_once dirname(__DIR__) . '/base.php';
         </div>
     </div>
 
-    <div class="profile-body">
+    <div class="profile-body <?php echo ($tipo_perfil == 'chef') ? 'chef-layout' : 'user-layout'; ?>">
         <div class="sidebar">
             <div class="info-card">
                 <h3><i class="fa-solid fa-address-card"></i> Contato</h3>
@@ -148,26 +148,6 @@ require_once dirname(__DIR__) . '/base.php';
                 <h3><i class="fa-solid fa-bell-concierge"></i> Serviços Oferecidos</h3>
                 <div class="text-content">
                     <?php echo nl2br(htmlspecialchars($servicos)); ?>
-                </div>
-            </div>
-            <?php endif; ?>
-        </div>
-
-        <div class="main-content">
-            <?php if(!empty($descricao)): ?>
-            <div class="info-card">
-                <h3><i class="fa-solid fa-quote-left"></i> Sobre Mim</h3>
-                <div class="text-content">
-                    <?php echo nl2br(htmlspecialchars($descricao)); ?>
-                </div>
-            </div>
-            <?php endif; ?>
-
-            <?php if(!empty($experiencia)): ?>
-            <div class="info-card">
-                <h3><i class="fa-solid fa-briefcase"></i> Experiência Profissional</h3>
-                <div class="text-content">
-                    <?php echo nl2br(htmlspecialchars($experiencia)); ?>
                 </div>
             </div>
             <?php endif; ?>
@@ -202,6 +182,27 @@ require_once dirname(__DIR__) . '/base.php';
                     </div>
                 <?php endif; ?>
             </div>
+        </div>
+
+        <div class="main-content">
+            <?php if(!empty($descricao)): ?>
+            <div class="info-card">
+                <h3><i class="fa-solid fa-quote-left"></i> Sobre Mim</h3>
+                <div class="text-content">
+                    <?php echo nl2br(htmlspecialchars($descricao)); ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <?php if(!empty($experiencia)): ?>
+            <div class="info-card">
+                <h3><i class="fa-solid fa-briefcase"></i> Experiência Profissional</h3>
+                <div class="text-content">
+                    <?php echo nl2br(htmlspecialchars($experiencia)); ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
 
             <?php if ($tipo_perfil === 'chef'): ?>
             <div class="info-card" style="margin-top: 30px;">

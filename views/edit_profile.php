@@ -56,7 +56,7 @@ if ($tipo_logado === 'chef') {
 require_once dirname(__DIR__) . '/base.php';
 ?>
 
-<div style="max-width: 600px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); font-family: sans-serif;">
+<div style="max-width: 2000px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); font-family: sans-serif;">
     <h2 style="color: #8b2538; margin-top: 0; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">
         <i class="fa-solid fa-user-gear"></i> Editar Perfil (<?php echo ucfirst($tipo_logado); ?>)
     </h2>

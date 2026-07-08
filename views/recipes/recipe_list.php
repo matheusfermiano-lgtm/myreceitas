@@ -11,7 +11,7 @@ $dao = new recipeDAO();
 $filters = [
     'q' => $_GET['q'] ?? '',
     'category' => $_GET['category'] ?? '',
-    'max_time' => $_GET['max_time'] ?? ''
+    'max_time' => $_GET['max_time'] ?? '' 
 ];
 
 $limit = 30;
@@ -48,19 +48,35 @@ if (isset($_GET['delete_id'])) {
             <label>Categoria</label>
             <select name="category">
                 <option value="">Todas</option>
-                <option value="entrada" <?= $filters['category'] == 'entrada' ? 'selected' : '' ?>>Entrada</option>
-                <option value="prato principal" <?= $filters['category'] == 'prato principal' ? 'selected' : '' ?>>Prato Principal</option>
-                <option value="sobremesa" <?= $filters['category'] == 'sobremesa' ? 'selected' : '' ?>>Sobremesa</option>
+                <option value="entradas" <?= $filters['category'] == 'entradas' ? 'selected' : '' ?>>Entradas</option>
+                <option value="pratos principais" <?= $filters['category'] == 'pratos principais' ? 'selected' : '' ?>>Pratos Principais</option>
+                <option value="sobremesas" <?= $filters['category'] == 'sobremesas' ? 'selected' : '' ?>>Sobremesas</option>
+                <option value="doces" <?= $filters['category'] == 'doces' ? 'selected' : '' ?>>Doces</option>
+                <option value="carnes" <?= $filters['category'] == 'carnes' ? 'selected' : '' ?>>Carnes</option>
+                <option value="massas" <?= $filters['category'] == 'massas' ? 'selected' : '' ?>>Massas</option>
+                <option value="lanches" <?= $filters['category'] == 'lanches' ? 'selected' : '' ?>>Lanches</option>
+                <option value="petiscos" <?= $filters['category'] == 'petiscos' ? 'selected' : '' ?>>Petiscos</option>
+                <option value="saladas" <?= $filters['category'] == 'saladas' ? 'selected' : '' ?>>Saladas</option>
+                <option value="bolos" <?= $filters['category'] == 'bolos' ? 'selected' : '' ?>>Bolos</option>
+                <option value="peixes" <?= $filters['category'] == 'peixes' ? 'selected' : '' ?>>Peixes</option>
+                <option value="tortas" <?= $filters['category'] == 'tortas' ? 'selected' : '' ?>>Tortas</option>
+                <option value="sopas" <?= $filters['category'] == 'sopas' ? 'selected' : '' ?>>Sopas</option>
+                <option value="bebidas" <?= $filters['category'] == 'bebidas' ? 'selected' : '' ?>>Bebidas</option>
             </select>
         </div>
-
         <div class="filter-group">
             <label>Tempo Máximo (min)</label>
             <input type="number" name="max_time" placeholder="Ex: 60" value="<?= $filters['max_time'] ?>">
         </div>
 
-        <button type="submit" class="btn-filter">Aplicar Filtros</button>
-        <a href="recipe_list.php" style="font-size: 13px; color: #666; margin-bottom: 10px;">Limpar</a>
+        <div class="filter-actions">
+            <button type="submit" class="btn-filter">
+                <i class="fa-solid fa-filter"></i> Filtrar
+            </button>
+            <a href="recipe_list.php" class="btn-clear">
+                <i class="fa-solid fa-rotate-left"></i> Limpar
+            </a>
+        </div>
     </form>
 
     <div class="recipe-grid">

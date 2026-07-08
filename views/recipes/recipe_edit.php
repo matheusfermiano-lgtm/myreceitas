@@ -81,8 +81,8 @@ require_once ROOT_PATH . '/base.php';
                 <div class="form-group">
                     <label>Categoria:</label>
                     <select name="category">
-                        <option value="entrada" <?= $receita->getCategory() == 'entrada' ? 'selected' : '' ?>>Entrada</option>
-                        <option value="prato principal" <?= $receita->getCategory() == 'prato principal' ? 'selected' : '' ?>>Prato Principal</option>
+                        <option value="entrada" <?= $receita->getCategory() == 'entradas' ? 'selected' : '' ?>>Entradas</option>
+                        <option value="prato principal" <?= $receita->getCategory() == 'pratos principais' ? 'selected' : '' ?>>Pratos Principais</option>
                         <option value="sobremesas" <?= $receita->getCategory() == 'sobremesas' ? 'selected' : '' ?>>Sobremesas</option>
                         <option value="doces" <?= $receita->getCategory() == 'doces' ? 'selected' : '' ?>>Doces</option>
                         <option value="carnes" <?= $receita->getCategory() == 'carnes' ? 'selected' : '' ?>>Carnes</option>

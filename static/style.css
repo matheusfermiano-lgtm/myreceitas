@@ -1097,6 +1097,7 @@ a { color: inherit; text-decoration: none; }
   padding: 25px;
   box-shadow: var(--shadow-sm);
   margin-bottom: 25px;
+  max-width: 1100px;
 }
 
 .info-card h3 {
@@ -1481,48 +1482,6 @@ a { color: inherit; text-decoration: none; }
   transform: translateY(-2px);
 }
 
-/* =========================================
-   FILTROS (CHEFS)
-   ========================================= */
-.filter-bar {
-  background: var(--surface);
-  padding: 15px 25px;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.filter-input, .filter-select {
-  padding: 10px 15px;
-  border: 1px solid var(--input-border);
-  border-radius: 8px;
-  outline: none;
-  font-size: 0.95rem;
-  background: var(--input-bg);
-  color: var(--text);
-}
-
-.filter-input:focus, .filter-select:focus {
-  border-color: var(--primary);
-}
-
-.btn-filter {
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.2s;
-}
-
-.btn-filter:hover {
-  background: var(--primary-hover);
-}
 
 /* =========================================
    FOCO VISÍVEL (ACESSIBILIDADE)
@@ -1592,10 +1551,7 @@ a { color: inherit; text-decoration: none; }
     align-items: flex-start;
   }
 
-  .filter-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
+
 }
 
 @media screen and (max-width: 480px) {
@@ -1794,4 +1750,130 @@ a { color: inherit; text-decoration: none; }
 .btn-explore:hover {
   opacity: 0.95;
   transform: translateY(-2px);
+}
+
+/* =========================================
+   LAYOUT DE PERFIL: USUÁRIO COMUM
+   ========================================= */
+.profile-body.user-layout {
+    grid-template-columns: 1fr;   /* uma única coluna larga */
+}
+
+.profile-body.user-layout .sidebar {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;                    /* espaçamento entre os cards */
+}
+
+.profile-body.user-layout .info-card {
+    max-width: 100%;
+    margin-bottom: 0;             /* removemos margem extra, pois o gap já cuida */
+}
+/* =========================================
+   FILTROS (ESTILO UNIFICADO)
+   ========================================= */
+.filter-section,
+.filter-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  margin: 20px 0 30px;
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Grupos de campo (com label) – usado em filter-section */
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 160px;
+}
+
+.filter-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.3px;
+}
+
+/* Inputs e selects (tanto em filter-group quanto em filter-bar) */
+.filter-group select,
+.filter-group input,
+.filter-bar input,
+.filter-bar select,
+.filter-input,
+.filter-select {
+  padding: 10px 14px;
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  background-color: var(--input-bg);
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Foco */
+.filter-group select:focus,
+.filter-group input:focus,
+.filter-bar input:focus,
+.filter-bar select:focus,
+.filter-input:focus,
+.filter-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(139, 37, 56, 0.1);
+}
+
+/* Ações (botão de filtrar + limpar) */
+.filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;   /* alinha ao fundo do container */
+}
+
+/* Botão de filtrar */
+.btn-filter {
+  background-color: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background var(--transition), transform 0.2s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-filter:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+/* Botão de limpar */
+.btn-clear {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.2s;
+  white-space: nowrap;
+  padding: 8px 0;
+}
+
+.btn-clear:hover {
+  color: var(--danger);
 }

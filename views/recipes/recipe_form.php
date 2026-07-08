@@ -69,8 +69,8 @@ require_once ROOT_PATH . '/base.php';
                 <div class="form-group">
                     <label>Categoria:</label>
                     <select name="category" required>
-                        <option value="entrada">Entrada</option>
-                        <option value="prato principal">Prato Principal</option>
+                        <option value="entradas">Entradas</option>
+                        <option value="pratos principais">Pratos Principais</option>
                         <option value="sobremesas">Sobremesas</option>
                         <option value="doces">Doces</option>
                         <option value="carnes">Carnes</option>
