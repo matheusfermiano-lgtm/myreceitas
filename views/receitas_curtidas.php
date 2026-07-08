@@ -36,7 +36,7 @@ $base_path = "../";
     <?php if (!empty($recipes)): ?>
         <div class="recipes-grid">
             <?php foreach ($recipes as $recipe): ?>
-                <div class="recipe-card" id="recipe-card-<?php echo $recipe->getId(); ?>">
+                <div class="favorite-card">
                     
                     <?php 
                         // Trava de segurança para a imagem da receita

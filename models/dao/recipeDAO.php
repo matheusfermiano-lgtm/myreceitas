@@ -322,49 +322,62 @@ public function userLiked($recipeId, $userId, $userType) {
     }
     
     public function searchRecipes($filters, $limit = 30, $offset = 0) {
-    $sql = "SELECT * FROM recipes 
-            WHERE is_public = 1 
-            AND deleted_at IS NULL 
-            AND restaurant_id IS NULL";
-    
-    $params = [];
+        $sql = "SELECT * FROM recipes 
+                WHERE is_public = 1 
+                AND deleted_at IS NULL 
+                AND restaurant_id IS NULL";
 
-    // Filtro por Nome ou Ingredientes (Busca Geral)
-    if (!empty($filters['q'])) {
-        $sql .= " AND (name LIKE :q OR ingredients LIKE :q)";
-        $params[':q'] = '%' . $filters['q'] . '%';
+        $conditions = [];
+        $values = [];
+
+        // Filtro por Nome ou Ingredientes (Busca Geral)
+        if (!empty($filters['q'])) {
+            $conditions[] = " (name LIKE ? OR ingredients LIKE ?) ";
+            $q = '%' . $filters['q'] . '%';
+            $values[] = $q;
+            $values[] = $q; // precisa duas vezes por causa dos dois ?
+        }
+
+        // Filtro específico por Categoria
+        if (!empty($filters['category'])) {
+            $conditions[] = " category = ? ";
+            $values[] = $filters['category'];
+        }
+
+        // Filtro por Tempo Máximo
+        if (!empty($filters['max_time'])) {
+            $conditions[] = " preparation_time <= ? ";
+            $values[] = (int)$filters['max_time'];
+        }
+
+        // Concatena as condições com AND
+        if (!empty($conditions)) {
+            $sql .= " AND " . implode(" AND ", $conditions);
+        }
+
+        // Ordenação
+        if (!empty($filters['q'])) {
+            $sql .= " ORDER BY LENGTH(ingredients) ASC, name ASC";
+        } else {
+            $sql .= " ORDER BY created_at DESC";
+        }
+
+        $sql .= " LIMIT ? OFFSET ?";
+        $values[] = (int)$limit;
+        $values[] = (int)$offset;
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($values);   // executa passando o array de valores na ordem
+
+        return $this->mapToArray($stmt);
     }
+    public function countSearchRecipes($filters) {
+        $sql = "SELECT COUNT(*) FROM recipes 
+                WHERE is_public = 1 AND deleted_at IS NULL AND restaurant_id IS NULL";
+        $values = [];
 
-    // Filtro específico por Categoria
-    if (!empty($filters['category'])) {
-        $sql .= " AND category = :category";
-        $params[':category'] = $filters['category'];
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($values);
+        return $stmt->fetchColumn();
     }
-
-    // Filtro por Tempo Máximo
-    if (!empty($filters['max_time'])) {
-        $sql .= " AND preparation_time <= :max_time";
-        $params[':max_time'] = (int)$filters['max_time'];
-    }
-
-    // Ordenação Inteligente: 
-    // Se pesquisou por ingrediente, ordena pelo tamanho do texto (menos ingredientes primeiro)
-    if (!empty($filters['q'])) {
-        $sql .= " ORDER BY LENGTH(ingredients) ASC, name ASC";
-    } else {
-        $sql .= " ORDER BY created_at DESC";
-    }
-
-    $sql .= " LIMIT :limit OFFSET :offset";
-
-    $stmt = $this->conn->prepare($sql);
-    foreach ($params as $key => $val) {
-        $stmt->bindValue($key, $val);
-    }
-    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
-    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-    $stmt->execute();
-
-    return $this->mapToArray($stmt);
-}
 }

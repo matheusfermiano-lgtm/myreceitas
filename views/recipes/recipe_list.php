@@ -23,7 +23,7 @@ $prevUrl = '?' . http_build_query($queryParams);
 
 // Usa o novo método de busca
 $receitas = $dao->searchRecipes($filters, $limit, $offset);
-$totalReceitas = $dao->countAllPublic(); // Você pode ajustar este count para considerar filtros se quiser precisão total
+$totalReceitas = $dao->countSearchRecipes($filters);
 $totalPages = ceil($totalReceitas / $limit);
 
 // Tratamento de exclusão
@@ -104,32 +104,35 @@ if (isset($_GET['delete_id'])) {
     <!-- SISTEMA DE PAGINAÇÃO ESTILO GOOGLE -->
     <div class="google-pagination">
         <div class="google-logo">
-            <span class="letter-bordo">M</span><span class="letter-bege">y</span><span class="letter-bordo">R</span><span class="letter-bege">e</span><span class="letter-bordo">c</span><span class="letter-bege">e</span><?php 
-                for($i=1; $i<=$totalPages; $i++) {
-                    echo "<span class='letter-bordo'>i</span>";
-                }
-            ?><span class="letter-bege">t</span><span class="letter-bordo">a</span><span class="letter-bege">s</span>
+            <span class="letter-bordo">M</span><span class="letter-bege">y</span>...
         </div>
 
         <div class="page-numbers">
-            <?php
-                $queryParams = $_GET; // copia os parâmetros atuais (q, category, max_time)
+            <?php if ($page > 1): ?>
+                <?php
                 $queryParams['page'] = $page - 1;
                 $prevUrl = '?' . http_build_query($queryParams);
-            ?>
-            <a href="<?= $prevUrl ?>" class="nav-btn">&lt; Anterior</a>
+                ?>
+                <a href="<?= $prevUrl ?>" class="nav-btn">&lt; Anterior</a>
+            <?php endif; ?>
 
-            <?php
-                $queryParams = $_GET;
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <?php
                 $queryParams['page'] = $i;
                 $linkUrl = '?' . http_build_query($queryParams);
-            ?>
-            <a href="<?= $linkUrl ?>" class="page-link <?= ($i == $page) ? 'active' : '' ?>"><?= $i ?></a>
-            
-            <?php if($page < $totalPages): ?>
-                <a href="?page=<?= $page + 1 ?>" class="nav-btn">Próximo &gt;</a>
+                ?>
+                <a href="<?= $linkUrl ?>" class="page-link <?= ($i == $page) ? 'active' : '' ?>">
+                    <?= $i ?>
+                </a>
+            <?php endfor; ?>
+
+            <?php if ($page < $totalPages): ?>
+                <?php
+                $queryParams['page'] = $page + 1;
+                $nextUrl = '?' . http_build_query($queryParams);
+                ?>
+                <a href="<?= $nextUrl ?>" class="nav-btn">Próximo &gt;</a>
             <?php endif; ?>
-            
         </div>
     </div>
 </div>

@@ -1612,3 +1612,186 @@ a { color: inherit; text-decoration: none; }
 .text-primary { color: var(--primary); }
 .text-accent { color: var(--accent); }
 .bg-surface { background-color: var(--surface); }
+
+
+/* =========================================
+   PÁGINA DE RECEITAS CURTIDAS
+   ========================================= */
+.main-container {
+  max-width: var(--max-width);
+  margin: 30px auto;
+  padding: 0 24px;
+}
+
+/* Cabeçalho da página */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 40px;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 18px;
+}
+
+.page-header i {
+  font-size: 2.5rem;
+  color: var(--danger);
+}
+
+.page-header h1 {
+  font-size: clamp(24px, 5vw, 32px);
+  color: var(--text);
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Grid de favoritos (já existia, reforçamos) */
+.recipes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+/* Cartão de receita favorita (com imagem) */
+.favorite-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.favorite-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent);
+}
+
+.recipe-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.recipe-info {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.recipe-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.recipe-description {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  flex: 1; /* empurra o rodapé para baixo */
+}
+
+/* Rodapé do cartão (ações) */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+  padding-top: 15px;
+}
+
+/* Botão "Ver Receita" (já existe, mas garantimos) */
+.btn-view {
+  background-color: var(--primary);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--transition), transform 0.2s;
+}
+
+.btn-view:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+/* Botão de descurtir (coração preenchido) */
+.btn-unlike {
+  background: none;
+  border: 2px solid var(--danger);
+  color: var(--danger);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.btn-unlike:hover {
+  background-color: var(--danger);
+  color: #fff;
+  transform: scale(1.1);
+}
+
+/* Estado vazio (já existe, mas reforçamos com o ícone regular) */
+.empty-state {
+  text-align: center;
+  padding: 70px 24px;
+  background-color: var(--surface);
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-md);
+  max-width: 600px;
+  margin: 50px auto;
+}
+
+.empty-state i {
+  font-size: 4rem;
+  color: var(--accent);
+  margin-bottom: 24px;
+}
+
+.empty-state h2 {
+  margin: 0 0 12px 0;
+  color: var(--text);
+  font-size: 1.6rem;
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  margin: 0 0 30px 0;
+  line-height: 1.5;
+}
+
+.btn-explore {
+  display: inline-block;
+  background-color: var(--primary);
+  color: #fff;
+  text-decoration: none;
+  padding: 12px 26px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.btn-explore:hover {
+  opacity: 0.95;
+  transform: translateY(-2px);
+}
