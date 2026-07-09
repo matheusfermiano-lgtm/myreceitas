@@ -33,7 +33,6 @@ if (isset($_GET['delete_id'])) {
     exit;
 }
 ?>
-
 <div class="container">
     <div class="header-list">
         <h2>Todas as Receitas</h2>
@@ -79,14 +78,14 @@ if (isset($_GET['delete_id'])) {
         </div>
     </form>
 
-    <div class="recipe-grid">
+    <div class="recipe-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); justify-content: center; gap: 20px;">
         <?php if(empty($receitas)): ?>
             <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
                 <p style="color: #888;">Nenhuma receita encontrada nesta página.</p>
             </div>
         <?php else: ?>
             <?php foreach($receitas as $r): ?>
-                <div class="recipe-card">
+                <div class="recipe-card" style="width: 250px; flex-shrink: 0;">
                     <div>
                         <span class="category"><?= htmlspecialchars($r->getCategory()) ?></span>
                         <h3><?= htmlspecialchars($r->getName()) ?></h3>

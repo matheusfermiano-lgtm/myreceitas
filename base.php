@@ -38,9 +38,11 @@ if ($base_path === '//') { $base_path = '/'; }
         ?>
         <!-- Depois: transformado em formulário -->
         <form class="search-bar" action="<?= $base_path ?>views/recipes/recipe_list.php" method="GET">
-            <input type="text" name="q" placeholder="Buscar receitas..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
+            
+            <input type="text" name="q" placeholder="Buscar receitas..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>"><i class="fa-solid fa-magnifying-glass"></i>
+            
             <!-- botão invisível para permitir submit com Enter -->
-            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button type="submit"></button>
         </form>
         <?php endif; ?>
         
@@ -49,20 +51,6 @@ if ($base_path === '//') { $base_path = '/'; }
             <button class="theme-toggle" id="theme-switcher" title="Alternar Tema">
                 <i class="fa-solid fa-sun"></i>
             </button>
-            <!--
-            <div class="sidebar-toggle-container" style="padding: 20px 25px; margin-top: auto; border-top: 1px solid var(--borda-item);">
-                <label class="theme-toggle" style="cursor: pointer; display: block; width: 100%;">
-                    <input type="checkbox" id="dark-mode-switch" class="theme-toggle__checkbox" style="display: none;" checked>
-                    <div class="theme-toggle__container" style="display: flex; align-items: center; justify-content: space-between; background-color: var(--bg-toggle-capsula); padding: 12px 20px; border-radius: 50px; transition: background-color 0.3s;">
-                        <div class="theme-toggle__info" style="display: flex; align-items: center; gap: 12px; color: var(--cor-toggle-elementos); transition: color 0.3s;">
-                            <i class="fa-regular fa-sun theme-toggle__icon" id="theme-icon" style="font-size: 1.2rem;"></i>
-                            <span class="theme-toggle__text" id="theme-text" style="font-size: 1rem; font-weight: 600;">Modo claro</span>
-                        </div>
-                        <div class="theme-toggle__switch"></div>
-                    </div>
-                </label>
-            </div>
-            -->
 
             <a href="#" id="btnPerfil" title="Menu do Usuário">
                 <i class="fa-regular fa-user"></i>

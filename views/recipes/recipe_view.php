@@ -137,7 +137,7 @@ if (!empty($r->getUserId())) {
                         <strong><?= htmlspecialchars($rev['user_name']) ?></strong> 
                         <span style="color: #ffc107;"><?= str_repeat('⭐', $rev['rating']) ?></span>
                         <p style="margin: 5px 0;"><?= nl2br(htmlspecialchars($rev['comment'])) ?></p>
-                        <small style="color: var(--bg);"><?= date('d/m/Y', strtotime($rev['created_at'])) ?></small>
+                        <small style="color: var(--text);"><?= date('d/m/Y', strtotime($rev['created_at'])) ?></small>
                     </div>
                 <?php endforeach; ?>
             </div>
