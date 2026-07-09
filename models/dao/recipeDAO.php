@@ -138,9 +138,10 @@ class recipeDAO {
     }
 
     public function read($id) {
-        // Query especial para trazer o nome do dono junto
         $sql = "SELECT r.*, 
-                COALESCE(u.name, c.name, res.name) as owner_name 
+                COALESCE(u.name, c.name, res.name) as owner_name,
+                res.location_map_link,
+                res.address
                 FROM recipes r
                 LEFT JOIN users u ON r.user_id = u.id
                 LEFT JOIN chef c ON r.chef_id = c.id
@@ -159,6 +160,9 @@ class recipeDAO {
             $dados['restaurant_id'], $dados['id'], $dados['created_at']
         );
         $r->setOwnerName($dados['owner_name']);
+        // Armazena dados extras do restaurante (se existirem)
+        $r->setLocationMapLink($dados['location_map_link'] ?? null);
+        $r->setAddress($dados['address'] ?? null);
         return $r;
     }
 
@@ -324,8 +328,7 @@ public function userLiked($recipeId, $userId, $userType) {
     public function searchRecipes($filters, $limit = 30, $offset = 0) {
         $sql = "SELECT * FROM recipes 
                 WHERE is_public = 1 
-                AND deleted_at IS NULL 
-                AND restaurant_id IS NULL";
+                AND deleted_at IS NULL";
 
         $conditions = [];
         $values = [];

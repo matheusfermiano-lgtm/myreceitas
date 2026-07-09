@@ -66,16 +66,31 @@ if (!empty($r->getUserId())) {
         <div class="content-box"><?= nl2br(htmlspecialchars($r->getIngredients())) ?></div>
 
         <?php if ($isRestaurant): ?>
+            <div style="margin-top: 10px;">
+                <span class="badge-info"><i class="fa-solid fa-tag"></i> <?= htmlspecialchars($r->getCategory()) ?></span>
+                <span class="badge-info"><i class="fa-regular fa-clock"></i> <?= htmlspecialchars($r->getPreparationTime()) ?> min</span>
+                <a href="<?= htmlspecialchars($r->getLocationMapLink() ?: '#') ?>" target="_blank" 
+                style="display:inline-block; margin-left:10px; color:#8b2538; text-decoration:underline;">
+                    <i class="fa-solid fa-map-location-dot"></i> Ver localização
+                </a>
+            </div>
+            
+            <!-- Se houver endereço cadastrado -->
+            <?php if (!empty($r->getAddress())): ?>
+                <p style="margin-top: 8px; color: var(--text);">
+                    <i class="fa-solid fa-location-dot"></i> <?= htmlspecialchars($r->getAddress()) ?>
+                </p>
+            <?php endif; ?>
+            
+            <!-- Preço -->
             <div style="text-align: right; margin-bottom: 20px;">
                 <h2 style="color: #e57300; font-size: 30px;">Valor: R$ <?= number_format($r->getPrice(), 2, ',', '.') ?></h2>
             </div>
+            
+            <!-- Aviso (já existente) -->
             <div class="content-box" style="background: #fdf5f6; border-color: #8b2538;">
                 <i class="fa-solid fa-circle-info"></i> <strong>Aviso:</strong> O modo de preparo desta receita é exclusivo deste estabelecimento.
             </div>
-        <?php else: ?>
-            <div class="section-title">Modo de Preparo</div>
-            <br>
-            <div class="content-box"><?= nl2br(htmlspecialchars($r->getDescription())) ?></div>
         <?php endif; ?>
 
         <div class="section-title">Feedbacks e Avaliações</div>
@@ -91,7 +106,7 @@ if (!empty($r->getUserId())) {
                 </a>
             <?php endif; ?>
             
-            <span style="font-size: 18px; color: #333;"><?= $totalLikes ?> curtidas</span>
+            <span style="font-size: 18px; color: var(--text);"><?= $totalLikes ?> curtidas</span>
         </div>
 
         <hr>
@@ -102,7 +117,7 @@ if (!empty($r->getUserId())) {
             <?php if(isset($_SESSION['user_id'])): ?>
             <form action="recipe_post_review.php" method="POST" style="background: #f9f9f9; padding: 20px; border-radius: 10px;">
                 <input type="hidden" name="recipe_id" value="<?= $r->getId() ?>">
-                <label>Sua nota (1 a 5):</label>
+                <label style="var(--text)">Sua nota (1 a 5):</label>
                 <select name="rating" required>
                     <option value="5">⭐⭐⭐⭐⭐ (Incrível)</option>
                     <option value="4">⭐⭐⭐⭐ (Muito bom)</option>

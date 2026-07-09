@@ -90,10 +90,20 @@ if (isset($_GET['delete_id'])) {
                     <div>
                         <span class="category"><?= htmlspecialchars($r->getCategory()) ?></span>
                         <h3><?= htmlspecialchars($r->getName()) ?></h3>
-                        <div class="info">
-                            <span><i class="fa-regular fa-clock"></i> <?= $r->getPreparationTime() ?> min</span>
-                            <span><i class="fa-regular fa-calendar"></i> <?= date('d/m', strtotime($r->getCreatedAt())) ?></span>
-                        </div>
+                        
+                        <?php if (!empty($r->getRestaurantId())): ?>
+                            <div style="font-weight: bold; color: var(--primary); margin-bottom: 5px;">
+                                <i class="fa-solid fa-shop"></i> <?= htmlspecialchars($r->getOwnerName()) ?>
+                            </div>
+                            <div style="color: #e57300; font-weight: bold; margin-bottom: 10px;">
+                                R$ <?= number_format($r->getPrice(), 2, ',', '.') ?>
+                            </div>
+                        <?php else: ?>
+                            <div class="info">
+                                <span><i class="fa-regular fa-clock"></i> <?= $r->getPreparationTime() ?> min</span>
+                                <span><i class="fa-regular fa-calendar"></i> <?= date('d/m', strtotime($r->getCreatedAt())) ?></span>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     
                     <div class="card-actions">

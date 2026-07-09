@@ -1,6 +1,9 @@
 <?php
 require_once dirname(__DIR__) . '/base.php';
 require_once dirname(__DIR__) . '/models/dao/restaurantDAO.php';
+require_once dirname(__DIR__) . '/models/dao/recipeDAO.php';
+$recipeDAO = new recipeDAO();
+$menu = $recipeDAO->getRecipesByRestaurant($id_perfil);
 
 if(!isset($_SESSION)) session_start();
 
@@ -130,6 +133,30 @@ $chefsVinculados = $stmtC->fetchAll(PDO::FETCH_ASSOC);
                                 <div><strong><?php echo htmlspecialchars($c['name']); ?></strong></div>
                                 <div style="font-size: 0.8rem; color: #888;">Ver perfil</div>
                             </a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="info-card">
+                <h3><i class="fa-solid fa-utensils"></i> Cardápio</h3>
+                
+                <?php if (empty($menu)): ?>
+                    <p style="color: var(--text);">Nenhuma receita cadastrada ainda.</p>
+                <?php else: ?>
+                    <div class="recipes-grid">
+                        <?php foreach ($menu as $item): ?>
+                            <div class="recipe-item">
+                                <h4><?= htmlspecialchars($item->getName()) ?></h4>
+                                <p style="font-weight: bold; color: var(--primary);">
+                                    R$ <?= number_format($item->getPrice(), 2, ',', '.') ?>
+                                </p>
+                                <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                                    <?= htmlspecialchars($item->getDescription() ?: 'Sem descrição') ?>
+                                </p>
+                                <a href="<?= $base_path ?>views/recipes/recipe_view.php?id=<?= $item->getId() ?>" class="btn-view" style="margin-top: 8px;">
+                                    <i class="fa-solid fa-eye"></i> Ver receita
+                                </a>
+                            </div>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>

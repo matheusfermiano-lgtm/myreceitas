@@ -13,6 +13,8 @@ class Recipe {
     private $restaurant_id;
     private $created_at; // Novo
     private $owner_name; // Campo auxiliar para o nome do Restaurante/Chef
+    private $location_map_link;
+    private $address;
 
     public function __construct($name, $ingredients, $description = null, $preparation_time = null, $category = null, $price = 0.00, $is_public = 1, $user_id = null, $chef_id = null, $restaurant_id = null, $id = null, $created_at = null) {
         $this->setName($name);
@@ -27,6 +29,7 @@ class Recipe {
         $this->setRestaurantId($restaurant_id);
         $this->setId($id);
         $this->created_at = $created_at;
+        
     }
 
     // Getters
@@ -43,6 +46,8 @@ class Recipe {
     public function getRestaurantId() { return $this->restaurant_id; }
     public function getCreatedAt() { return $this->created_at; }
     public function getOwnerName() { return $this->owner_name; }
+    public function getLocationMapLink() { return $this->location_map_link; }
+    public function getAddress() { return $this->address; }
 
     // Setters
     public function setId($id) { $this->id = $id; }
@@ -57,4 +62,6 @@ class Recipe {
     public function setChefId($cid) { $this->chef_id = $cid; }
     public function setRestaurantId($rid) { $this->restaurant_id = $rid; }
     public function setOwnerName($name) { $this->owner_name = $name; }
+    public function setLocationMapLink($link) { $this->location_map_link = $link; }
+    public function setAddress($address) { $this->address = $address; }
 }
