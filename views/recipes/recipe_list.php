@@ -129,7 +129,7 @@ if (isset($_GET['delete_id'])) {
     <!-- SISTEMA DE PAGINAÇÃO ESTILO GOOGLE -->
     <div class="google-pagination">
         <div class="google-logo">
-            <span class="letter-bordo">M</span><span class="letter-bege">y</span>...
+            <span class="letter-bordo">M</span><span class="letter-bege">y</span><span class="letter-bordo">R</span><span class="letter-bege">e</span><span class="letter-bordo">c</span><span class="letter-bege">e</span><span class="letter-bordo">i</span><span class="letter-bege">t</span><span class="letter-bordo">a</span><span class="letter-bege">s</span>
         </div>
 
         <div class="page-numbers">
