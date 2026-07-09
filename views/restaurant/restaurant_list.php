@@ -14,12 +14,15 @@ $restaurants = $restaurantDAO->getAll();
     </div>
 
     <?php if (empty($restaurants)): ?>
-        <p style="text-align: center; color: #666; margin-top: 5px;">Nenhum restaurante cadastrado até o momento.</p>
+        <p style="text-align: center; color: var(--text); margin-top: 5px;">Nenhum restaurante cadastrado até o momento.</p>
     <?php else: ?>
         <div class="restaurant-grid">
             <?php foreach ($restaurants as $rest): ?>
                 <div class="restaurant-card">
-                <img src="../../assets/uploads/<?php echo htmlspecialchars($rest['photo']); ?>" class="restaurant-img" alt="<?php echo htmlspecialchars($rest['name']); ?>">
+                    <?php 
+                        $fotoRest = !empty($rest['photo']) ? $rest['photo'] : 'default.png';
+                    ?>
+                    <img src="<?php echo $base_path; ?>static/assets/uploads/<?php echo htmlspecialchars($fotoRest); ?>" class="restaurant-img" alt="<?php echo htmlspecialchars($rest['name']); ?>">
                     <div class="restaurant-body">
                         <div class="restaurant-title"><?php echo htmlspecialchars($rest['name']); ?></div>
                         
@@ -29,7 +32,7 @@ $restaurants = $restaurantDAO->getAll();
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-solid fa-star"></i>
                             <i class="fa-regular fa-star"></i>
-                            <span style="color: #666; font-size: 14px;">(4.0)</span>
+                            <span style="color: var(--text); font-size: 14px;">(4.0)</span>
                         </div>
                         
                         <div class="restaurant-info">
@@ -41,7 +44,7 @@ $restaurants = $restaurantDAO->getAll();
                             </div>
                         <?php endif; ?>
                         
-                        <p style="font-size: 14px; color: #555; line-height: 1.4;"><?php echo htmlspecialchars(substr($rest['description'], 0, 100)) . '...'; ?></p>
+                        <p style="font-size: 14px; color: var(--text); line-height: 1.4;"><?php echo htmlspecialchars(substr($rest['description'], 0, 100)) . '...'; ?></p>
                         
                         <a href="../restaurant_profile.php?id=<?php echo $rest['id']; ?>" class="btn-view">Ver Detalhes & Cardápio</a>
                     </div>

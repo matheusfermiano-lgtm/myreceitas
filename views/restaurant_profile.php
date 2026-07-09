@@ -1,16 +1,18 @@
 <?php
 require_once dirname(__DIR__) . '/base.php';
 require_once dirname(__DIR__) . '/models/dao/restaurantDAO.php';
-require_once dirname(__DIR__) . '/models/dao/recipeDAO.php';
-$recipeDAO = new recipeDAO();
-$menu = $recipeDAO->getRecipesByRestaurant($id_perfil);
 
 if(!isset($_SESSION)) session_start();
 
-$id_perfil = $_GET['id'] ?? $_SESSION['user_id'];
+$id_perfil = $_GET['id'] ?? $_SESSION['user_id'] ?? null;
 $id_logado = $_SESSION['user_id'] ?? null;
 
-// Ajuste para aceitar tanto 'restaurant' quanto 'restaurante' vindo da sessão
+// Se não houver ID de perfil, redireciona para a listagem de restaurantes
+if (!$id_perfil) {
+    header("Location: restaurant/restaurant_list.php");
+    exit;
+}
+
 $user_type = $_SESSION['user_type'] ?? '';
 $e_o_dono = ($id_perfil == $id_logado && ($user_type === 'restaurant' || $user_type === 'restaurante'));
 

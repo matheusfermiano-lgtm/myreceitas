@@ -89,7 +89,7 @@ if (!empty($r->getUserId())) {
             
             <!-- Aviso (já existente) -->
             <div class="content-box" style="background: #fdf5f6; border-color: #8b2538;">
-                <i class="fa-solid fa-circle-info"></i> <strong>Aviso:</strong> O modo de preparo desta receita é exclusivo deste estabelecimento.
+                <p style="color: var(--primary);"><i class="fa-solid fa-circle-info"></i> <strong>Aviso:</strong> O modo de preparo desta receita é exclusivo deste estabelecimento.</p>
             </div>
         <?php endif; ?>
 
@@ -115,9 +115,9 @@ if (!empty($r->getUserId())) {
             <h3>Comentários e Avaliações</h3>
             
             <?php if(isset($_SESSION['user_id'])): ?>
-            <form action="recipe_post_review.php" method="POST" style="background: #f9f9f9; padding: 20px; border-radius: 10px;">
+            <form action="recipe_post_review.php" method="POST" class="file-input-wrapper" style="background: #f9f9f9; padding: 20px; border-radius: 10px;">
                 <input type="hidden" name="recipe_id" value="<?= $r->getId() ?>">
-                <label style="var(--text)">Sua nota (1 a 5):</label>
+                <label style="color: var(--text);">Sua nota (1 a 5):</label>
                 <select name="rating" required>
                     <option value="5">⭐⭐⭐⭐⭐ (Incrível)</option>
                     <option value="4">⭐⭐⭐⭐ (Muito bom)</option>
@@ -137,7 +137,7 @@ if (!empty($r->getUserId())) {
                         <strong><?= htmlspecialchars($rev['user_name']) ?></strong> 
                         <span style="color: #ffc107;"><?= str_repeat('⭐', $rev['rating']) ?></span>
                         <p style="margin: 5px 0;"><?= nl2br(htmlspecialchars($rev['comment'])) ?></p>
-                        <small style="color: #999;"><?= date('d/m/Y', strtotime($rev['created_at'])) ?></small>
+                        <small style="color: var(--bg);"><?= date('d/m/Y', strtotime($rev['created_at'])) ?></small>
                     </div>
                 <?php endforeach; ?>
             </div>

@@ -209,7 +209,7 @@ require_once dirname(__DIR__) . '/base.php';
                         <i class="fa-solid fa-image" style="color: #8b2538; margin-bottom: 5px;"></i><br>
                         <input type="file" name="photo" accept="image/png, image/jpeg, image/webp" style="border: none; padding:0; margin:0;">
                     </div>
-                    <p style="color: #666; font-size: 0.95rem; text-align: center; margin-top: 10px;">Tudo pronto! Clique abaixo para definir suas credenciais.</p>
+                    <p style="color: var(--text); font-size: 0.95rem; text-align: center; margin-top: 10px;">Tudo pronto! Clique abaixo para definir suas credenciais.</p>
                 
                 <?php elseif($type == 'chef'): ?>
                     <label>Foto de Perfil (Opcional):</label>
@@ -257,7 +257,7 @@ require_once dirname(__DIR__) . '/base.php';
                                     echo '</div>';
                                 }
                             } else {
-                                echo '<p style="color:#888; font-size:0.9em; margin:0;">Nenhum chef cadastrado no sistema ainda.</p>';
+                                echo '<p style="color: var(--text); font-size:0.9em; margin:0;">Nenhum chef cadastrado no sistema ainda.</p>';
                             }
                         ?>
                     </div>
