@@ -1679,6 +1679,8 @@ a { color: inherit; text-decoration: none; }
   font-weight: 600;
   text-decoration: none;
   transition: background var(--transition), transform 0.2s;
+  display: flex;
+  justify-content: center;
 }
 
 .btn-view:hover {
