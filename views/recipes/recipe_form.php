@@ -4,6 +4,7 @@ ob_start();
 require_once dirname(__DIR__, 2) . '/config/config.php';
 
 // Agora usamos a constante ROOT_PATH que foi criada no config.php
+require_once ROOT_PATH . '/config/validation.php';
 require_once ROOT_PATH . '/models/model/recipe.php'; 
 require_once ROOT_PATH . '/models/dao/recipeDAO.php';
 
@@ -15,7 +16,13 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+$recipeError = "";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    [$nomeOk, $nomeErro] = validarNome($_POST['name'] ?? '');
+    if (!$nomeOk) {
+        $recipeError = $nomeErro;
+    } else {
     $userId = $_SESSION['user_id'];
     $userType = $_SESSION['user_type'];
 
@@ -43,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: recipe_list.php?msg=sucesso");
         exit;
     }
+    } // fim else validação nome
 }
 
 // Carrega o visual base do site
@@ -54,11 +62,15 @@ require_once ROOT_PATH . '/base.php';
         <h2 style="color: #8b2538; text-align: center; margin-bottom: 30px;">
             <i class="fa-solid fa-utensils"></i> Cadastrar Nova Receita
         </h2>
+        <?php if (!empty($recipeError)): ?>
+            <p style="color: red; font-weight: bold; text-align: center;"><?php echo htmlspecialchars($recipeError); ?></p>
+        <?php endif; ?>
         
-        <form method="POST" action="recipe_form.php">
+        <form method="POST" action="recipe_form.php" id="form-cadastro" novalidate>
             <div class="form-group">
                 <label>Nome da receita:</label>
-                <input type="text" name="name" placeholder="Ex: Ratatouille" required>
+                <input type="text" name="name" placeholder="Ex: Ratatouille" required data-validate-nome maxlength="100" value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>">
+                <small class="field-error" style="color:red; display:none;">Use apenas letras e espaços (sem números, emojis ou caracteres especiais).</small>
             </div>
             
             <div class="form-row">

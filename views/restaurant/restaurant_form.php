@@ -2,10 +2,23 @@
 require_once dirname(__DIR__, 2) . '/base.php';
 require_once dirname(__DIR__, 2) . '/models/model/restaurant.php';
 require_once dirname(__DIR__, 2) . '/models/dao/restaurantDAO.php';
+require_once dirname(__DIR__, 2) . '/config/validation.php';
 
 $message = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nomeInput = trim($_POST['name'] ?? '');
+    [$nomeOk, $nomeErro] = validarNome($nomeInput);
+
+    // Telefone: envia/salva APENAS números
+    $phoneLimpo = limparTelefone($_POST['phone'] ?? '');
+    [$telOk, $telErro] = validarTelefone($phoneLimpo);
+
+    if (!$nomeOk) {
+        $message = "<div class='alert error'>" . htmlspecialchars($nomeErro) . "</div>";
+    } elseif (!$telOk) {
+        $message = "<div class='alert error'>" . htmlspecialchars($telErro) . "</div>";
+    } else {
     $restaurantDAO = new RestaurantDAO();
     
     // Tratamento de Foto
@@ -19,14 +32,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
     $newRestaurant = new Restaurant(
-        $_POST['name'],
+        $nomeInput,
         $_POST['email'],
         $password
     );
     
     // Setando os novos campos profissionais
     $newRestaurant->setAddress($_POST['address']);
-    $newRestaurant->setPhone($_POST['phone']);
+    $newRestaurant->setPhone($phoneLimpo);
     $newRestaurant->setDescription($_POST['description']);
     $newRestaurant->setPhoto($photoName);
     $newRestaurant->setOpeningHours($_POST['opening_hours']); // Novo
@@ -40,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Exception $e) {
         $message = "<div class='alert error'>Erro: " . $e->getMessage() . "</div>";
     }
+    } // fim else validação
 }
 ?>
 
@@ -49,10 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h2><i class="fa-solid fa-shop"></i> Cadastrar Novo Restaurante</h2>
         <?php echo $message; ?>
         
-        <form action="restaurant_form.php" method="POST" enctype="multipart/form-data">
+        <form action="restaurant_form.php" method="POST" enctype="multipart/form-data" id="form-cadastro" novalidate>
             <div class="form-group">
                 <label for="name">Nome do Restaurante:</label>
-                <input type="text" id="name" name="name" required placeholder="Ex: Cantina Di Milano">
+                <input type="text" id="name" name="name" required placeholder="Ex: Cantina Di Milano" data-validate-nome maxlength="100" value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>">
+                <small class="field-error" style="color:red; display:none;">Use apenas letras e espaços (sem números, emojis ou caracteres especiais).</small>
             </div>
 
             <div class="form-group">
@@ -72,7 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="form-group">
                 <label for="phone">Telefone de Contato:</label>
-                <input type="text" id="phone" name="phone" placeholder="Ex: (47) 99999-9999">
+                <input type="text" id="phone" name="phone" placeholder="Ex: (47) 99999-9999" inputmode="numeric" data-validate-telefone maxlength="15" value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>">
+                <small class="field-error" style="color:red; display:none;">Digite apenas números (DDD + número, 10 ou 11 dígitos).</small>
             </div>
 
             <div class="form-group">

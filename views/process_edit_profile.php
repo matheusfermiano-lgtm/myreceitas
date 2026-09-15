@@ -1,6 +1,7 @@
 <?php
 if (!isset($_SESSION)) session_start();
 require_once dirname(__DIR__) . '/config/database.php';
+require_once dirname(__DIR__) . '/config/validation.php';
 require_once dirname(__DIR__) . '/models/dao/userDAO.php';
 require_once dirname(__DIR__) . '/models/dao/chefDAO.php';
 require_once dirname(__DIR__) . '/models/model/user.php';
@@ -47,11 +48,20 @@ function uploadPhoto($file, $oldPhoto = null) {
     return $oldPhoto; // falha no upload
 }
 
-// Dados comuns
-$name  = $_POST['name'] ?? '';
-$email = $_POST['email'] ?? '';
-$phone = $_POST['phone'] ?? '';
+// Dados comuns (+ validação: nome sem números/emoji/especiais, telefone só números)
+$name  = trim($_POST['name'] ?? '');
+[$nomeOk, $nomeErro] = validarNome($name);
+$phone = limparTelefone($_POST['phone'] ?? '');
+[$telOk, $telErro] = validarTelefone($phone);
 $address = $_POST['address'] ?? '';
+$email = $_POST['email'] ?? '';
+
+if (!$nomeOk) {
+    die("Erro ao salvar: " . htmlspecialchars($nomeErro) . " <a href='javascript:history.back()'>Voltar</a>");
+}
+if (!$telOk) {
+    die("Erro ao salvar: " . htmlspecialchars($telErro) . " <a href='javascript:history.back()'>Voltar</a>");
+}
 
 $conn = database::getConexao();
 

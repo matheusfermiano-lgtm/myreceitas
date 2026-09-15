@@ -2,15 +2,28 @@
 require_once dirname(__DIR__, 2) . '/base.php';
 require_once dirname(__DIR__, 2) . '/models/model/chef.php';
 require_once dirname(__DIR__, 2) . '/models/dao/chefDAO.php';
+require_once dirname(__DIR__, 2) . '/config/validation.php';
 
 $message = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nomeInput = trim($_POST['name'] ?? '');
+    [$nomeOk, $nomeErro] = validarNome($nomeInput);
+
+    // Telefone: envia/salva APENAS números
+    $phoneLimpo = limparTelefone($_POST['phone'] ?? '');
+    [$telOk, $telErro] = validarTelefone($phoneLimpo);
+
+    if (!$nomeOk) {
+        $message = "<div class='alert error'>" . htmlspecialchars($nomeErro) . "</div>";
+    } elseif (!$telOk) {
+        $message = "<div class='alert error'>" . htmlspecialchars($telErro) . "</div>";
+    } else {
     $chefDAO = new chefDAO();
     $pass = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    $chef = new Chef($_POST['name'], $_POST['email'], $pass);
-    $chef->setPhone($_POST['phone']);
+    $chef = new Chef($nomeInput, $_POST['email'], $pass);
+    $chef->setPhone($phoneLimpo);
     $chef->setAddress($_POST['address']);
     $chef->setDescription($_POST['description']);
     $chef->setProfessionalExperience($_POST['professional_experience']);
@@ -65,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = "<div class='alert error'>Erro ao cadastrar no banco de dados.</div>";
         }
     }
+    } // fim else validação nome/telefone
 }
 ?>
 
@@ -75,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         <?php if(!empty($message)) echo $message; ?>
 
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" id="form-cadastro" novalidate>
             
             <div class="form-group">
                 <label>Foto de Perfil (Opcional)</label>
@@ -87,7 +101,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="form-group">
                 <label>Nome Completo *</label>
-                <input type="text" name="name" placeholder="Ex: João Silva" required>
+                <input type="text" name="name" placeholder="Ex: João Silva" required data-validate-nome maxlength="100" value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>">
+                <small class="field-error" style="color:red; display:none;">Use apenas letras e espaços (sem números, emojis ou caracteres especiais).</small>
             </div>
 
             <div class="form-group">
@@ -102,7 +117,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="form-group">
                 <label>Telefone / WhatsApp</label>
-                <input type="text" name="phone" placeholder="(XX) XXXXX-XXXX">
+                <input type="text" name="phone" placeholder="(XX) XXXXX-XXXX" inputmode="numeric" data-validate-telefone maxlength="15" value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>">
+                <small class="field-error" style="color:red; display:none;">Digite apenas números (DDD + número, 10 ou 11 dígitos).</small>
             </div>
             
             <div class="form-group">

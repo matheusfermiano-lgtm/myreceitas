@@ -3,6 +3,7 @@
 ob_start(); 
 
 require_once dirname(__DIR__) . '/config/database.php';
+require_once dirname(__DIR__) . '/config/validation.php';
 require_once dirname(__DIR__) . '/models/model/user.php';
 require_once dirname(__DIR__) . '/models/model/chef.php';
 require_once dirname(__DIR__) . '/models/model/restaurant.php';
@@ -17,6 +18,17 @@ $step = $_GET['step'] ?? 1;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($step == 1) {
+        // Valida nome (sem números, sem emojis, sem especiais)
+        [$nomeOk, $nomeErro] = validarNome($_POST['name'] ?? '');
+        // Telefone: limpa e valida (salva só números)
+        $_POST['phone'] = limparTelefone($_POST['phone'] ?? '');
+        [$telOk, $telErro] = validarTelefone($_POST['phone']);
+
+        if (!$nomeOk) {
+            $error = $nomeErro;
+        } elseif (!$telOk) {
+            $error = $telErro;
+        } else {
         $_SESSION['reg_data'] = $_POST;
         
         // --- UPLOAD DA FOTO PRINCIPAL DO RESTAURANTE (Etapa 1) ---
@@ -38,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         header("Location: register_steps.php?type=$type&step=2");
         exit;
+        } // fim else validação step 1
     }
     
     if ($step == 2) {
@@ -88,9 +101,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($step == 3) {
-        $data = array_merge($_SESSION['reg_data'], $_POST);
+        $data = array_merge($_SESSION['reg_data'] ?? [], $_POST);
+        // Revalida nome + telefone (segurança, caso a sessão tenha sido manipulada)
+        [$nomeOk3, $nomeErro3] = validarNome($data['name'] ?? '');
+        $data['phone'] = limparTelefone($data['phone'] ?? '');
+        [$telOk3, $telErro3] = validarTelefone($data['phone']);
         
-        if($data['pass'] !== $data['pass_confirm']) {
+        if (!$nomeOk3) {
+            $error = $nomeErro3;
+        } elseif (!$telOk3) {
+            $error = $telErro3;
+        } elseif($data['pass'] !== $data['pass_confirm']) {
              $error = "Senhas não conferem!";
         } else {
             $hashedPassword = password_hash($data['pass'], PASSWORD_DEFAULT);
@@ -167,9 +188,9 @@ require_once dirname(__DIR__) . '/base.php';
         </style>
 
         <h2>Cadastro de <?php echo $type === 'user' ? 'Usuário' : ucfirst($type); ?> - Etapa <?php echo $step; ?></h2>
-        <?php if(isset($error)) echo "<p style='color:red'>$error</p>"; ?>
+        <?php if(isset($error)) echo "<p style='color:red; font-weight:bold;'>" . htmlspecialchars($error) . "</p>"; ?>
         
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" id="form-cadastro" novalidate>
             
             <?php if($step == 1): ?>
                 <?php if($type === 'user'): ?>
@@ -180,11 +201,13 @@ require_once dirname(__DIR__) . '/base.php';
                 <?php endif; ?>
 
                 <label>Nome <?php echo $type === 'restaurant' ? 'do Restaurante' : 'Completo'; ?>:</label>
-                <input type="text" name="name" placeholder="Ex: <?php echo $type === 'restaurant' ? 'Sabor do Mar' : 'João Silva'; ?>" required value="<?php echo $_SESSION['reg_data']['name'] ?? ''; ?>">
+                <input type="text" name="name" placeholder="Ex: <?php echo $type === 'restaurant' ? 'Sabor do Mar' : 'João Silva'; ?>" required data-validate-nome maxlength="100" value="<?php echo htmlspecialchars($_SESSION['reg_data']['name'] ?? ''); ?>">
+                <small class="field-error" style="color:red; display:none;">Use apenas letras e espaços (sem números, emojis ou caracteres especiais).</small>
                 <label>E-mail:</label>
-                <input type="email" name="email" placeholder="email@exemplo.com" required value="<?php echo $_SESSION['reg_data']['email'] ?? ''; ?>">
+                <input type="email" name="email" placeholder="email@exemplo.com" required value="<?php echo htmlspecialchars($_SESSION['reg_data']['email'] ?? ''); ?>">
                 <label>Telefone:</label>
-                <input type="text" name="phone" placeholder="(00) 00000-0000" value="<?php echo $_SESSION['reg_data']['phone'] ?? ''; ?>">
+                <input type="text" name="phone" placeholder="(00) 00000-0000" inputmode="numeric" data-validate-telefone maxlength="15" value="<?php echo htmlspecialchars($_SESSION['reg_data']['phone'] ?? ''); ?>">
+                <small class="field-error" style="color:red; display:none;">Digite apenas números (DDD + número, 10 ou 11 dígitos).</small>
                 <label>Endereço:</label>
                 <textarea name="address" placeholder="Endereço completo"><?php echo $_SESSION['reg_data']['address'] ?? ''; ?></textarea>
 

@@ -142,3 +142,5 @@ if ($base_path === '//') { $base_path = '/'; }
         });
     });
     </script>
+    <!-- Validação global: nomes sem números/emoji/especiais + telefone só números -->
+    <script src="<?php echo $base_path; ?>static/validation.js"></script>

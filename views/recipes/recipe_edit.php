@@ -5,6 +5,7 @@ require_once dirname(__DIR__, 2) . '/config/config.php';
 if (!defined('ROOT_PATH')) {
     define('ROOT_PATH', dirname(__DIR__, 2));
 }
+require_once ROOT_PATH . '/config/validation.php';
 require_once ROOT_PATH . '/models/model/recipe.php'; 
 require_once ROOT_PATH . '/models/dao/recipeDAO.php';
 
@@ -34,6 +35,10 @@ if (!$isOwner) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    [$nomeOk, $nomeErro] = validarNome($_POST['name'] ?? '');
+    if (!$nomeOk) {
+        $recipeError = $nomeErro;
+    } else {
     // Mantém o preço se for restaurante, senão 0.00
     $price = ($userType === 'restaurant') ? $_POST['price'] : 0.00;
 
@@ -57,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: recipe_view.php?id=" . $_POST['id'] . "&msg=edit_success");
         exit;
     }
+    } // fim else validação nome
 }
 
 require_once ROOT_PATH . '/base.php';
@@ -65,12 +71,16 @@ require_once ROOT_PATH . '/base.php';
 <div class="container">
     <div class="form-wrapper">
         <h2 style="color: #8b2538; text-align: center;">Editar Receita</h2>
-        <form method="POST">
+        <?php if (!empty($recipeError)): ?>
+            <p style="color: red; font-weight: bold; text-align: center;"><?php echo htmlspecialchars($recipeError); ?></p>
+        <?php endif; ?>
+        <form method="POST" id="form-cadastro" novalidate>
             <input type="hidden" name="id" value="<?= $receita->getId() ?>">
 
             <div class="form-group">
                 <label>Nome:</label>
-                <input type="text" name="name" value="<?= htmlspecialchars($receita->getName()) ?>" required>
+                <input type="text" name="name" value="<?= htmlspecialchars($receita->getName()) ?>" required data-validate-nome maxlength="100">
+                <small class="field-error" style="color:red; display:none;">Use apenas letras e espaços (sem números, emojis ou caracteres especiais).</small>
             </div>
             
             <div class="form-row">

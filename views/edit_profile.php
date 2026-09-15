@@ -61,7 +61,7 @@ require_once dirname(__DIR__) . '/base.php';
             <i class="fa-solid fa-user-gear"></i> Editar Perfil (<?php echo ucfirst($tipo_logado); ?>)
         </h2>
 
-        <form action="process_edit_profile.php" method="POST" enctype="multipart/form-data">
+        <form action="process_edit_profile.php" method="POST" enctype="multipart/form-data" id="form-cadastro" novalidate>
             <!-- Foto -->
             <div class="form-group">
                 <label>Alterar Foto:</label>
@@ -71,7 +71,8 @@ require_once dirname(__DIR__) . '/base.php';
             <!-- Campos comuns -->
             <div class="form-group">
                 <label>Nome:</label>
-                <input type="text" name="name" value="<?php echo htmlspecialchars($data['name'] ?? ''); ?>" required>
+                <input type="text" name="name" value="<?php echo htmlspecialchars($data['name'] ?? ''); ?>" required data-validate-nome maxlength="100">
+                <small class="field-error" style="color:red; display:none;">Use apenas letras e espaços (sem números, emojis ou caracteres especiais).</small>
             </div>
 
             <div class="form-group">
@@ -82,7 +83,8 @@ require_once dirname(__DIR__) . '/base.php';
             <div class="form-row" style="display: flex; gap: 15px;">
                 <div class="form-group" style="flex: 1;">
                     <label>Telefone:</label>
-                    <input type="text" name="phone" value="<?php echo htmlspecialchars($data['phone'] ?? ''); ?>">
+                    <input type="text" name="phone" value="<?php echo htmlspecialchars($data['phone'] ?? ''); ?>" inputmode="numeric" data-validate-telefone maxlength="15">
+                    <small class="field-error" style="color:red; display:none;">Digite apenas números (DDD + número, 10 ou 11 dígitos).</small>
                 </div>
                 <div class="form-group" style="flex: 1;">
                     <label>Endereço:</label>

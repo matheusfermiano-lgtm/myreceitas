@@ -1,8 +1,8 @@
 <?php
-define('DB_HOST', 'localhost'); 
-define('DB_USER', 'root'); 
-define('DB_PASS', ''); 
-define('DB_NAME', 'myreceitas_db');
+define('DB_HOST', 'tini.click');
+define('DB_USER', 'my_receitas');
+define('DB_PASS', '289cccb49646af8507be477db28d9867');
+define('DB_NAME', 'my_receitas');
 
 class database {
     private static $conexao = null;
@@ -29,5 +29,5 @@ class database {
 define('DB_HOST', 'tini.click');
 define('DB_USER', 'my_receitas');
 define('DB_PASS', '289cccb49646af8507be477db28d9867');
-define('DB_NAME', 'myreceitas_db');
+define('DB_NAME', 'my_receitas');
 */
