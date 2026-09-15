@@ -39,7 +39,8 @@ if ($base_path === '//') { $base_path = '/'; }
         <!-- Depois: transformado em formulário -->
         <form class="search-bar" action="<?= $base_path ?>views/recipes/recipe_list.php" method="GET">
             
-            <input type="text" name="q" placeholder="Buscar receitas..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>"><i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" name="q" placeholder="Buscar receitas..." maxlength="50" value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
+            <i class="fa-solid fa-magnifying-glass"></i>
             
             <!-- botão invisível para permitir submit com Enter -->
             <button type="submit"></button>
