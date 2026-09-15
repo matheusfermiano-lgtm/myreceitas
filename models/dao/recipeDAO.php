@@ -250,7 +250,7 @@ public function getFavoriteRecipes($userId, $userType) {
     ========================================= */
 
     // CURTIDAS: Inverte o estado (Se curtiu, descurte. Se não, curte)
-public function toggleLike($recipeId, $userId, $userType) {
+    public function toggleLike($recipeId, $userId, $userType) {
         // Agora checamos a receita, o ID e o tipo de conta (user, chef ou restaurante)
         $check = "SELECT 1 FROM recipe_likes WHERE recipe_id = ? AND user_id = ? AND user_type = ?";
         $stmt = $this->conn->prepare($check);
@@ -276,7 +276,7 @@ public function toggleLike($recipeId, $userId, $userType) {
     }
 
     // VERIFICAÇÃO: O usuário logado já curtiu?
-public function userLiked($recipeId, $userId, $userType) {
+    public function userLiked($recipeId, $userId, $userType) {
         $sql = "SELECT 1 FROM recipe_likes WHERE recipe_id = ? AND user_id = ? AND user_type = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([$recipeId, $userId, $userType]);
@@ -325,62 +325,72 @@ public function userLiked($recipeId, $userId, $userType) {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    public function searchRecipes($filters, $limit = 30, $offset = 0) {
-        $sql = "SELECT * FROM recipes 
-                WHERE is_public = 1 
-                AND deleted_at IS NULL";
-
+    private function buildSearchConditions($filters, &$values): string {
         $conditions = [];
-        $values = [];
-
-        // Filtro por Nome ou Ingredientes (Busca Geral)
         if (!empty($filters['q'])) {
-            $conditions[] = " (name LIKE ? OR ingredients LIKE ?) ";
+            $conditions[] = "(name LIKE ? OR ingredients LIKE ?)";
             $q = '%' . $filters['q'] . '%';
             $values[] = $q;
-            $values[] = $q; // precisa duas vezes por causa dos dois ?
+            $values[] = $q;
         }
-
-        // Filtro específico por Categoria
         if (!empty($filters['category'])) {
-            $conditions[] = " category = ? ";
-            $values[] = $filters['category'];
+            // Tolera singular/plural: banco antigo tem 'sobremesa', form novo envia 'sobremesas'.
+            $cat = trim($filters['category']);
+            $variants = [$cat];
+            $map = [
+                'entrada' => 'entradas', 'entradas' => 'entrada',
+                'prato principal' => 'pratos principais', 'pratos principais' => 'prato principal',
+                'sobremesa' => 'sobremesas', 'sobremesas' => 'sobremesa',
+                'carne' => 'carnes', 'carnes' => 'carne',
+                'massa' => 'massas', 'massas' => 'massa',
+                'lanche' => 'lanches', 'lanches' => 'lanche',
+                'salada' => 'saladas', 'saladas' => 'salada',
+                'peixe' => 'peixes', 'peixes' => 'peixe',
+                'sopa' => 'sopas', 'sopas' => 'sopa',
+                'bebida' => 'bebidas', 'bebidas' => 'bebida',
+            ];
+            $lower = mb_strtolower($cat);
+            if (isset($map[$lower]) && mb_strtolower($map[$lower]) !== $lower) {
+                $variants[] = $map[$lower];
+            }
+            if (count($variants) > 1) {
+                $conditions[] = "category IN (?, ?)";
+                $values[] = $variants[0];
+                $values[] = $variants[1];
+            } else {
+                $conditions[] = "category = ?";
+                $values[] = $variants[0];
+            }
         }
-
-        // Filtro por Tempo Máximo
         if (!empty($filters['max_time'])) {
-            $conditions[] = " preparation_time <= ? ";
+            $conditions[] = "preparation_time <= ?";
             $values[] = (int)$filters['max_time'];
         }
-
-        // Concatena as condições com AND
-        if (!empty($conditions)) {
-            $sql .= " AND " . implode(" AND ", $conditions);
-        }
-
-        // Ordenação
-        if (!empty($filters['q'])) {
-            $sql .= " ORDER BY LENGTH(ingredients) ASC, name ASC";
-        } else {
-            $sql .= " ORDER BY created_at DESC";
-        }
-
-        $sql .= " LIMIT ? OFFSET ?";
-        $values[] = (int)$limit;
-        $values[] = (int)$offset;
-
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute($values);   // executa passando o array de valores na ordem
-
-        return $this->mapToArray($stmt);
+        return $conditions ? " AND " . implode(" AND ", $conditions) : "";
     }
-    public function countSearchRecipes($filters) {
-        $sql = "SELECT COUNT(*) FROM recipes 
-                WHERE is_public = 1 AND deleted_at IS NULL AND restaurant_id IS NULL";
+
+
+    public function searchRecipes($filters, $limit = 30, $offset = 0) {
         $values = [];
+        $sql = "SELECT * FROM recipes WHERE is_public = 1 AND deleted_at IS NULL AND restaurant_id IS NULL";
+        $sql .= $this->buildSearchConditions($filters, $values);
+        $sql .= !empty($filters['q']) ? " ORDER BY LENGTH(ingredients) ASC, name ASC" : " ORDER BY created_at DESC";
+        // Interpola LIMIT/OFFSET como int (compatível com EMULATE_PREPARES=false).
+        // Não usar ? para LIMIT quando emulate está desligado: o execute() binda como string e o MySQL rejeita.
+        $sql .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute($values);
-        return $stmt->fetchColumn();
+        return $this->mapToArray($stmt);
+    }
+
+    public function countSearchRecipes($filters): int {
+        $values = [];
+        $sql = "SELECT COUNT(*) FROM recipes WHERE is_public = 1 AND deleted_at IS NULL AND restaurant_id IS NULL";
+        $sql .= $this->buildSearchConditions($filters, $values);
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($values);
+        return (int)$stmt->fetchColumn();
     }
 }
