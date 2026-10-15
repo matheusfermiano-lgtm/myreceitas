@@ -37,6 +37,17 @@ docker-compose down -v >nul 2>&1
 echo Criando e iniciando os conteineres...
 docker-compose up -d --build
 if %errorlevel% neq 0 goto compose_falhou
+
+echo.
+echo Aguardando o banco de dados (MySQL) inicializar...
+:esperar_mysql
+docker exec myreceitas_db mysqladmin ping -u root -proot --silent >nul 2>&1
+if %errorlevel% equ 0 goto mysql_pronto
+timeout /t 7 /nobreak >nul
+goto esperar_mysql
+
+:mysql_pronto
+echo Banco de dados pronto!
 goto esperar_site_inicio
 
 :compose_falhou
