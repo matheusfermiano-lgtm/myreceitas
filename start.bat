@@ -31,6 +31,10 @@ exit /b 1
 echo Docker pronto!
 echo.
 
+echo Limpando volumes anteriores para recriar o banco...
+docker-compose down -v >nul 2>&1
+
+echo Criando e iniciando os conteineres...
 docker-compose up -d --build
 if %errorlevel% neq 0 goto compose_falhou
 goto esperar_site_inicio
