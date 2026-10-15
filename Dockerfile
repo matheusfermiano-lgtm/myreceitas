@@ -2,6 +2,6 @@ FROM php:8.2-apache
 RUN docker-php-ext-install pdo pdo_mysql
 RUN a2enmod rewrite
 COPY . /var/www/html/
-RUN chmod -R 777 /var/www/html/static/assets/uploads/
+RUN mkdir -p /var/www/html/static/assets/uploads && chmod -R 777 /var/www/html/static/assets/uploads
 WORKDIR /var/www/html
 EXPOSE 80

@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   db:
@@ -20,6 +20,11 @@ services:
     build: .
     container_name: myreceitas_app
     restart: always
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASS: root
+      DB_NAME: myreceitas_db
     ports:
       - "8000:80"
     volumes:

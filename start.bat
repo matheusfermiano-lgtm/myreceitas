@@ -49,7 +49,7 @@ set /a tentativas=0
 :esperar_site
 curl -s -o nul http://localhost:8000
 if %errorlevel% equ 0 goto abrir
-set /a tentativas+=1
+set /a tentativas+=2
 if %tentativas% geq 60 goto abrir
 timeout /t 2 /nobreak >nul
 goto esperar_site
